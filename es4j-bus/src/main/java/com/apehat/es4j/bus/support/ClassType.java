@@ -55,4 +55,9 @@ public final class ClassType implements Type {
         result = 31 * result + prototype.hashCode();
         return result;
     }
+
+    @Override
+    public String toString() {
+        return prototype.toString();
+    }
 }

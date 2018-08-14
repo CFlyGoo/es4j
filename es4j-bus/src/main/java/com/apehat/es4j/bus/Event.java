@@ -80,6 +80,16 @@ public final class Event {
         return result;
     }
 
+    @Override
+    public String toString() {
+        return "Event{" +
+            "type=" + type +
+            ", occurredOn=" + occurredOn +
+            ", prototype=" + prototype +
+            ", source='" + source + '\'' +
+            '}';
+    }
+
     public Object get(String name) {
         Objects.requireNonNull(name, "Attribute name must not be null.");
         if (OCCURRED_ON.equals(name)) {

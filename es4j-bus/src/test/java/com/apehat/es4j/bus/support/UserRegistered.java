@@ -70,4 +70,13 @@ public final class UserRegistered implements Serializable {
     public int hashCode() {
         return Objects.hash(userId, username, registerOn);
     }
+
+    @Override
+    public String toString() {
+        return "UserRegistered{" +
+            "userId=" + userId +
+            ", username='" + username + '\'' +
+            ", registerOn=" + registerOn +
+            '}';
+    }
 }
