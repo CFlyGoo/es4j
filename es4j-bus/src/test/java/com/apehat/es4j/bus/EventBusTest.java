@@ -49,7 +49,7 @@ public class EventBusTest {
     /**
      * Before publish, register a global subscriber to wait handle event
      */
-    @BeforeMethod(groups = "publish", enabled = false)
+    @BeforeMethod(groups = "publish")
     public void beforePublish() {
         String subscriberId = eventBus.subscribe(Object.class, event -> {
             handled = true;
@@ -61,7 +61,7 @@ public class EventBusTest {
     /**
      * Register a new EventHandler with arbitrary method
      */
-    @Test(groups = "subscribe", expectedExceptions = NotImplementedException.class)
+    @Test(groups = "subscribe")
     public void testRegisterEventListenerWithMethod() {
         MockDynamicEventHandler subscriber = new MockDynamicEventHandler();
         String subscriberId = eventBus.register(subscriber, MockDynamicEventHandler.getEventHandler());
@@ -73,7 +73,7 @@ public class EventBusTest {
     /**
      * Register a new EventHandler which implemented {@code EventHandler} interface
      */
-    @Test(groups = "subscribe", expectedExceptions = NotImplementedException.class)
+    @Test(groups = "subscribe")
     public void testRegisterEventListenerWithInterfaceImplementor() {
         String subscriberId = eventBus
             .register(event -> LOGGER.info("START handler with {}", event));
@@ -85,7 +85,7 @@ public class EventBusTest {
     /**
      * Register a new EventHandler and specified event type
      */
-    @Test(groups = "subscribe", expectedExceptions = NotImplementedException.class)
+    @Test(groups = "subscribe")
     public void testRegisterEventListenerWithSpecifiedClass() {
         MockDynamicEventHandler subscriber = new MockDynamicEventHandler();
         String subscriberId =
@@ -98,7 +98,7 @@ public class EventBusTest {
     /**
      * Register a new EventHandler and specified event type
      */
-    @Test(groups = "subscribe", expectedExceptions = NotImplementedException.class)
+    @Test(groups = "subscribe")
     public void testRegisterEventListenerWithSpecifiedType() {
         MockDynamicEventHandler subscriber = new MockDynamicEventHandler();
         String subscriberId =
@@ -111,7 +111,7 @@ public class EventBusTest {
     /**
      * Register same handler with multiple time
      */
-    @Test(groups = "subscribe", expectedExceptions = NotImplementedException.class)
+    @Test(groups = "subscribe")
     public void testMultipleRegisterWithSameHandler() {
         EventHandler handler = event -> LOGGER.info("Start handle {}", event);
         String first = eventBus.register(handler);
