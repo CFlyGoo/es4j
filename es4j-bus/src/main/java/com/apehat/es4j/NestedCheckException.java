@@ -16,25 +16,23 @@
 
 package com.apehat.es4j;
 
-import java.io.IOException;
-
 /**
  * @author hanpengfei
  * @since 1.0
  */
-public class NestIOException extends NestCheckException {
+public class NestedCheckException extends RuntimeException {
 
-    private static final long serialVersionUID = -2350695449604649925L;
+    private static final long serialVersionUID = -5161686782587142286L;
 
-    public NestIOException(String message, IOException cause) {
+    public NestedCheckException(String message, Throwable cause) {
         super(message, cause);
     }
 
-    public NestIOException(IOException cause) {
+    public NestedCheckException(Throwable cause) {
         super(cause);
     }
 
-    public NestIOException(String message, IOException cause, boolean enableSuppression,
+    public NestedCheckException(String message, Throwable cause, boolean enableSuppression,
         boolean writableStackTrace) {
         super(message, cause, enableSuppression, writableStackTrace);
     }

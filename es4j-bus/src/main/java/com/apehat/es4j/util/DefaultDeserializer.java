@@ -16,7 +16,7 @@
 
 package com.apehat.es4j.util;
 
-import com.apehat.es4j.NestCheckException;
+import com.apehat.es4j.NestedCheckException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
@@ -33,7 +33,7 @@ public class DefaultDeserializer implements Deserializer<Object> {
         try {
             return ois.readObject();
         } catch (ClassNotFoundException e) {
-            throw new NestCheckException(e);
+            throw new NestedCheckException(e);
         }
     }
 }

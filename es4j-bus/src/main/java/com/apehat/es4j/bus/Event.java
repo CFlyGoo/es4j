@@ -16,7 +16,7 @@
 
 package com.apehat.es4j.bus;
 
-import com.apehat.es4j.NestCheckException;
+import com.apehat.es4j.NestedCheckException;
 import com.apehat.es4j.util.ObjectUtils;
 import java.lang.reflect.Field;
 import java.util.Objects;
@@ -123,12 +123,12 @@ public final class Event {
                 value = field.get(prototype);
             } catch (IllegalAccessException e) {
                 // will not happen
-                throw new NestCheckException(e);
+                throw new NestedCheckException(e);
             } finally {
                 field.setAccessible(flag);
             }
         } catch (NoSuchFieldException e) {
-            throw new NestCheckException(e);
+            throw new NestedCheckException(e);
         }
         if (index != -1) {
             value = getPrototypeAttribute(value, name.substring(index));

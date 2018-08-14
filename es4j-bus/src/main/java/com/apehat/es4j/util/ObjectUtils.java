@@ -16,7 +16,7 @@
 
 package com.apehat.es4j.util;
 
-import com.apehat.es4j.NestIOException;
+import com.apehat.es4j.NestedIOException;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -148,7 +148,7 @@ public final class ObjectUtils {
                 return (T) new DefaultDeserializer().deserialize(bais);
             }
         } catch (IOException e) {
-            throw new NestIOException(e);
+            throw new NestedIOException(e);
         }
     }
 
