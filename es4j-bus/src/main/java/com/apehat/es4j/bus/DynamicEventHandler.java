@@ -17,7 +17,11 @@
 package com.apehat.es4j.bus;
 
 import com.apehat.es4j.NotImplementedException;
+import com.apehat.es4j.util.ObjectUtils;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+import java.lang.reflect.Parameter;
 import java.util.Objects;
 
 /**
@@ -30,12 +34,45 @@ public final class DynamicEventHandler implements EventHandler {
     private final Method handler;
 
     public DynamicEventHandler(Object proxy, Method handler) {
+        Objects.requireNonNull(handler, "Handle method must not be null");
+        final int modifiers = handler.getModifiers();
+        boolean isStatic = Modifier.isStatic(modifiers);
+        if (!isStatic && proxy == null) {
+            throw new IllegalArgumentException("Must specified proxy object for non static method");
+        }
+        ObjectUtils.toAccessible(handler);
+        this.handler = handler;
         this.proxy = proxy;
-        this.handler = Objects.requireNonNull(handler, "Handle method must not be null");
     }
 
     @Override
     public void onEvent(Event event) {
-        throw new NotImplementedException();
+        final int count = handler.getParameterCount();
+        Parameter[] parameters = handler.getParameters();
+        final Object[] args = new Object[count];
+        for (int idx = 0; idx < count; idx++) {
+            final Parameter parameter = parameters[idx];
+            final Class<?> parameterType = parameter.getType();
+            final Object arg;
+            if (parameterType == Event.class) {
+                arg = event;
+            } else {
+                String name;
+                if (parameter.isNamePresent()) {
+                    name = parameter.getName();
+                } else {
+                    // TODO get by ASM
+                    throw new NotImplementedException();
+                }
+                arg = event.get(name);
+            }
+            args[idx] = arg;
+        }
+        try {
+            handler.invoke(proxy, args);
+        } catch (IllegalAccessException |
+            InvocationTargetException e) {
+            throw new EventHandlingException(e);
+        }
     }
 }
