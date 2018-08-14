@@ -25,9 +25,9 @@ import org.slf4j.LoggerFactory;
  * @author hanpengfei
  * @since 1.0
  */
-public class MockEventSubscriber {
+public class MockDynamicEventHandler {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(MockEventSubscriber.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(MockDynamicEventHandler.class);
 
     public Method getEventHandler() {
         try {

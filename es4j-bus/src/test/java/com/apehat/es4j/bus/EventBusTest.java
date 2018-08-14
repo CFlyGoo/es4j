@@ -21,7 +21,7 @@ import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertTrue;
 
 import com.apehat.es4j.NotImplementedException;
-import com.apehat.es4j.bus.mock.MockEventSubscriber;
+import com.apehat.es4j.bus.mock.MockDynamicEventHandler;
 import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -63,7 +63,7 @@ public class EventBusTest {
      */
     @Test(groups = "subscribe", expectedExceptions = NotImplementedException.class)
     public void testRegisterEventListenerWithMethod() {
-        MockEventSubscriber subscriber = new MockEventSubscriber();
+        MockDynamicEventHandler subscriber = new MockDynamicEventHandler();
         String subscriberId = eventBus.register(subscriber, subscriber.getEventHandler());
         assertNotNull(subscriberId);
         Set<String> subscriberIds = eventBus.allGlobalSubscribers();
@@ -87,7 +87,7 @@ public class EventBusTest {
      */
     @Test(groups = "subscribe", expectedExceptions = NotImplementedException.class)
     public void testRegisterEventListenerWithSpecifiedClass() {
-        MockEventSubscriber subscriber = new MockEventSubscriber();
+        MockDynamicEventHandler subscriber = new MockDynamicEventHandler();
         String subscriberId =
             eventBus.subscribe(Object.class, subscriber, subscriber.getEventHandler());
         assertNotNull(subscriberId);
@@ -100,7 +100,7 @@ public class EventBusTest {
      */
     @Test(groups = "subscribe", expectedExceptions = NotImplementedException.class)
     public void testRegisterEventListenerWithSpecifiedType() {
-        MockEventSubscriber subscriber = new MockEventSubscriber();
+        MockDynamicEventHandler subscriber = new MockDynamicEventHandler();
         String subscriberId =
             eventBus.subscribe(Type.of(Object.class), subscriber, subscriber.getEventHandler());
         assertNotNull(subscriberId);
