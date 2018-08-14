@@ -62,14 +62,14 @@ public class MockDynamicEventHandler {
         return handled;
     }
 
-    private void handleEvent(long occurredOn, Event event, String source, Object prototype) {
-        LOGGER.info("Start handler event with {}, {}", occurredOn, event);
+    private void handleEvent(long occurredOn, Event info, String source, Object event) {
+        LOGGER.info("Start handler event with {}, {}", occurredOn, info);
         handled = true;
         if (expected != null) {
-            assertEquals(expected, event);
+            assertEquals(expected, info);
             assertEquals(expected.occurredOn(), occurredOn);
             assertEquals(expected.source(), source);
-            assertEquals(expected.prototype(), prototype);
+            assertEquals(expected.prototype(), event);
         }
     }
 }
