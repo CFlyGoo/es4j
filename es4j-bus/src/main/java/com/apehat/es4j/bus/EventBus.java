@@ -17,7 +17,11 @@
 package com.apehat.es4j.bus;
 
 import com.apehat.es4j.NotImplementedException;
+import com.apehat.es4j.bus.subscriber.CopyOnArraySubscriberRepository;
+import com.apehat.es4j.bus.subscriber.Subscriber;
+import com.apehat.es4j.bus.subscriber.SubscriberRepository;
 import java.lang.reflect.Method;
+import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -26,6 +30,8 @@ import java.util.Set;
  */
 @SuppressWarnings("WeakerAccess")
 public final class EventBus {
+
+    private SubscriberRepository subscriberRepo = new CopyOnArraySubscriberRepository();
 
     /* Global subscribe */
 
@@ -48,7 +54,9 @@ public final class EventBus {
     }
 
     public String subscribe(Type type, EventHandler handler) {
-        throw new NotImplementedException();
+        Subscriber subscriber = new Subscriber(handler, type);
+        this.subscriberRepo.save(subscriber);
+        return handler.toString();
     }
 
     public String subscribe(Type type, Object subscriber, Method handler) {
@@ -103,6 +111,11 @@ public final class EventBus {
     }
 
     public Set<String> subscribersOf(Type type) {
-        throw new NotImplementedException();
+        Set<Subscriber> subscribers = subscriberRepo.subscriberWithType(type);
+        Set<String> subscriberIds = new HashSet<>();
+        for (Subscriber subscriber : subscribers) {
+            subscriberIds.add(subscriber.id());
+        }
+        return subscriberIds;
     }
 }
