@@ -18,8 +18,8 @@ package com.apehat.es4j.bus;
 
 import static org.testng.Assert.assertEquals;
 
-import com.apehat.es4j.bus.mock.UserId;
-import com.apehat.es4j.bus.mock.UserRegistered;
+import com.apehat.es4j.bus.support.UserId;
+import com.apehat.es4j.bus.support.UserRegistered;
 import java.util.Date;
 import java.util.UUID;
 import org.testng.annotations.Test;

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.apehat.es4j.bus.mock;
+package com.apehat.es4j.bus.support;
 
 import com.apehat.es4j.bus.Event;
 import java.lang.reflect.Method;

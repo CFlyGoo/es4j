@@ -21,7 +21,7 @@ import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertTrue;
 
 import com.apehat.es4j.NotImplementedException;
-import com.apehat.es4j.bus.mock.MockDynamicEventHandler;
+import com.apehat.es4j.bus.support.MockDynamicEventHandler;
 import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
