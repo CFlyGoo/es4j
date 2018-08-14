@@ -64,7 +64,7 @@ public class EventBusTest {
     @Test(groups = "subscribe", expectedExceptions = NotImplementedException.class)
     public void testRegisterEventListenerWithMethod() {
         MockDynamicEventHandler subscriber = new MockDynamicEventHandler();
-        String subscriberId = eventBus.register(subscriber, subscriber.getEventHandler());
+        String subscriberId = eventBus.register(subscriber, MockDynamicEventHandler.getEventHandler());
         assertNotNull(subscriberId);
         Set<String> subscriberIds = eventBus.allGlobalSubscribers();
         assertTrue(subscriberIds.contains(subscriberId));
@@ -89,7 +89,7 @@ public class EventBusTest {
     public void testRegisterEventListenerWithSpecifiedClass() {
         MockDynamicEventHandler subscriber = new MockDynamicEventHandler();
         String subscriberId =
-            eventBus.subscribe(Object.class, subscriber, subscriber.getEventHandler());
+            eventBus.subscribe(Object.class, subscriber, MockDynamicEventHandler.getEventHandler());
         assertNotNull(subscriberId);
         Set<String> subscriberIds = eventBus.allGlobalSubscribers();
         assertTrue(subscriberIds.contains(subscriberId));
@@ -102,7 +102,7 @@ public class EventBusTest {
     public void testRegisterEventListenerWithSpecifiedType() {
         MockDynamicEventHandler subscriber = new MockDynamicEventHandler();
         String subscriberId =
-            eventBus.subscribe(Type.of(Object.class), subscriber, subscriber.getEventHandler());
+            eventBus.subscribe(Type.of(Object.class), subscriber, MockDynamicEventHandler.getEventHandler());
         assertNotNull(subscriberId);
         Set<String> subscriberIds = eventBus.allGlobalSubscribers();
         assertTrue(subscriberIds.contains(subscriberId));
