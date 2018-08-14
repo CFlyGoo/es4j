@@ -16,8 +16,11 @@
 
 package com.apehat.es4j.bus.support;
 
+import static org.testng.Assert.assertEquals;
+
 import com.apehat.es4j.bus.Event;
 import java.lang.reflect.Method;
+import java.util.Objects;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -29,15 +32,44 @@ public class MockDynamicEventHandler {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MockDynamicEventHandler.class);
 
-    public Method getEventHandler() {
+    private static final Method HANDLE_METHOD;
+
+    static {
         try {
-            return getClass().getDeclaredMethod("handleEvent", long.class, Event.class);
+            HANDLE_METHOD = MockDynamicEventHandler.class.getDeclaredMethod(
+                "handleEvent", long.class, Event.class, String.class, Object.class);
         } catch (Exception e) {
             throw new IllegalStateException("Cannot find method");
         }
     }
 
-    private void handleEvent(long occurredOn, Event event) {
+    private final Event expected;
+    private boolean handled;
+
+    public MockDynamicEventHandler() {
+        this.expected = null;
+    }
+
+    public MockDynamicEventHandler(Event expected) {
+        this.expected = Objects.requireNonNull(expected, "Expected must not be null.");
+    }
+
+    public static Method getEventHandler() {
+        return HANDLE_METHOD;
+    }
+
+    public boolean isHandled() {
+        return handled;
+    }
+
+    private void handleEvent(long occurredOn, Event event, String source, Object prototype) {
         LOGGER.info("Start handler event with {}, {}", occurredOn, event);
+        handled = true;
+        if (expected != null) {
+            assertEquals(expected, event);
+            assertEquals(expected.occurredOn(), occurredOn);
+            assertEquals(expected.source(), source);
+            assertEquals(expected.prototype(), prototype);
+        }
     }
 }
