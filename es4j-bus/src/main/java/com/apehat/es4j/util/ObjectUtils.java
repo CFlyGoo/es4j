@@ -117,7 +117,6 @@ public final class ObjectUtils {
     }
 
     private static <T> T arrayDeepClone(T prototype) {
-        // TODO test by multidimensional arrays
         assert prototype != null;
         final Class<T> prototypeClass = ClassUtils.getParameterizedClass(prototype);
         assert prototypeClass.isArray();
