@@ -47,7 +47,7 @@ public final class ObjectUtils {
             long.class, char.class, float.class, double.class,
             Integer.class, Short.class, Boolean.class, Byte.class,
             Long.class, Character.class, Float.class, Double.class,
-            String.class
+            String.class, Object.class
         };
         NON_STATUS_CLASSES = new HashSet<>(Arrays.asList(nonStatusClasses));
     }
