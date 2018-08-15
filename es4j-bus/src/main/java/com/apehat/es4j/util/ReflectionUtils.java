@@ -16,13 +16,48 @@
 
 package com.apehat.es4j.util;
 
+import com.apehat.es4j.NestedCheckException;
 import java.lang.reflect.AccessibleObject;
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 
 /**
  * @author hanpengfei
  * @since 1.0
  */
 public class ReflectionUtils {
+
+    public static <T extends AccessibleObject, R> R access(T object, AccessFunction<T, R> fn) {
+        final boolean flag = toAccessible(object);
+        try {
+            return fn.access(object);
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+            throw new NestedCheckException(e);
+        } finally {
+            object.setAccessible(flag);
+        }
+    }
+
+    public static void setFieldValue(Field field, Object instance, Object value) {
+        ReflectionUtils.access(field, (AccessFunction<Field, Void>) accessible -> {
+            try {
+                if (Modifier.isFinal(field.getModifiers())) {
+                    Field modField = Field.class.getDeclaredField("modifiers");
+                    ReflectionUtils.access(modField, (AccessFunction<Field, Void>) mf -> {
+                        mf.set(field, field.getModifiers() & ~Modifier.FINAL);
+                        return null;
+                    });
+                }
+                assert !Modifier.isFinal(field.getModifiers());
+                field.set(instance, value);
+            } catch (NoSuchFieldException e) {
+                // will not happen
+                throw new NestedCheckException(e);
+            }
+            return null;
+        });
+    }
 
     public static boolean toAccessible(AccessibleObject object) {
         boolean accessible = object.isAccessible();
