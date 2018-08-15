@@ -16,7 +16,6 @@
 
 package com.apehat.es4j.bus;
 
-import com.apehat.es4j.NotImplementedException;
 import com.apehat.es4j.bus.subscriber.CopyOnArraySubscriberRepository;
 import com.apehat.es4j.bus.subscriber.Subscriber;
 import com.apehat.es4j.bus.subscriber.SubscriberRepository;
@@ -34,6 +33,10 @@ public final class EventBus {
     private SubscriberRepository subscriberRepo = new CopyOnArraySubscriberRepository();
 
     /* Global subscribe */
+    private Dispatcher dispatcher = new Dispatcher(subscriberRepo);
+    private AsyncDispatcher asyncDispatcher = new AsyncDispatcher(subscriberRepo);
+
+    /* Type specified subscribe */
 
     public String register(EventHandler handler) {
         return subscribe(Object.class, handler);
@@ -43,8 +46,6 @@ public final class EventBus {
         return subscribe(Object.class, subscriber, handler);
     }
 
-    /* Type specified subscribe */
-
     public String subscribe(Class<?> type, EventHandler handler) {
         return subscribe(Type.of(type), handler);
     }
@@ -52,6 +53,8 @@ public final class EventBus {
     public String subscribe(Class<?> type, Object subscriber, Method handler) {
         return subscribe(Type.of(type), subscriber, handler);
     }
+
+    /* Publish */
 
     public String subscribe(Type type, EventHandler handler) {
         Subscriber subscriber = new Subscriber(handler, type);
@@ -64,14 +67,13 @@ public final class EventBus {
         return subscribe(type, dynamicEventHandler);
     }
 
-    /* Publish */
-
     public void publish(Object event) {
         publish(Type.of(event.getClass()), event);
     }
 
     public void publish(Type type, Object event) {
-        throw new NotImplementedException();
+        PendingEvent pendingEvent = new PendingEvent(event, null, type);
+        dispatcher.dispatch(pendingEvent);
     }
 
     public void publish(Object event, Callback callback) {
@@ -79,9 +81,14 @@ public final class EventBus {
     }
 
     public void publish(Type type, Object event, Callback callback) {
-        throw new NotImplementedException();
+        try {
+            PendingEvent pendingEvent = new PendingEvent(event, null, type);
+            dispatcher.dispatch(pendingEvent);
+            callback.onSuccessfully();
+        } catch (RuntimeException e) {
+            callback.onFailure();
+        }
     }
-
     /* Submit */
 
     public void submit(Object event) {
@@ -89,7 +96,8 @@ public final class EventBus {
     }
 
     public void submit(Type type, Object event) {
-        throw new NotImplementedException();
+        PendingEvent pendingEvent = new PendingEvent(event, null, type);
+        asyncDispatcher.dispatch(pendingEvent);
     }
 
     public void submit(Object event, Callback callback) {
@@ -97,7 +105,8 @@ public final class EventBus {
     }
 
     public void submit(Type type, Object event, Callback callback) {
-        throw new NotImplementedException();
+        PendingEvent pendingEvent = new PendingEvent(event, null, type);
+        asyncDispatcher.dispatch(pendingEvent, callback);
     }
 
     /* Query */

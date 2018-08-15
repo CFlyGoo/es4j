@@ -20,12 +20,11 @@ import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertTrue;
 
-import com.apehat.es4j.NotImplementedException;
 import com.apehat.es4j.bus.support.MockDynamicEventHandler;
 import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.BeforeGroups;
 import org.testng.annotations.Test;
 
 /**
@@ -43,13 +42,13 @@ public class EventBusTest {
     private boolean handled;
 
     public EventBusTest() {
-        eventBus = new EventBus();
+        this.eventBus = new EventBus();
     }
 
     /**
      * Before publish, register a global subscriber to wait handle event
      */
-    @BeforeMethod(groups = "publish")
+    @BeforeGroups(groups = {"publish", "submit"})
     public void beforePublish() {
         String subscriberId = eventBus.subscribe(Object.class, event -> {
             handled = true;
@@ -64,7 +63,8 @@ public class EventBusTest {
     @Test(groups = "subscribe")
     public void testRegisterEventListenerWithMethod() {
         MockDynamicEventHandler subscriber = new MockDynamicEventHandler();
-        String subscriberId = eventBus.register(subscriber, MockDynamicEventHandler.getEventHandler());
+        String subscriberId = eventBus
+            .register(subscriber, MockDynamicEventHandler.getEventHandler());
         assertNotNull(subscriberId);
         Set<String> subscriberIds = eventBus.allGlobalSubscribers();
         assertTrue(subscriberIds.contains(subscriberId));
@@ -102,7 +102,8 @@ public class EventBusTest {
     public void testRegisterEventListenerWithSpecifiedType() {
         MockDynamicEventHandler subscriber = new MockDynamicEventHandler();
         String subscriberId =
-            eventBus.subscribe(Type.of(Object.class), subscriber, MockDynamicEventHandler.getEventHandler());
+            eventBus.subscribe(Type.of(Object.class), subscriber,
+                MockDynamicEventHandler.getEventHandler());
         assertNotNull(subscriberId);
         Set<String> subscriberIds = eventBus.allGlobalSubscribers();
         assertTrue(subscriberIds.contains(subscriberId));
@@ -122,7 +123,7 @@ public class EventBusTest {
     /**
      * Synchronize publish a event
      */
-    @Test(groups = "publish", expectedExceptions = NotImplementedException.class)
+    @Test(groups = "publish")
     public void testPublishEvent() {
         eventBus.publish(new Object(), new Callback() {
             @Override
@@ -136,14 +137,22 @@ public class EventBusTest {
     /**
      * Asynchronous publish a event
      */
-    @Test(groups = "publish", expectedExceptions = NotImplementedException.class)
-    public void testSubmitEvent() {
+    @Test(groups = "submit")
+    public void testSubmitEvent() throws Exception {
         eventBus.submit(new Object(), new Callback() {
             @Override
             public void onSuccessfully() {
                 handled = true;
             }
         });
+        Thread.sleep(50);
         assertTrue(handled);
+    }
+
+    @Test(groups = "submit-multiple-thread", threadPoolSize = 4, invocationCount = 50)
+    public void testSubmitEventAndSubscribeInMultiple() {
+        eventBus.submit(new Object());
+        eventBus.register(event -> {
+        });
     }
 }

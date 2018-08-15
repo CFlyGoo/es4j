@@ -17,6 +17,7 @@
 package com.apehat.es4j.bus.subscriber;
 
 import com.apehat.es4j.bus.EventHandler;
+import com.apehat.es4j.bus.PendingEvent;
 import com.apehat.es4j.bus.Type;
 import java.util.Objects;
 
@@ -26,12 +27,30 @@ import java.util.Objects;
  */
 public class Subscriber {
 
+    /*
+     * if handler is no status, should identifier only by handler method and declared class
+     * if handler is have status, should identifier by it's hash code and subscriber should in
+     * memory only
+     */
+
     private final EventHandler handler;
+    private final long subscriptionOn;
     private final Type type;
 
     public Subscriber(EventHandler handler, Type type) {
+        this.subscriptionOn = System.currentTimeMillis();
         this.handler = Objects.requireNonNull(handler, "Handler must not be null.");
         this.type = Objects.requireNonNull(type, "Subscription type must not be null.");
+    }
+
+    public void onEvent(PendingEvent event) {
+        if (!type.equals(event.type())) {
+            throw new IllegalArgumentException("Hadn't subscription to " + event.type());
+        }
+        if (subscriptionOn > event.occurredOn()) {
+            throw new IllegalArgumentException("Event already occurred");
+        }
+        handler.onEvent(event.toEvent());
     }
 
     public Type subscriptionType() {
