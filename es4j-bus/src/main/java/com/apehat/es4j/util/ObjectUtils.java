@@ -30,7 +30,9 @@ import java.lang.reflect.Modifier;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
 /**
@@ -60,6 +62,9 @@ public final class ObjectUtils {
         try {
             if (prototype.getClass().isArray()) {
                 return arrayDeepClone(prototype);
+            }
+            if (prototype instanceof Map) {
+                return mapDeepClone(prototype);
             }
             if (prototype instanceof Collection) {
                 return collectionDeepClone(prototype);
@@ -100,6 +105,21 @@ public final class ObjectUtils {
             }
         }
         return clone;
+    }
+
+    private static <T> T mapDeepClone(T prototype) {
+        assert prototype instanceof Map;
+        Class<T> prototypeClass = ClassUtils.getParameterizedClass(prototype);
+        final T newInstance = newInstance(prototypeClass);
+        Map container = (Map) newInstance;
+        final Map<?, ?> map = (Map<?, ?>) prototype;
+        map.forEach((BiConsumer<Object, Object>) (key, value) -> {
+            Object cloneKey = deepClone(key);
+            Object cloneValue = deepClone(value);
+            //noinspection unchecked - safe
+            container.put(cloneKey, cloneValue);
+        });
+        return newInstance;
     }
 
     private static <T> T collectionDeepClone(T prototype) {
@@ -161,7 +181,7 @@ public final class ObjectUtils {
             return true;
         }
         final Class<?> cls = object.getClass();
-        if (object instanceof Collection || cls.isArray()) {
+        if (object instanceof Collection || object instanceof Map || cls.isArray()) {
             return false;
         }
         if (NON_STATUS_CLASSES.contains(cls)) {
