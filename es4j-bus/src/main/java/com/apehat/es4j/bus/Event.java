@@ -16,9 +16,8 @@
 
 package com.apehat.es4j.bus;
 
-import com.apehat.es4j.NestedCheckException;
+import com.apehat.es4j.util.FieldValueFinder;
 import com.apehat.es4j.util.ObjectUtils;
-import java.lang.reflect.Field;
 import java.util.Objects;
 
 /**
@@ -101,39 +100,11 @@ public final class Event {
         } else if (EVENT.equals(name)) {
             return prototype();
         }
-        Object value = getPrototypeAttribute(prototype, name);
-        return ObjectUtils.deepClone(value);
-    }
-
-    private Object getPrototypeAttribute(Object prototype, String name) {
-        if (prototype == null) {
-            return null;
-        }
         if (name.startsWith(START)) {
             name = name.substring(START.length());
         }
-        final int index = name.indexOf(SEPARATOR);
-        String fieldName = (index == -1) ? name : name.substring(0, index);
-        final Class<?> prototypeClass = prototype.getClass();
-        Object value = null;
-        try {
-            Field field = prototypeClass.getDeclaredField(fieldName);
-            boolean flag = ObjectUtils.toAccessible(field);
-            try {
-                value = field.get(prototype);
-            } catch (IllegalAccessException e) {
-                // will not happen
-                throw new NestedCheckException(e);
-            } finally {
-                field.setAccessible(flag);
-            }
-        } catch (NoSuchFieldException e) {
-            throw new NestedCheckException(e);
-        }
-        if (index != -1) {
-            value = getPrototypeAttribute(value, name.substring(index));
-        }
-        return value;
+        Object value = new FieldValueFinder().getFiledValue(prototype, name);
+        return ObjectUtils.deepClone(value);
     }
 
     public long occurredOn() {
