@@ -43,6 +43,7 @@ public class AsmParameterNameDiscoverer implements ParameterNameDiscoverer {
         } catch (IOException e) {
             throw new NestedIOException(e);
         }
+        final int count = exec.getParameterCount();
         String execDescriptor = Type.getMethodDescriptor(exec);
         cr.accept(new ClassVisitor(Opcodes.ASM6) {
             @Override
@@ -58,7 +59,9 @@ public class AsmParameterNameDiscoverer implements ParameterNameDiscoverer {
                         if ("this".equals(localVarName)) {
                             return;
                         }
-                        paramNames.add(localVarName);
+                        if (paramNames.size() < count) {
+                            paramNames.add(localVarName);
+                        }
                     }
                 };
             }
