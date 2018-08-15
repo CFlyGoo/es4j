@@ -21,7 +21,6 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.Serializable;
-import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
@@ -62,26 +61,11 @@ public final class ObjectUtils {
             return prototype;
         }
 
-        T newInstance = null;
-
         if (prototypeClass.isArray()) {
-            final int length = Array.getLength(prototype);
-            final Class<?> componentType = prototypeClass.getComponentType();
-            newInstance = prototypeClass.cast(Array.newInstance(componentType, length));
-            if (CLONE_SKIP_CLASSES.contains(componentType)) {
-                // all component is immutable
-                //noinspection SuspiciousSystemArraycopy - safe by check isArray
-                System.arraycopy(prototype, 0, newInstance, 0, length);
-            } else {
-                for (int index = 0; index < length; index++) {
-                    final Object indexComponent = Array.get(prototype, index);
-                    final Object cloneComponent = deepClone(indexComponent);
-                    Array.set(newInstance, index, cloneComponent);
-                }
-            }
-            return newInstance;
+            return arrayDeepClone(prototype);
         }
 
+        T newInstance = null;
         try {
             if (prototype instanceof Collection) {
                 final Collection<?> collection = (Collection) prototype;
@@ -95,27 +79,26 @@ public final class ObjectUtils {
                 });
             } else {
                 // plain clone
-                Field[] fields = prototypeClass.getDeclaredFields();
-
-                // non fields - it's non status, needn't clone
-                if (fields == null || fields.length == 0) {
+                if (isNonStatusClass(prototypeClass)) {
                     CLONE_SKIP_CLASSES.add(prototypeClass);
                     return prototype;
                 }
 
                 // new instance
                 Constructor<T> constructor = prototypeClass.getConstructor();
-                boolean accessible = toAccessible(constructor);
+                boolean accessible = ReflectionUtils.toAccessible(constructor);
                 try {
+                    Field[] fields = prototypeClass.getDeclaredFields();
                     newInstance = constructor.newInstance();
                     for (Field field : fields) {
-
-                        accessible = toAccessible(field);
+                        accessible = ReflectionUtils.toAccessible(field);
                         try {
                             final Object prototypeValue = field.get(prototype);
                             Object cloneValue = deepClone(prototypeValue);
+                            // TODO static final field will throw IllegalAccessException
                             field.set(newInstance, cloneValue);
                         } catch (IllegalAccessException e) {
+                            e.printStackTrace();
                             // will not happen
                         } finally {
                             field.setAccessible(accessible);
@@ -135,6 +118,31 @@ public final class ObjectUtils {
         }
         if (newInstance == null) {
             throw new IllegalStateException("Unsupported deep clone " + prototype);
+        }
+        return newInstance;
+    }
+
+    private static boolean isNonStatusClass(Class<?> cls) {
+        return cls.getDeclaredFields().length == 0;
+    }
+
+    private static <T> T arrayDeepClone(T prototype) {
+        assert prototype != null;
+        final Class<T> prototypeClass = ClassUtils.getParameterizedClass(prototype);
+        assert prototypeClass.isArray();
+        final int length = Array.getLength(prototype);
+        final Class<?> componentType = prototypeClass.getComponentType();
+        final T newInstance = prototypeClass.cast(Array.newInstance(componentType, length));
+        if (CLONE_SKIP_CLASSES.contains(componentType)) {
+            // all component is immutable
+            //noinspection SuspiciousSystemArraycopy - safe by check isArray
+            System.arraycopy(prototype, 0, newInstance, 0, length);
+        } else {
+            for (int index = 0; index < length; index++) {
+                final Object indexComponent = Array.get(prototype, index);
+                final Object cloneComponent = deepClone(indexComponent);
+                Array.set(newInstance, index, cloneComponent);
+            }
         }
         return newInstance;
     }
