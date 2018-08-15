@@ -18,6 +18,8 @@ package com.apehat.es4j.bus;
 
 import com.apehat.es4j.util.FieldValueFinder;
 import com.apehat.es4j.util.ObjectUtils;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -36,13 +38,19 @@ final class EventPrototype {
         this.prototype = ObjectUtils.deepClone(prototype);
     }
 
+    private transient volatile Map<String, Object> cachedNameValue = new HashMap<>();
+
     Object get(String name) {
         assert name != null;
         if (name.startsWith(START)) {
             name = name.substring(START.length());
         }
-        FieldValueFinder finder = new FieldValueFinder();
-        Object value = finder.getFiledValue(prototype, name);
+        Object value;
+        if ((value = cachedNameValue.get(name)) == null) {
+            FieldValueFinder finder = new FieldValueFinder();
+            value = finder.getFiledValue(prototype, name);
+            cachedNameValue.put(name, value);
+        }
         return ObjectUtils.deepClone(value);
     }
 
