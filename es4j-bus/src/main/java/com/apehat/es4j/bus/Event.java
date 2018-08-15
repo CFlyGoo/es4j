@@ -16,8 +16,6 @@
 
 package com.apehat.es4j.bus;
 
-import com.apehat.es4j.util.FieldValueFinder;
-import com.apehat.es4j.util.ObjectUtils;
 import java.util.Objects;
 
 /**
@@ -34,21 +32,15 @@ public final class Event {
     public static final String SOURCE = "source";
     public static final String EVENT = "event";
 
-    /* Separators */
-
-    private static final String SEPARATOR = ".";
-    private static final String START = EVENT + SEPARATOR;
-
     /* Fields */
 
     private final long occurredOn;
-    private final Object prototype;
+    private final EventPrototype prototype;
     private final String source;
     private final Type type;
 
     public Event(long occurredOn, Object prototype, Type type, String source) {
-        Objects.requireNonNull(prototype, "Event prototype must not be null.");
-        this.prototype = ObjectUtils.deepClone(prototype);
+        this.prototype = new EventPrototype(prototype);
         this.type = Objects.requireNonNull(type, "Event type must not be null.");
         this.occurredOn = occurredOn;
         this.source = source;
@@ -97,14 +89,11 @@ public final class Event {
             return type();
         } else if (SOURCE.equals(name)) {
             return source();
-        } else if (EVENT.equals(name)) {
+        } else if (Event.EVENT.equals(name)) {
             return prototype();
+        } else {
+            return prototype.get(name);
         }
-        if (name.startsWith(START)) {
-            name = name.substring(START.length());
-        }
-        Object value = new FieldValueFinder().getFiledValue(prototype, name);
-        return ObjectUtils.deepClone(value);
     }
 
     public long occurredOn() {
@@ -112,7 +101,7 @@ public final class Event {
     }
 
     public Object prototype() {
-        return ObjectUtils.deepClone(prototype);
+        return prototype.getPrototype();
     }
 
     public String source() {
