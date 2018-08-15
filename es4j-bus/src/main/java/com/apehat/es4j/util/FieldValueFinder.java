@@ -38,7 +38,7 @@ public class FieldValueFinder {
         Object value;
         try {
             Field field = prototypeClass.getDeclaredField(fieldName);
-            boolean flag = ObjectUtils.toAccessible(field);
+            boolean flag = ReflectionUtils.toAccessible(field);
             try {
                 value = field.get(object);
             } catch (IllegalAccessException e) {

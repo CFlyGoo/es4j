@@ -17,8 +17,8 @@
 package com.apehat.es4j.bus;
 
 import com.apehat.es4j.util.AsmParameterNameDiscoverer;
-import com.apehat.es4j.util.ObjectUtils;
 import com.apehat.es4j.util.ReflectionParameterNameDiscoverer;
+import com.apehat.es4j.util.ReflectionUtils;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
@@ -40,7 +40,7 @@ public final class DynamicEventHandler implements EventHandler {
         if (!isStatic && proxy == null) {
             throw new IllegalArgumentException("Must specified proxy object for non static method");
         }
-        ObjectUtils.toAccessible(handler);
+        ReflectionUtils.toAccessible(handler);
         this.handler = handler;
         this.proxy = proxy;
     }

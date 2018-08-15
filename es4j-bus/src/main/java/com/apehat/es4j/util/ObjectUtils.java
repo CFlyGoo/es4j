@@ -159,12 +159,4 @@ public final class ObjectUtils {
             throw new NestedIOException(e);
         }
     }
-
-    public static boolean toAccessible(AccessibleObject object) {
-        boolean accessible = object.isAccessible();
-        if (!accessible) {
-            object.setAccessible(true);
-        }
-        return accessible;
-    }
 }
