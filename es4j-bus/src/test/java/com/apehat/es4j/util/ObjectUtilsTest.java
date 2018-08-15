@@ -24,9 +24,7 @@ import static org.testng.Assert.assertNotSame;
 import static org.testng.Assert.assertNull;
 
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 import org.testng.annotations.Test;
 
@@ -76,7 +74,7 @@ public class ObjectUtilsTest {
 
     @Test
     public void testDeepCloneMultidimensionalCollection() {
-        Map<String, Set<Integer>> prototype = new HashMap<>();
+        Set<Set<Integer>> prototype = new HashSet<>();
 
         Set<Integer> first = new HashSet<>();
         first.add(1);
@@ -86,15 +84,17 @@ public class ObjectUtilsTest {
         second.add(4);
         second.add(5);
         second.add(6);
-        prototype.put("first", first);
-        prototype.put("second", second);
 
-        Map<String, Set<Integer>> clone = ObjectUtils.deepClone(prototype);
+        prototype.add(first);
+        prototype.add(second);
 
-        assertEqualsDeep(prototype, clone);
+        Set<Set<Integer>> clone = ObjectUtils.deepClone(prototype);
+
+        assertEqualsDeep(prototype, clone, "Prototype and clone is not equals");
         assertNotSame(prototype, clone);
 
-        prototype.get("first").add(7);
+        first.add(7);
+        second.add(8);
         assertNotEqualsDeep(prototype, clone);
     }
 }
