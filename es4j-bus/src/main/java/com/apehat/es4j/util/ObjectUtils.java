@@ -16,6 +16,7 @@
 
 package com.apehat.es4j.util;
 
+import com.apehat.es4j.NestedCheckException;
 import com.apehat.es4j.NestedIOException;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -25,6 +26,7 @@ import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Modifier;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
@@ -37,114 +39,38 @@ import java.util.function.Consumer;
  */
 public final class ObjectUtils {
 
-    private static final Set<Class<?>> CLONE_SKIP_CLASSES;
+    private static final Set<Class<?>> NON_STATUS_CLASSES;
 
     static {
-        Class<?>[] cloneSkipArray = {
+        Class<?>[] nonStatusClasses = {
             int.class, short.class, boolean.class, byte.class,
             long.class, char.class, float.class, double.class,
             Integer.class, Short.class, Boolean.class, Byte.class,
             Long.class, Character.class, Float.class, Double.class,
             String.class
         };
-        CLONE_SKIP_CLASSES = new HashSet<>(Arrays.asList(cloneSkipArray));
+        NON_STATUS_CLASSES = new HashSet<>(Arrays.asList(nonStatusClasses));
     }
 
     public static <T> T deepClone(T prototype) {
-        if (prototype == null) {
-            return null;
-        }
-
-        final Class<T> prototypeClass = ClassUtils.getParameterizedClass(prototype);
-        // optimization for value object
-        if (CLONE_SKIP_CLASSES.contains(prototypeClass)) {
+        if (isNonStatusObject(prototype)) {
             return prototype;
         }
 
-        if (prototypeClass.isArray()) {
-            return arrayDeepClone(prototype);
-        }
-
-        T newInstance = null;
         try {
+            if (prototype.getClass().isArray()) {
+                return arrayDeepClone(prototype);
+            }
             if (prototype instanceof Collection) {
-                final Collection<?> collection = (Collection) prototype;
-                Constructor<T> constructor = prototypeClass.getConstructor();
-                newInstance = constructor.newInstance();
-                Collection container = (Collection) newInstance;
-                collection.forEach((Consumer<Object>) o -> {
-                    Object cloneValue = deepClone(o);
-                    //noinspection unchecked - safe
-                    container.add(cloneValue);
-                });
-            } else {
-                // plain clone
-                if (isNonStatusClass(prototypeClass)) {
-                    CLONE_SKIP_CLASSES.add(prototypeClass);
-                    return prototype;
-                }
-
-                // new instance
-                Constructor<T> constructor = prototypeClass.getConstructor();
-                boolean accessible = ReflectionUtils.toAccessible(constructor);
-                try {
-                    Field[] fields = prototypeClass.getDeclaredFields();
-                    newInstance = constructor.newInstance();
-                    for (Field field : fields) {
-                        accessible = ReflectionUtils.toAccessible(field);
-                        try {
-                            final Object prototypeValue = field.get(prototype);
-                            Object cloneValue = deepClone(prototypeValue);
-                            // TODO static final field will throw IllegalAccessException
-                            field.set(newInstance, cloneValue);
-                        } catch (IllegalAccessException e) {
-                            e.printStackTrace();
-                            // will not happen
-                        } finally {
-                            field.setAccessible(accessible);
-                        }
-                    }
-                } catch (IllegalAccessException | InstantiationException | InvocationTargetException e) {
-                    // ignore - fallback
-                } finally {
-                    constructor.setAccessible(accessible);
-                }
+                return collectionDeepClone(prototype);
             }
+            return plainObjectDeepClone(prototype);
         } catch (Exception e) {
-            // fallback to serialize
             if (prototype instanceof Serializable) {
-                newInstance = serialize(prototype);
+                return serialize(prototype);
             }
-        }
-        if (newInstance == null) {
             throw new IllegalStateException("Unsupported deep clone " + prototype);
         }
-        return newInstance;
-    }
-
-    private static boolean isNonStatusClass(Class<?> cls) {
-        return cls.getDeclaredFields().length == 0;
-    }
-
-    private static <T> T arrayDeepClone(T prototype) {
-        assert prototype != null;
-        final Class<T> prototypeClass = ClassUtils.getParameterizedClass(prototype);
-        assert prototypeClass.isArray();
-        final int length = Array.getLength(prototype);
-        final Class<?> componentType = prototypeClass.getComponentType();
-        final T newInstance = prototypeClass.cast(Array.newInstance(componentType, length));
-        if (CLONE_SKIP_CLASSES.contains(componentType)) {
-            // all component is immutable
-            //noinspection SuspiciousSystemArraycopy - safe by check isArray
-            System.arraycopy(prototype, 0, newInstance, 0, length);
-        } else {
-            for (int index = 0; index < length; index++) {
-                final Object indexComponent = Array.get(prototype, index);
-                final Object cloneComponent = deepClone(indexComponent);
-                Array.set(newInstance, index, cloneComponent);
-            }
-        }
-        return newInstance;
     }
 
     private static <T> T serialize(T prototype) {
@@ -159,4 +85,100 @@ public final class ObjectUtils {
             throw new NestedIOException(e);
         }
     }
+
+    private static <T> T plainObjectDeepClone(T prototype) {
+        final Class<T> prototypeClass = ClassUtils.getParameterizedClass(prototype);
+        final T clone = newInstance(prototypeClass);
+        final Field[] fields = prototypeClass.getDeclaredFields();
+        for (Field field : fields) {
+            if (!Modifier.isStatic(field.getModifiers())) {
+                Object cloneValue = ReflectionUtils.access(field, f -> {
+                    final Object prototypeValue = f.get(prototype);
+                    return deepClone(prototypeValue);
+                });
+                ReflectionUtils.setFieldValue(field, clone, cloneValue);
+            }
+        }
+        return clone;
+    }
+
+    private static <T> T collectionDeepClone(T prototype) {
+        assert prototype instanceof Collection;
+        Class<T> prototypeClass = ClassUtils.getParameterizedClass(prototype);
+        final Collection<?> collection = (Collection<?>) prototype;
+        final T newInstance = newInstance(prototypeClass);
+        Collection container = (Collection) newInstance;
+        collection.forEach((Consumer<Object>) o -> {
+            Object cloneValue = deepClone(o);
+            //noinspection unchecked - safe
+            container.add(cloneValue);
+        });
+        return newInstance;
+    }
+
+    private static <T> T arrayDeepClone(T prototype) {
+        // TODO test by multidimensional arrays
+        assert prototype != null;
+        final Class<T> prototypeClass = ClassUtils.getParameterizedClass(prototype);
+        assert prototypeClass.isArray();
+        final int length = Array.getLength(prototype);
+        final Class<?> componentType = prototypeClass.getComponentType();
+        final T newInstance = prototypeClass.cast(Array.newInstance(componentType, length));
+        if (isNonStatusObject(componentType)) {
+            // all component is immutable
+            //noinspection SuspiciousSystemArraycopy - safe by check isArray
+            System.arraycopy(prototype, 0, newInstance, 0, length);
+        } else {
+            for (int index = 0; index < length; index++) {
+                final Object indexComponent = Array.get(prototype, index);
+                final Object cloneComponent = deepClone(indexComponent);
+                Array.set(newInstance, index, cloneComponent);
+            }
+        }
+        return newInstance;
+    }
+
+    private static <T> T newInstance(Class<T> cls, Object... args) {
+        Class<?>[] paramTypes = new Class[args.length];
+        for (int i = 0; i < args.length; i++) {
+            paramTypes[i] = args[i].getClass();
+        }
+        try {
+            Constructor<T> constructor = cls.getConstructor(paramTypes);
+            return ReflectionUtils.access(constructor, accessible -> {
+                try {
+                    return constructor.newInstance(args);
+                } catch (InstantiationException | InvocationTargetException e) {
+                    throw new NestedCheckException(e);
+                }
+            });
+        } catch (NoSuchMethodException e) {
+            throw new NestedCheckException(e);
+        }
+    }
+
+    private static boolean isNonStatusObject(Object object) {
+        if (object == null) {
+            return true;
+        }
+        final Class<?> cls = object.getClass();
+        if (object instanceof Collection || cls.isArray()) {
+            return false;
+        }
+        if (NON_STATUS_CLASSES.contains(cls)) {
+            return true;
+        }
+        final Field[] fields = cls.getDeclaredFields();
+        if (fields != null && fields.length != 0) {
+            for (Field field : fields) {
+                if (!Modifier.isStatic(field.getModifiers())) {
+                    return false;
+                }
+            }
+        }
+        NON_STATUS_CLASSES.add(cls);
+        return true;
+    }
+
+
 }
