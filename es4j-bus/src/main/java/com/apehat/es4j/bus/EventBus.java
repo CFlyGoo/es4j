@@ -16,6 +16,9 @@
 
 package com.apehat.es4j.bus;
 
+import com.apehat.es4j.bus.disptach.AsyncDispatcher;
+import com.apehat.es4j.bus.disptach.Dispatcher;
+import com.apehat.es4j.bus.event.PendingEvent;
 import com.apehat.es4j.bus.subscriber.CopyOnArraySubscriberRepository;
 import com.apehat.es4j.bus.subscriber.Subscriber;
 import com.apehat.es4j.bus.subscriber.SubscriberRepository;

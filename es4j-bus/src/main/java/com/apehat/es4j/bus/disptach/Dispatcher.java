@@ -14,8 +14,10 @@
  * limitations under the License.
  */
 
-package com.apehat.es4j.bus;
+package com.apehat.es4j.bus.disptach;
 
+import com.apehat.es4j.bus.Type;
+import com.apehat.es4j.bus.event.PendingEvent;
 import com.apehat.es4j.bus.subscriber.Subscriber;
 import com.apehat.es4j.bus.subscriber.SubscriberRepository;
 import java.util.Objects;

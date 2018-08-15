@@ -18,6 +18,8 @@ package com.apehat.es4j.bus;
 
 import static org.testng.Assert.assertEquals;
 
+import com.apehat.es4j.bus.event.EventPrototype;
+import com.apehat.es4j.bus.event.EventTestHelper;
 import com.apehat.es4j.bus.support.UserId;
 import com.apehat.es4j.bus.support.UserRegistered;
 import java.util.Date;
@@ -47,7 +49,8 @@ public class EventTest {
         username = "testUsername";
         registerOn = new Date();
         prototype = new UserRegistered(userId, username, registerOn);
-        event = new Event(occurredOn, prototype, type, source);
+        EventPrototype eventPrototype = EventTestHelper.newPrototype(prototype);
+        event = new Event(occurredOn, eventPrototype, type, source);
     }
 
     @Test

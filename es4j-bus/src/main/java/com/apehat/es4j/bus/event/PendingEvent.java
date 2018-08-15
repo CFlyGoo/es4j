@@ -14,8 +14,10 @@
  * limitations under the License.
  */
 
-package com.apehat.es4j.bus;
+package com.apehat.es4j.bus.event;
 
+import com.apehat.es4j.bus.Event;
+import com.apehat.es4j.bus.Type;
 import java.util.Objects;
 
 /**
@@ -25,14 +27,13 @@ import java.util.Objects;
 public class PendingEvent {
 
     private final long occurredOn;
-    private final Object prototype;
+    private final EventPrototype prototype;
     private final String source;
     private final Type type;
 
     public PendingEvent(Object prototype, String source, Type type) {
         this.occurredOn = System.currentTimeMillis();
-        Objects.requireNonNull(prototype, "Metadata must not be null ");
-        this.prototype = Objects.requireNonNull(prototype);
+        this.prototype = new EventPrototype(prototype);
         this.type = Objects.requireNonNull(type, "Type must not be null");
         this.source = source;
     }

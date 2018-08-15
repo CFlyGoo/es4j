@@ -16,6 +16,7 @@
 
 package com.apehat.es4j.bus;
 
+import com.apehat.es4j.bus.event.EventPrototype;
 import java.util.Objects;
 
 /**
@@ -39,8 +40,8 @@ public final class Event {
     private final String source;
     private final Type type;
 
-    public Event(long occurredOn, Object prototype, Type type, String source) {
-        this.prototype = new EventPrototype(prototype);
+    public Event(long occurredOn, EventPrototype prototype, Type type, String source) {
+        this.prototype = Objects.requireNonNull(prototype, "Event prototype must not be null");
         this.type = Objects.requireNonNull(type, "Event type must not be null.");
         this.occurredOn = occurredOn;
         this.source = source;

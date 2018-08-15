@@ -16,6 +16,8 @@
 
 package com.apehat.es4j.bus;
 
+import com.apehat.es4j.bus.event.EventPrototype;
+import com.apehat.es4j.bus.event.EventTestHelper;
 import com.apehat.es4j.bus.support.UserId;
 import com.apehat.es4j.bus.support.UserRegistered;
 import java.util.Date;
@@ -43,6 +45,7 @@ public class BusModuleTestDataProvider {
         String username = "testUsername";
         Date registerOn = new Date();
         UserRegistered prototype = new UserRegistered(userId, username, registerOn);
-        return new Event(occurredOn, prototype, type, source);
+        EventPrototype eventPrototype = EventTestHelper.newPrototype(prototype);
+        return new Event(occurredOn, eventPrototype, type, source);
     }
 }

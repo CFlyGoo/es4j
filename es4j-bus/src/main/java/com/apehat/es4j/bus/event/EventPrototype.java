@@ -14,8 +14,9 @@
  * limitations under the License.
  */
 
-package com.apehat.es4j.bus;
+package com.apehat.es4j.bus.event;
 
+import com.apehat.es4j.bus.Event;
 import com.apehat.es4j.util.FieldValueFinder;
 import com.apehat.es4j.util.ObjectUtils;
 import java.util.HashMap;
@@ -26,7 +27,7 @@ import java.util.Objects;
  * @author hanpengfei
  * @since 1.0
  */
-final class EventPrototype {
+public final class EventPrototype {
 
     private static final String SEPARATOR = ".";
     private static final String START = Event.EVENT + SEPARATOR;
@@ -40,7 +41,7 @@ final class EventPrototype {
 
     private transient volatile Map<String, Object> cachedNameValue = new HashMap<>();
 
-    Object get(String name) {
+    public Object get(String name) {
         assert name != null;
         if (name.startsWith(START)) {
             name = name.substring(START.length());
@@ -54,7 +55,7 @@ final class EventPrototype {
         return ObjectUtils.deepClone(value);
     }
 
-    Object getPrototype() {
+    public Object getPrototype() {
         return ObjectUtils.deepClone(prototype);
     }
 }
