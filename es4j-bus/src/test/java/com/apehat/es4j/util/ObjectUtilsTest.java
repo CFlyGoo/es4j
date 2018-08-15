@@ -17,10 +17,16 @@
 package com.apehat.es4j.util;
 
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertEqualsDeep;
+import static org.testng.Assert.assertNotEquals;
+import static org.testng.Assert.assertNotEqualsDeep;
 import static org.testng.Assert.assertNotSame;
 import static org.testng.Assert.assertNull;
 
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 import org.testng.annotations.Test;
 
@@ -37,16 +43,24 @@ public class ObjectUtilsTest {
     }
 
     @Test(groups = "deepClone")
-    public void testDeepClonePlainObject() {
-
-    }
-
-    @Test(groups = "deepClone")
     public void testDeepCloneArray() {
         int[] prototype = {1, 2, 3, 4, 5};
         int[] clone = ObjectUtils.deepClone(prototype);
         assertEquals(prototype, clone);
         assertNotSame(prototype, clone);
+    }
+
+    @Test
+    public void testDeepCloneMultidimensionalArrays() {
+        char[][] prototype = {
+            {'a', 'b', 'c'},
+            {'d', 'e', 'f'}
+        };
+        char[][] clone = ObjectUtils.deepClone(prototype);
+        assert Arrays.deepEquals(prototype, clone);
+        assertNotSame(prototype, clone);
+        prototype[0][1] = 'g';
+        assertNotEquals(prototype, clone);
     }
 
     @Test(groups = "deepClone")
@@ -58,5 +72,29 @@ public class ObjectUtilsTest {
         Set<Object> clone = ObjectUtils.deepClone(set);
         assertEquals(set, clone);
         assertNotSame(set, clone);
+    }
+
+    @Test
+    public void testDeepCloneMultidimensionalCollection() {
+        Map<String, Set<Integer>> prototype = new HashMap<>();
+
+        Set<Integer> first = new HashSet<>();
+        first.add(1);
+        first.add(2);
+        first.add(3);
+        Set<Integer> second = new HashSet<>();
+        second.add(4);
+        second.add(5);
+        second.add(6);
+        prototype.put("first", first);
+        prototype.put("second", second);
+
+        Map<String, Set<Integer>> clone = ObjectUtils.deepClone(prototype);
+
+        assertEqualsDeep(prototype, clone);
+        assertNotSame(prototype, clone);
+
+        prototype.get("first").add(7);
+        assertNotEqualsDeep(prototype, clone);
     }
 }
