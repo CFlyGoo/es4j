@@ -16,12 +16,12 @@
 
 package com.apehat.es4j.bus;
 
-import com.apehat.es4j.NotImplementedException;
+import com.apehat.es4j.util.AsmParameterNameDiscoverer;
 import com.apehat.es4j.util.ObjectUtils;
+import com.apehat.es4j.util.ReflectionParameterNameDiscoverer;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-import java.lang.reflect.Parameter;
 import java.util.Objects;
 
 /**
@@ -47,27 +47,7 @@ public final class DynamicEventHandler implements EventHandler {
 
     @Override
     public void onEvent(Event event) {
-        final int count = handler.getParameterCount();
-        Parameter[] parameters = handler.getParameters();
-        final Object[] args = new Object[count];
-        for (int idx = 0; idx < count; idx++) {
-            final Parameter parameter = parameters[idx];
-            final Class<?> parameterType = parameter.getType();
-            final Object arg;
-            if (parameterType == Event.class) {
-                arg = event;
-            } else {
-                String name;
-                if (parameter.isNamePresent()) {
-                    name = parameter.getName();
-                } else {
-                    // TODO get by ASM
-                    throw new NotImplementedException();
-                }
-                arg = event.get(name);
-            }
-            args[idx] = arg;
-        }
+        final Object[] args = getArguments(event);
         try {
             handler.invoke(proxy, args);
         } catch (IllegalAccessException |
@@ -75,4 +55,37 @@ public final class DynamicEventHandler implements EventHandler {
             throw new EventHandlingException(e);
         }
     }
+
+    private Object[] getArguments(Event event) {
+        final int count = handler.getParameterCount();
+        final Class<?>[] parameterTypes = handler.getParameterTypes();
+        final Object[] args = new Object[count];
+        for (int idx = 0; idx < count; idx++) {
+            if (parameterTypes[idx] == Event.class) {
+                args[idx] = event;
+            } else {
+                String name = getParameterNameAtIndex(idx);
+                assert name != null;
+                args[idx] = event.get(name);
+            }
+        }
+        return args;
+    }
+
+    private String getParameterNameAtIndex(int index) {
+        final int count = handler.getParameterCount();
+        assert index < count;
+        assert count > 0;
+        if (cachedParameterNames != null) {
+            return cachedParameterNames[index];
+        }
+        cachedParameterNames = new ReflectionParameterNameDiscoverer().getParameterNames(handler);
+        if (cachedParameterNames == null) {
+            cachedParameterNames = new AsmParameterNameDiscoverer().getParameterNames(handler);
+        }
+        assert cachedParameterNames != null;
+        return cachedParameterNames[index];
+    }
+
+    private transient volatile String[] cachedParameterNames;
 }
