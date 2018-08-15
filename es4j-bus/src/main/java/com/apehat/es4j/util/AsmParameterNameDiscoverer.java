@@ -35,7 +35,11 @@ public class AsmParameterNameDiscoverer implements ParameterNameDiscoverer {
 
     @Override
     public String[] getParameterNames(Method exec) {
-        ArrayList<String> paramNames = new ArrayList<>();
+        final int count = exec.getParameterCount();
+        if (count == 0) {
+            return new String[0];
+        }
+        ArrayList<String> paramNames = new ArrayList<>(count);
         final Class<?> declaringClass = exec.getDeclaringClass();
         final ClassReader cr;
         try {
@@ -43,7 +47,6 @@ public class AsmParameterNameDiscoverer implements ParameterNameDiscoverer {
         } catch (IOException e) {
             throw new NestedIOException(e);
         }
-        final int count = exec.getParameterCount();
         String execDescriptor = Type.getMethodDescriptor(exec);
         cr.accept(new ClassVisitor(Opcodes.ASM6) {
             @Override
