@@ -58,6 +58,10 @@ public class MockDynamicEventHandler {
         return HANDLE_METHOD;
     }
 
+    public static String[] getHandlerParameterNames() {
+        return new String[]{"occurredOn", "info", "source", "event"};
+    }
+
     public boolean isHandled() {
         return handled;
     }
