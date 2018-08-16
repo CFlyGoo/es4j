@@ -16,7 +16,6 @@
 
 package com.apehat.es4j.bus.event;
 
-import com.apehat.es4j.bus.Event;
 import com.apehat.es4j.util.FieldValueFinder;
 import com.apehat.es4j.util.ObjectUtils;
 import java.util.HashMap;
@@ -33,13 +32,12 @@ public final class EventPrototype {
     private static final String START = Event.EVENT + SEPARATOR;
 
     private final Object prototype;
+    private transient volatile Map<String, Object> cachedNameValue = new HashMap<>();
 
-    EventPrototype(Object prototype) {
+    public EventPrototype(Object prototype) {
         Objects.requireNonNull(prototype, "Event prototype must not be null.");
         this.prototype = ObjectUtils.deepClone(prototype);
     }
-
-    private transient volatile Map<String, Object> cachedNameValue = new HashMap<>();
 
     public Object get(String name) {
         assert name != null;

@@ -14,12 +14,10 @@
  * limitations under the License.
  */
 
-package com.apehat.es4j.bus;
+package com.apehat.es4j.bus.event;
 
 import static org.testng.Assert.assertEquals;
 
-import com.apehat.es4j.bus.event.EventPrototype;
-import com.apehat.es4j.bus.event.EventTestHelper;
 import com.apehat.es4j.bus.support.UserId;
 import com.apehat.es4j.bus.support.UserRegistered;
 import java.util.Date;
@@ -35,7 +33,7 @@ public class EventTest {
     private final long occurredOn;
     private final String source;
     private final Event event;
-    private final Type type;
+    private final Class<?> classType;
     private final UserRegistered prototype;
     private final UserId userId;
     private final String username;
@@ -44,20 +42,20 @@ public class EventTest {
     public EventTest() {
         occurredOn = System.currentTimeMillis();
         source = UUID.randomUUID().toString();
-        type = Type.of(UserRegistered.class);
+        classType = UserRegistered.class;
         userId = new UserId(UUID.randomUUID().toString());
         username = "testUsername";
         registerOn = new Date();
         prototype = new UserRegistered(userId, username, registerOn);
         EventPrototype eventPrototype = EventTestHelper.newPrototype(prototype);
-        event = new Event(occurredOn, eventPrototype, type, source);
+        event = new Event(occurredOn, eventPrototype, source);
     }
 
     @Test
     public void testGet() {
         assertEquals(occurredOn, event.get(Event.OCCURRED_ON));
         assertEquals(prototype, event.get(Event.EVENT));
-        assertEquals(type, event.get(Event.TYPE));
+        assertEquals(classType, event.get(Event.TYPE));
         assertEquals(source, event.get(Event.SOURCE));
 
         assertEquals(userId, event.get("userId"));
@@ -84,7 +82,7 @@ public class EventTest {
     }
 
     @Test
-    public void testType() {
-        assertEquals(type, event.type());
+    public void testClassType() {
+        assertEquals(classType, event.classType());
     }
 }

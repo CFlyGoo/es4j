@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package com.apehat.es4j.bus;
+package com.apehat.es4j.bus.event;
 
-import com.apehat.es4j.bus.event.EventPrototype;
+import com.apehat.es4j.bus.Type;
 import java.util.Objects;
 
 /**
@@ -38,11 +38,9 @@ public final class Event {
     private final long occurredOn;
     private final EventPrototype prototype;
     private final String source;
-    private final Type type;
 
-    public Event(long occurredOn, EventPrototype prototype, Type type, String source) {
+    Event(long occurredOn, EventPrototype prototype, String source) {
         this.prototype = Objects.requireNonNull(prototype, "Event prototype must not be null");
-        this.type = Objects.requireNonNull(type, "Event type must not be null.");
         this.occurredOn = occurredOn;
         this.source = source;
     }
@@ -58,8 +56,7 @@ public final class Event {
         Event that = (Event) o;
         return occurredOn == that.occurredOn &&
             Objects.equals(prototype, that.prototype) &&
-            Objects.equals(source, that.source) &&
-            Objects.equals(type, that.type);
+            Objects.equals(source, that.source);
     }
 
     @Override
@@ -68,14 +65,13 @@ public final class Event {
         result = 31 * result + Objects.hash(occurredOn);
         result = 31 * result + Objects.hash(prototype);
         result = 31 * result + Objects.hash(source);
-        result = 31 * result + Objects.hash(type);
         return result;
     }
 
     @Override
     public String toString() {
         return "Event{" +
-            "type=" + type +
+            "type=" + prototype.getPrototype().getClass() +
             ", occurredOn=" + occurredOn +
             ", prototype=" + prototype +
             ", source='" + source + '\'' +
@@ -87,7 +83,7 @@ public final class Event {
         if (OCCURRED_ON.equals(name)) {
             return occurredOn();
         } else if (TYPE.equals(name)) {
-            return type();
+            return classType();
         } else if (SOURCE.equals(name)) {
             return source();
         } else if (Event.EVENT.equals(name)) {
@@ -109,7 +105,12 @@ public final class Event {
         return source;
     }
 
+    public Class<?> classType() {
+        return prototype.getPrototype().getClass();
+    }
+
+    @Deprecated
     public Type type() {
-        return type;
+        return Type.of(classType());
     }
 }

@@ -20,7 +20,7 @@ import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
 
 import com.apehat.es4j.bus.BusModuleTestDataProvider;
-import com.apehat.es4j.bus.Event;
+import com.apehat.es4j.bus.event.Event;
 import com.apehat.es4j.bus.support.MockDynamicEventHandler;
 import java.lang.reflect.Method;
 import org.testng.annotations.Test;
@@ -31,7 +31,7 @@ import org.testng.annotations.Test;
  */
 public class DynamicEventHandlerTest {
 
-    @Test(dataProviderClass = BusModuleTestDataProvider.class, dataProvider = "eventDataProvider")
+    @Test(dataProviderClass = BusModuleTestDataProvider.class, dataProvider = "eventFixtureProvider")
     public void testOnEvent(Event event) {
         final MockDynamicEventHandler proxy = new MockDynamicEventHandler(event);
         final Method handler = MockDynamicEventHandler.getEventHandler();

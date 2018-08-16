@@ -16,6 +16,8 @@
 
 package com.apehat.es4j.bus;
 
+import com.apehat.es4j.bus.event.Event;
+
 /**
  * @author hanpengfei
  * @since 1.0

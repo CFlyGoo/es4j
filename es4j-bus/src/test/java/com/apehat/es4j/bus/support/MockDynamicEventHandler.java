@@ -18,7 +18,7 @@ package com.apehat.es4j.bus.support;
 
 import static org.testng.Assert.assertEquals;
 
-import com.apehat.es4j.bus.Event;
+import com.apehat.es4j.bus.event.Event;
 import java.lang.reflect.Method;
 import java.util.Objects;
 import org.slf4j.Logger;

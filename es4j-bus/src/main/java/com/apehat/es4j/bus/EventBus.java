@@ -18,6 +18,7 @@ package com.apehat.es4j.bus;
 
 import com.apehat.es4j.bus.disptach.AsyncDispatcher;
 import com.apehat.es4j.bus.disptach.Dispatcher;
+import com.apehat.es4j.bus.event.EventPrototype;
 import com.apehat.es4j.bus.event.PendingEvent;
 import com.apehat.es4j.bus.subscriber.HandlerDescriptor;
 import com.apehat.es4j.bus.subscriber.Subscriber;
@@ -77,21 +78,13 @@ public final class EventBus {
     /* Publish */
 
     public void publish(Object event) {
-        publish(Type.of(event.getClass()), event);
-    }
-
-    public void publish(Type type, Object event) {
-        PendingEvent pendingEvent = new PendingEvent(event, null, type);
+        PendingEvent pendingEvent = new PendingEvent(new EventPrototype(event), null);
         dispatcher.dispatch(pendingEvent);
     }
 
     public void publish(Object event, Callback callback) {
-        publish(Type.of(event.getClass()), event, callback);
-    }
-
-    public void publish(Type type, Object event, Callback callback) {
         try {
-            PendingEvent pendingEvent = new PendingEvent(event, null, type);
+            PendingEvent pendingEvent = new PendingEvent(new EventPrototype(event), null);
             dispatcher.dispatch(pendingEvent);
             callback.onSuccessfully();
         } catch (RuntimeException e) {
@@ -102,20 +95,12 @@ public final class EventBus {
     /* Submit */
 
     public void submit(Object event) {
-        submit(Type.of(event.getClass()), event);
-    }
-
-    public void submit(Type type, Object event) {
-        PendingEvent pendingEvent = new PendingEvent(event, null, type);
+        PendingEvent pendingEvent = new PendingEvent(new EventPrototype(event), null);
         asyncDispatcher.dispatch(pendingEvent);
     }
 
     public void submit(Object event, Callback callback) {
-        submit(Type.of(event.getClass()), event, callback);
-    }
-
-    public void submit(Type type, Object event, Callback callback) {
-        PendingEvent pendingEvent = new PendingEvent(event, null, type);
+        PendingEvent pendingEvent = new PendingEvent(new EventPrototype(event), null);
         asyncDispatcher.dispatch(pendingEvent, callback);
     }
 

@@ -16,12 +16,8 @@
 
 package com.apehat.es4j.bus;
 
-import com.apehat.es4j.bus.event.EventPrototype;
-import com.apehat.es4j.bus.event.EventTestHelper;
-import com.apehat.es4j.bus.support.UserId;
-import com.apehat.es4j.bus.support.UserRegistered;
-import java.util.Date;
-import java.util.UUID;
+import com.apehat.es4j.bus.event.Event;
+import com.apehat.es4j.bus.event.EventFixtureProvider;
 import org.testng.annotations.DataProvider;
 
 /**
@@ -31,21 +27,13 @@ import org.testng.annotations.DataProvider;
 public class BusModuleTestDataProvider {
 
     @DataProvider
-    public Object[] eventDataProvider() {
+    public Object[] eventFixtureProvider() {
         Object[] result = new Object[1];
         result[0] = newEventFixture();
         return result;
     }
 
-    protected Event newEventFixture() {
-        long occurredOn = System.currentTimeMillis();
-        String source = UUID.randomUUID().toString();
-        Type type = Type.of(UserRegistered.class);
-        UserId userId = new UserId(UUID.randomUUID().toString());
-        String username = "testUsername";
-        Date registerOn = new Date();
-        UserRegistered prototype = new UserRegistered(userId, username, registerOn);
-        EventPrototype eventPrototype = EventTestHelper.newPrototype(prototype);
-        return new Event(occurredOn, eventPrototype, type, source);
+    protected static Event newEventFixture() {
+        return EventFixtureProvider.newEventFixture();
     }
 }
