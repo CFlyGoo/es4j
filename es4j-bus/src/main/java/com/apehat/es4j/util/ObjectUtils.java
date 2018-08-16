@@ -135,7 +135,7 @@ public final class ObjectUtils {
         final int length = Array.getLength(prototype);
         final Class<?> componentType = prototypeClass.getComponentType();
         final T newInstance = prototypeClass.cast(Array.newInstance(componentType, length));
-        if (isValueObject(componentType)) {
+        if (ClassUtils.isNonStatusClass(componentType)) {
             // all component is immutable
             //noinspection SuspiciousSystemArraycopy - safe by check isArray
             System.arraycopy(prototype, 0, newInstance, 0, length);
