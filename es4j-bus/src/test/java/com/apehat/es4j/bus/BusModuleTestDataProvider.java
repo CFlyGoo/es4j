@@ -33,11 +33,11 @@ public class BusModuleTestDataProvider {
     @DataProvider
     public Object[] eventDataProvider() {
         Object[] result = new Object[1];
-        result[0] = getEvent();
+        result[0] = newEventFixture();
         return result;
     }
 
-    protected Event getEvent() {
+    protected Event newEventFixture() {
         long occurredOn = System.currentTimeMillis();
         String source = UUID.randomUUID().toString();
         Type type = Type.of(UserRegistered.class);
