@@ -35,11 +35,11 @@ public final class EventBus {
 
     private SubscriberRepository subscriberRepo = new CopyOnArraySubscriberRepository();
 
-    /* Global subscribe */
     private Dispatcher dispatcher = new Dispatcher(subscriberRepo);
     private AsyncDispatcher asyncDispatcher = new AsyncDispatcher(subscriberRepo);
 
-    /* Type specified subscribe */
+
+    /* Global subscribe */
 
     public String register(EventHandler handler) {
         return subscribe(Object.class, handler);
@@ -48,6 +48,8 @@ public final class EventBus {
     public String register(Object subscriber, Method handler) {
         return subscribe(Object.class, subscriber, handler);
     }
+
+    /* Type specified subscribe */
 
     public String subscribe(Class<?> type, EventHandler handler) {
         return subscribe(Type.of(type), handler);
