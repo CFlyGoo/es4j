@@ -27,8 +27,12 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
@@ -38,12 +42,21 @@ import java.util.function.Consumer;
  */
 public final class ObjectUtils {
 
-    private ObjectUtils() {
+    private static final Set<Class<?>> VALUE_CLASSES;
+
+    static {
+        Class<?>[] nonStatusClasses = {
+            int.class, short.class, boolean.class, byte.class,
+            long.class, char.class, float.class, double.class,
+            Integer.class, Short.class, Boolean.class, Byte.class,
+            Long.class, Character.class, Float.class, Double.class,
+            String.class, Object.class
+        };
+        VALUE_CLASSES =
+            Collections.unmodifiableSet(new HashSet<>(Arrays.asList(nonStatusClasses)));
     }
 
-    @SuppressWarnings("WeakerAccess")
-    public static boolean isValueObject(Object object) {
-        return object == null || ClassUtils.isNonStatusClass(object.getClass());
+    private ObjectUtils() {
     }
 
     public static <T> T deepClone(T prototype) {
@@ -75,8 +88,8 @@ public final class ObjectUtils {
             new DefaultSerializer().serialize(prototype, baos);
             byte[] bytes = baos.toByteArray();
             try (ByteArrayInputStream bais = new ByteArrayInputStream(bytes)) {
-                //noinspection unchecked - safe
-                return (T) new DefaultDeserializer().deserialize(bais);
+                Class<T> cls = ClassUtils.getParameterizedClass(prototype);
+                return cls.cast(new DefaultDeserializer().deserialize(bais));
             }
         } catch (IOException e) {
             throw new NestedIOException(e);
@@ -135,7 +148,7 @@ public final class ObjectUtils {
         final int length = Array.getLength(prototype);
         final Class<?> componentType = prototypeClass.getComponentType();
         final T newInstance = prototypeClass.cast(Array.newInstance(componentType, length));
-        if (ClassUtils.isNonStatusClass(componentType)) {
+        if (VALUE_CLASSES.contains(componentType)) {
             // all component is immutable
             //noinspection SuspiciousSystemArraycopy - safe by check isArray
             System.arraycopy(prototype, 0, newInstance, 0, length);
@@ -168,5 +181,8 @@ public final class ObjectUtils {
         }
     }
 
+    private static boolean isValueObject(Object object) {
+        return object == null || VALUE_CLASSES.contains(object.getClass());
+    }
 
 }
