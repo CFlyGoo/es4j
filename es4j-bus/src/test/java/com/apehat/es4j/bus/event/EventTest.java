@@ -38,17 +38,19 @@ public class EventTest {
     private final UserId userId;
     private final String username;
     private final Date registerOn;
+    private final String userIdSource;
 
     public EventTest() {
-        occurredOn = System.currentTimeMillis();
-        source = UUID.randomUUID().toString();
-        type = UserRegistered.class;
-        userId = new UserId(UUID.randomUUID().toString());
-        username = "testUsername";
-        registerOn = new Date();
-        prototype = new UserRegistered(userId, username, registerOn);
+        this.occurredOn = System.currentTimeMillis();
+        this.source = UUID.randomUUID().toString();
+        this.type = UserRegistered.class;
+        this.userIdSource = UUID.randomUUID().toString();
+        this.userId = new UserId(userIdSource);
+        this.username = "testUsername";
+        this.registerOn = new Date();
+        this.prototype = new UserRegistered(userId, username, registerOn);
         EventPrototype eventPrototype = EventTestHelper.newPrototype(prototype);
-        event = new Event(occurredOn, eventPrototype, source);
+        this.event = new Event(occurredOn, eventPrototype, source);
     }
 
     @Test
@@ -58,12 +60,15 @@ public class EventTest {
         assertEquals(type, event.get(Event.TYPE));
         assertEquals(source, event.get(Event.SOURCE));
 
-        assertEquals(userId, event.get("userId"));
-        assertEquals(username, event.get("username"));
-        assertEquals(registerOn, event.get("registerOn"));
-        assertEquals(userId, event.get("event.userId"));
-        assertEquals(username, event.get("event.username"));
-        assertEquals(registerOn, event.get("event.registerOn"));
+        assertEquals(userId, event.get(UserRegistered.FIELD_USER_ID));
+        assertEquals(userIdSource, event.get(UserRegistered.FIELD_USER_ID_ID));
+        assertEquals(username, event.get(UserRegistered.FIELD_USERNAME));
+        assertEquals(registerOn, event.get(UserRegistered.FIELD_REGISTER_ON));
+
+        assertEquals(userId, event.get(Event.EVENT + "." + UserRegistered.FIELD_USER_ID));
+        assertEquals(userIdSource, event.get(Event.EVENT + "." + UserRegistered.FIELD_USER_ID_ID));
+        assertEquals(username, event.get(Event.EVENT + "." + UserRegistered.FIELD_USERNAME));
+        assertEquals(registerOn, event.get(Event.EVENT + "." + UserRegistered.FIELD_REGISTER_ON));
     }
 
     @Test
