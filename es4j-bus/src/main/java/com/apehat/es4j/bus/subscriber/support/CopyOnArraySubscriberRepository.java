@@ -14,9 +14,11 @@
  * limitations under the License.
  */
 
-package com.apehat.es4j.bus.subscriber;
+package com.apehat.es4j.bus.subscriber.support;
 
 import com.apehat.es4j.bus.Type;
+import com.apehat.es4j.bus.subscriber.Subscriber;
+import com.apehat.es4j.bus.subscriber.SubscriberRepository;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
