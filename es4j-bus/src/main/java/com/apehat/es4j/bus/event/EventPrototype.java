@@ -29,9 +29,6 @@ import java.util.Objects;
  */
 public final class EventPrototype {
 
-    private static final String SEPARATOR = ".";
-    private static final String PREFIX = Event.EVENT + SEPARATOR;
-
     private final Object prototype;
 
     private transient volatile Map<String, Result> cachedNameResult = new HashMap<>();
@@ -43,9 +40,6 @@ public final class EventPrototype {
 
     Object get(String name) {
         assert name != null;
-        if (name.startsWith(PREFIX)) {
-            name = name.substring(PREFIX.length());
-        }
         Result result = cachedNameResult.get(name);
         if (result == null) {
             FieldValueFinder finder = new FieldValueFinder();

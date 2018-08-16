@@ -25,14 +25,11 @@ import java.util.Objects;
 @SuppressWarnings("WeakerAccess")
 public final class Event {
 
-    /* Attribute name  */
-
     public static final String OCCURRED_ON = "occurredOn";
     public static final String TYPE = "type";
     public static final String SOURCE = "source";
     public static final String EVENT = "event";
-
-    /* Fields */
+    private static final String PREFIX = EVENT + '.';
 
     private final long occurredOn;
     private final EventPrototype prototype;
@@ -88,8 +85,15 @@ public final class Event {
         } else if (Event.EVENT.equals(name)) {
             return prototype();
         } else {
-            return prototype.get(name);
+            return prototype.get(clearName(name));
         }
+    }
+
+    private String clearName(String name) {
+        if (name.startsWith(PREFIX)) {
+            name = name.substring(PREFIX.length());
+        }
+        return name;
     }
 
     public long occurredOn() {
