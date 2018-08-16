@@ -19,9 +19,10 @@ package com.apehat.es4j.bus;
 import com.apehat.es4j.bus.disptach.AsyncDispatcher;
 import com.apehat.es4j.bus.disptach.Dispatcher;
 import com.apehat.es4j.bus.event.PendingEvent;
-import com.apehat.es4j.bus.subscriber.support.CopyOnArraySubscriberRepository;
+import com.apehat.es4j.bus.subscriber.HandlerDescriptor;
 import com.apehat.es4j.bus.subscriber.Subscriber;
 import com.apehat.es4j.bus.subscriber.SubscriberRepository;
+import com.apehat.es4j.bus.subscriber.support.CopyOnArraySubscriberRepository;
 import java.lang.reflect.Method;
 import java.util.HashSet;
 import java.util.Set;
@@ -59,18 +60,21 @@ public final class EventBus {
         return subscribe(Type.of(type), subscriber, handler);
     }
 
-    /* Publish */
-
     public String subscribe(Type type, EventHandler handler) {
-        Subscriber subscriber = new Subscriber(handler, type);
+        HandlerDescriptor descriptor = HandlerDescriptor.of(handler);
+        Subscriber subscriber = new Subscriber(descriptor, type);
         this.subscriberRepo.save(subscriber);
         return subscriber.id();
     }
 
-    public String subscribe(Type type, Object subscriber, Method handler) {
-        DynamicEventHandler dynamicEventHandler = new DynamicEventHandler(subscriber, handler);
-        return subscribe(type, dynamicEventHandler);
+    public String subscribe(Type type, Object handler, Method handleMethod) {
+        HandlerDescriptor descriptor = HandlerDescriptor.of(handleMethod, handler);
+        Subscriber subscriber = new Subscriber(descriptor, type);
+        this.subscriberRepo.save(subscriber);
+        return subscriber.id();
     }
+
+    /* Publish */
 
     public void publish(Object event) {
         publish(Type.of(event.getClass()), event);

@@ -40,9 +40,10 @@ public class Subscriber {
     private final long subscriptionOn;
     private final Type type;
 
-    public Subscriber(EventHandler handler, Type type) {
+    public Subscriber(HandlerDescriptor handlerDescriptor, Type type) {
         this.subscriptionOn = System.currentTimeMillis();
-        this.handlerDescriptor = HandlerDescriptor.of(handler);
+        this.handlerDescriptor = Objects.requireNonNull(handlerDescriptor,
+            "Handler descriptor must not be null");
         this.type = Objects.requireNonNull(type, "Subscription type must not be null.");
     }
 
