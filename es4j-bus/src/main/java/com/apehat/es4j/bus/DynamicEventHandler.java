@@ -32,6 +32,7 @@ public final class DynamicEventHandler implements EventHandler {
 
     private final Object proxy;
     private final Method handler;
+    private transient volatile String[] cachedParameterNames;
 
     public DynamicEventHandler(Object proxy, Method handler) {
         Objects.requireNonNull(handler, "Handle method must not be null");
@@ -86,6 +87,4 @@ public final class DynamicEventHandler implements EventHandler {
         assert cachedParameterNames != null;
         return cachedParameterNames[index];
     }
-
-    private transient volatile String[] cachedParameterNames;
 }
