@@ -30,7 +30,7 @@ public final class UserId implements Serializable {
     private final String prototype;
 
     public UserId(String prototype) {
-        this.prototype = Objects.requireNonNull(prototype, "prototype");
+        this.prototype = prototype;
     }
 
     @Override

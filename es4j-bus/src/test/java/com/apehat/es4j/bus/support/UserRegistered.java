@@ -35,9 +35,9 @@ public final class UserRegistered implements Serializable {
     private final Date registerOn;
 
     public UserRegistered(UserId userId, String username, Date registerOn) {
-        this.userId = Objects.requireNonNull(userId);
-        this.username = Objects.requireNonNull(username);
-        this.registerOn = Objects.requireNonNull(registerOn);
+        this.userId = userId;
+        this.username = username;
+        this.registerOn = registerOn;
     }
 
     public UserId getUserId() {
