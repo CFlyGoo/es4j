@@ -39,7 +39,7 @@ public final class EventPrototype {
         this.prototype = ObjectUtils.deepClone(prototype);
     }
 
-    public Object get(String name) {
+    Object get(String name) {
         assert name != null;
         if (name.startsWith(START)) {
             name = name.substring(START.length());
