@@ -17,8 +17,8 @@
 package com.apehat.es4j.bus.subscriber;
 
 import com.apehat.es4j.bus.EventHandler;
-import com.apehat.es4j.bus.event.PendingEvent;
 import com.apehat.es4j.bus.Type;
+import com.apehat.es4j.bus.event.PendingEvent;
 import java.util.Objects;
 
 /**
@@ -28,18 +28,21 @@ import java.util.Objects;
 public class Subscriber {
 
     /*
-     * if handler is no status, should identifier only by handler method and declared class
-     * if handler is have status, should identifier by it's hash code and subscriber should in
-     * memory only
+     * 1. 检查方法是否属于一个静态方法，如果属于，视为无状态对象
+     * 2. 检查方法所属类是否属于一个无状态类
+     * 3. 为有状态对象建立表示，并将处理方法与该标识绑定
+     * 4. 将被标识的对象进行内存跟踪
+     * 5. 当进行调用的时候，检查该处理其是否属于一个被内存跟踪的对象，如果属于，向内存跟踪器发出请求，之后再进行调用
+     * 6. 否则，进行直接的调用
      */
 
-    private final EventHandler handler;
+    private final HandlerDescriptor handlerDescriptor;
     private final long subscriptionOn;
     private final Type type;
 
     public Subscriber(EventHandler handler, Type type) {
         this.subscriptionOn = System.currentTimeMillis();
-        this.handler = Objects.requireNonNull(handler, "Handler must not be null.");
+        this.handlerDescriptor = HandlerDescriptor.of(handler);
         this.type = Objects.requireNonNull(type, "Subscription type must not be null.");
     }
 
@@ -50,7 +53,7 @@ public class Subscriber {
         if (subscriptionOn > event.occurredOn()) {
             throw new IllegalArgumentException("Event already occurred");
         }
-        handler.onEvent(event.toEvent());
+        handlerDescriptor.getHandler().onEvent(event.toEvent());
     }
 
     public Type subscriptionType() {
@@ -58,7 +61,7 @@ public class Subscriber {
     }
 
     public String id() {
-        return handler.toString();
+        return handlerDescriptor.toString();
     }
 
     @Override
@@ -70,11 +73,11 @@ public class Subscriber {
             return false;
         }
         Subscriber that = (Subscriber) o;
-        return Objects.equals(handler, that.handler);
+        return Objects.equals(handlerDescriptor, that.handlerDescriptor);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(handler);
+        return Objects.hash(handlerDescriptor);
     }
 }
