@@ -30,6 +30,11 @@ public final class UserRegistered implements Serializable {
 
     private static final long serialVersionUID = -3256210697855910724L;
 
+    public static final String FIELD_USER_ID = "userId";
+    public static final String FIELD_USERNAME = "username";
+    public static final String FIELD_REGISTER_ON = "registerOn";
+    public static final String FIELD_USER_ID_ID = FIELD_USER_ID + ".prototype";
+
     private final UserId userId;
     private final String username;
     private final Date registerOn;
