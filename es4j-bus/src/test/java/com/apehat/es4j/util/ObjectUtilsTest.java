@@ -23,6 +23,7 @@ import static org.testng.Assert.assertNotEqualsDeep;
 import static org.testng.Assert.assertNotSame;
 import static org.testng.Assert.assertNull;
 
+import com.apehat.es4j.util.support.NonFieldHaveInnerClass;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -36,7 +37,7 @@ import org.testng.annotations.Test;
  */
 public class ObjectUtilsTest {
 
-    @Test
+    @Test(groups = "deepClone")
     public void testDeepCloneWithNull() {
         Object clone = ObjectUtils.deepClone(null);
         assertNull(clone);
@@ -50,7 +51,7 @@ public class ObjectUtilsTest {
         assertNotSame(prototype, clone);
     }
 
-    @Test
+    @Test(groups = "deepClone")
     public void testDeepCloneMultidimensionalArrays() {
         char[][] prototype = {
             {'a', 'b', 'c'},
@@ -74,7 +75,7 @@ public class ObjectUtilsTest {
         assertNotSame(set, clone);
     }
 
-    @Test
+    @Test(groups = "deepClone")
     public void testDeepCloneMultidimensionalMap() {
         Map<Set<String>, Set<Integer>> prototype = new HashMap<>();
 
@@ -109,7 +110,7 @@ public class ObjectUtilsTest {
         assertNotEqualsDeep(prototype, clone);
     }
 
-    @Test
+    @Test(groups = "deepClone")
     public void testDeepCloneMultidimensionalCollection() {
         Set<Set<Integer>> prototype = new HashSet<>();
 
@@ -133,5 +134,17 @@ public class ObjectUtilsTest {
         first.add(7);
         second.add(8);
         assertNotEqualsDeep(prototype, clone);
+    }
+
+    @Test(groups = "deepClone")
+    public void testDeepCloneNonFieldsStatedClass() {
+        NonFieldHaveInnerClass prototype = new NonFieldHaveInnerClass();
+        final String primitiveName = prototype.getInnerClassName();
+        NonFieldHaveInnerClass newInstance = ObjectUtils.deepClone(prototype);
+        assertEquals(primitiveName, newInstance.getInnerClassName());
+
+        prototype.changeInnerClassName();
+        assertNotEquals(primitiveName, prototype.getInnerClassName());
+        assertEquals(newInstance.getInnerClassName(), primitiveName);
     }
 }
