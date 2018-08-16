@@ -64,7 +64,7 @@ public final class EventBus {
     public String subscribe(Type type, EventHandler handler) {
         Subscriber subscriber = new Subscriber(handler, type);
         this.subscriberRepo.save(subscriber);
-        return handler.toString();
+        return subscriber.id();
     }
 
     public String subscribe(Type type, Object subscriber, Method handler) {
