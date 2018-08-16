@@ -16,6 +16,7 @@
 
 package com.apehat.es4j.bus.event;
 
+import com.apehat.es4j.Result;
 import com.apehat.es4j.util.FieldValueFinder;
 import com.apehat.es4j.util.ObjectUtils;
 import java.util.HashMap;
@@ -29,10 +30,11 @@ import java.util.Objects;
 public final class EventPrototype {
 
     private static final String SEPARATOR = ".";
-    private static final String START = Event.EVENT + SEPARATOR;
+    private static final String PREFIX = Event.EVENT + SEPARATOR;
 
     private final Object prototype;
-    private transient volatile Map<String, Object> cachedNameValue = new HashMap<>();
+
+    private transient volatile Map<String, Result> cachedNameResult = new HashMap<>();
 
     public EventPrototype(Object prototype) {
         Objects.requireNonNull(prototype, "Event prototype must not be null.");
@@ -41,16 +43,17 @@ public final class EventPrototype {
 
     Object get(String name) {
         assert name != null;
-        if (name.startsWith(START)) {
-            name = name.substring(START.length());
+        if (name.startsWith(PREFIX)) {
+            name = name.substring(PREFIX.length());
         }
-        Object value;
-        if ((value = cachedNameValue.get(name)) == null) {
+        Result result = cachedNameResult.get(name);
+        if (result == null) {
             FieldValueFinder finder = new FieldValueFinder();
-            value = finder.getFiledValue(prototype, name);
-            cachedNameValue.put(name, value);
+            Object value = finder.getFiledValue(prototype, name);
+            result = new Result(value);
+            cachedNameResult.put(name, result);
         }
-        return ObjectUtils.deepClone(value);
+        return ObjectUtils.deepClone(result.value());
     }
 
     public Object getPrototype() {
