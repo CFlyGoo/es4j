@@ -16,11 +16,32 @@
 
 package com.apehat.es4j.util;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Objects;
+import java.util.Set;
+
 /**
  * @author hanpengfei
  * @since 1.0
  */
+@SuppressWarnings("WeakerAccess")
 public final class ClassUtils {
+
+    private static final Set<Class<?>> NON_STATUS_CLASSES;
+
+    static {
+        Class<?>[] nonStatusClasses = {
+            int.class, short.class, boolean.class, byte.class,
+            long.class, char.class, float.class, double.class,
+            Integer.class, Short.class, Boolean.class, Byte.class,
+            Long.class, Character.class, Float.class, Double.class,
+            String.class, Object.class
+        };
+        NON_STATUS_CLASSES = new HashSet<>(Arrays.asList(nonStatusClasses));
+    }
 
     private ClassUtils() {
     }
@@ -28,5 +49,22 @@ public final class ClassUtils {
     public static <T> Class<T> getParameterizedClass(T object) {
         //noinspection unchecked - safe
         return (Class<T>) object.getClass();
+    }
+
+    public static boolean isNonStatusClass(Class<?> cls) {
+        Objects.requireNonNull(cls, "Class must not be null");
+        if (NON_STATUS_CLASSES.contains(cls)) {
+            return true;
+        }
+        final Field[] fields = cls.getDeclaredFields();
+        if (fields != null && fields.length != 0) {
+            for (Field field : fields) {
+                if (!Modifier.isStatic(field.getModifiers())) {
+                    return false;
+                }
+            }
+        }
+        NON_STATUS_CLASSES.add(cls);
+        return true;
     }
 }

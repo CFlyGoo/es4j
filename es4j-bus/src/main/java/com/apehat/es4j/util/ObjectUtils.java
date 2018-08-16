@@ -27,11 +27,8 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
-import java.util.Arrays;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
@@ -41,21 +38,16 @@ import java.util.function.Consumer;
  */
 public final class ObjectUtils {
 
-    private static final Set<Class<?>> NON_STATUS_CLASSES;
+    private ObjectUtils() {
+    }
 
-    static {
-        Class<?>[] nonStatusClasses = {
-            int.class, short.class, boolean.class, byte.class,
-            long.class, char.class, float.class, double.class,
-            Integer.class, Short.class, Boolean.class, Byte.class,
-            Long.class, Character.class, Float.class, Double.class,
-            String.class, Object.class
-        };
-        NON_STATUS_CLASSES = new HashSet<>(Arrays.asList(nonStatusClasses));
+    @SuppressWarnings("WeakerAccess")
+    public static boolean isValueObject(Object object) {
+        return object == null || ClassUtils.isNonStatusClass(object.getClass());
     }
 
     public static <T> T deepClone(T prototype) {
-        if (isNonStatusObject(prototype)) {
+        if (isValueObject(prototype)) {
             return prototype;
         }
 
@@ -143,7 +135,7 @@ public final class ObjectUtils {
         final int length = Array.getLength(prototype);
         final Class<?> componentType = prototypeClass.getComponentType();
         final T newInstance = prototypeClass.cast(Array.newInstance(componentType, length));
-        if (isNonStatusObject(componentType)) {
+        if (isValueObject(componentType)) {
             // all component is immutable
             //noinspection SuspiciousSystemArraycopy - safe by check isArray
             System.arraycopy(prototype, 0, newInstance, 0, length);
@@ -174,29 +166,6 @@ public final class ObjectUtils {
         } catch (NoSuchMethodException e) {
             throw new NestedCheckException(e);
         }
-    }
-
-    private static boolean isNonStatusObject(Object object) {
-        if (object == null) {
-            return true;
-        }
-        final Class<?> cls = object.getClass();
-        if (object instanceof Collection || object instanceof Map || cls.isArray()) {
-            return false;
-        }
-        if (NON_STATUS_CLASSES.contains(cls)) {
-            return true;
-        }
-        final Field[] fields = cls.getDeclaredFields();
-        if (fields != null && fields.length != 0) {
-            for (Field field : fields) {
-                if (!Modifier.isStatic(field.getModifiers())) {
-                    return false;
-                }
-            }
-        }
-        NON_STATUS_CLASSES.add(cls);
-        return true;
     }
 
 
