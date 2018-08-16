@@ -26,19 +26,20 @@ import java.util.Objects;
  * @author hanpengfei
  * @since 1.0
  */
-class StaticHandlerDescriptor implements HandlerDescriptor {
+final class StaticHandlerDescriptor implements HandlerDescriptor {
 
-    private final Method method;
+    private final Method handler;
 
-    StaticHandlerDescriptor(Method method) {
-        assert method != null;
-        assert Modifier.isStatic(method.getModifiers());
-        this.method = method;
+    StaticHandlerDescriptor(Method handler) {
+        if (!Modifier.isStatic(handler.getModifiers())) {
+            throw new IllegalArgumentException("Must specify a static must.");
+        }
+        this.handler = Objects.requireNonNull(handler, "Handler must not be null");
     }
 
     @Override
     public EventHandler getHandler() {
-        return new DynamicEventHandler(null, method);
+        return new DynamicEventHandler(null, handler);
     }
 
     @Override
@@ -50,11 +51,11 @@ class StaticHandlerDescriptor implements HandlerDescriptor {
             return false;
         }
         StaticHandlerDescriptor that = (StaticHandlerDescriptor) o;
-        return Objects.equals(method, that.method);
+        return Objects.equals(handler, that.handler);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(method);
+        return Objects.hash(handler);
     }
 }

@@ -25,19 +25,19 @@ import java.util.Objects;
  * @author hanpengfei
  * @since 1.0
  */
-class NormalHandlerDescriptor implements HandlerDescriptor {
+final class NormalHandlerDescriptor implements HandlerDescriptor {
 
-    private final Object proxy;
-    private final Method method;
+    private final Object handler;
+    private final Method handleMethod;
 
-    NormalHandlerDescriptor(Object proxy, Method method) {
-        this.proxy = Objects.requireNonNull(proxy, "Proxy must not be null");
-        this.method = Objects.requireNonNull(method, "Handle method must not be null");
+    NormalHandlerDescriptor(Object proxy, Method handleMethod) {
+        this.handler = Objects.requireNonNull(proxy, "Handler must not be null");
+        this.handleMethod = Objects.requireNonNull(handleMethod, "Handle method must not be null");
     }
 
     @Override
     public EventHandler getHandler() {
-        return new DynamicEventHandler(proxy, method);
+        return new DynamicEventHandler(handler, handleMethod);
     }
 
     @Override
@@ -49,12 +49,12 @@ class NormalHandlerDescriptor implements HandlerDescriptor {
             return false;
         }
         NormalHandlerDescriptor that = (NormalHandlerDescriptor) o;
-        return Objects.equals(proxy, that.proxy) &&
-            Objects.equals(method, that.method);
+        return Objects.equals(handler, that.handler) &&
+            Objects.equals(handleMethod, that.handleMethod);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(proxy, method);
+        return Objects.hash(handler, handleMethod);
     }
 }

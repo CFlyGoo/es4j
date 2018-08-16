@@ -30,11 +30,11 @@ public interface HandlerDescriptor {
         return of(handler, null);
     }
 
-    static HandlerDescriptor of(Method handler, Object proxy) {
-        if (Modifier.isStatic(handler.getModifiers())) {
-            return new StaticHandlerDescriptor(handler);
+    static HandlerDescriptor of(Method handleMethod, Object handler) {
+        if (Modifier.isStatic(handleMethod.getModifiers())) {
+            return new StaticHandlerDescriptor(handleMethod);
         }
-        return new NormalHandlerDescriptor(proxy, handler);
+        return new NormalHandlerDescriptor(handler, handleMethod);
     }
 
     static HandlerDescriptor of(EventHandler handler) {

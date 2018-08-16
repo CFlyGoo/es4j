@@ -23,7 +23,7 @@ import java.util.Objects;
  * @author hanpengfei
  * @since 1.0
  */
-class PlainHandleDescriptor implements HandlerDescriptor {
+final class PlainHandleDescriptor implements HandlerDescriptor {
 
     private final EventHandler handler;
 
