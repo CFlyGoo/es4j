@@ -28,8 +28,4 @@ public interface Type extends Serializable {
     static Type of(Class<?> cls) {
         return new ClassType(cls);
     }
-
-    static Type of(String desc) {
-        return null;
-    }
 }
