@@ -14,11 +14,13 @@
  * limitations under the License.
  */
 
-package com.apehat.es4j.bus;
+package com.apehat.es4j.bus.subscriber;
 
 import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
 
+import com.apehat.es4j.bus.BusModuleTestDataProvider;
+import com.apehat.es4j.bus.Event;
 import com.apehat.es4j.bus.support.MockDynamicEventHandler;
 import java.lang.reflect.Method;
 import org.testng.annotations.Test;

@@ -14,8 +14,11 @@
  * limitations under the License.
  */
 
-package com.apehat.es4j.bus;
+package com.apehat.es4j.bus.subscriber;
 
+import com.apehat.es4j.bus.Event;
+import com.apehat.es4j.bus.EventHandler;
+import com.apehat.es4j.bus.EventHandlingException;
 import com.apehat.es4j.util.AsmParameterNameDiscoverer;
 import com.apehat.es4j.util.ReflectionParameterNameDiscoverer;
 import com.apehat.es4j.util.ReflectionUtils;
@@ -28,13 +31,13 @@ import java.util.Objects;
  * @author hanpengfei
  * @since 1.0
  */
-public final class DynamicEventHandler implements EventHandler {
+final class DynamicEventHandler implements EventHandler {
 
     private final Object proxy;
     private final Method handler;
     private transient volatile String[] cachedParameterNames;
 
-    public DynamicEventHandler(Object proxy, Method handler) {
+    DynamicEventHandler(Object proxy, Method handler) {
         Objects.requireNonNull(handler, "Handle method must not be null");
         final int modifiers = handler.getModifiers();
         boolean isStatic = Modifier.isStatic(modifiers);
