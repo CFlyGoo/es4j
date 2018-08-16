@@ -46,7 +46,7 @@ public class EventBusTest {
     }
 
     /**
-     * Before publish, register a global subscriber to wait handle event
+     * Before publish, subscribe a global subscriber to wait handle event
      */
     @BeforeGroups(groups = {"publish", "submit"})
     public void beforePublish() {
@@ -64,7 +64,7 @@ public class EventBusTest {
     public void testRegisterEventListenerWithMethod() {
         MockDynamicEventHandler subscriber = new MockDynamicEventHandler();
         String subscriberId = eventBus
-            .register(subscriber, MockDynamicEventHandler.getEventHandler());
+            .subscribe(subscriber, MockDynamicEventHandler.getEventHandler());
         assertNotNull(subscriberId);
         Set<String> subscriberIds = eventBus.allGlobalSubscribers();
         assertTrue(subscriberIds.contains(subscriberId));
@@ -76,7 +76,7 @@ public class EventBusTest {
     @Test(groups = "subscribe")
     public void testRegisterEventListenerWithInterfaceImplementor() {
         String subscriberId = eventBus
-            .register(event -> LOGGER.info("START handler with {}", event));
+            .subscribe(event -> LOGGER.info("START handler with {}", event));
         assertNotNull(subscriberId);
         Set<String> subscriberIds = eventBus.allGlobalSubscribers();
         assertTrue(subscriberIds.contains(subscriberId));
@@ -115,8 +115,8 @@ public class EventBusTest {
     @Test(groups = "subscribe")
     public void testMultipleRegisterWithSameHandler() {
         EventHandler handler = event -> LOGGER.info("Start handle {}", event);
-        String first = eventBus.register(handler);
-        String second = eventBus.register(handler);
+        String first = eventBus.subscribe(handler);
+        String second = eventBus.subscribe(handler);
         assertEquals(first, second);
     }
 
@@ -152,7 +152,7 @@ public class EventBusTest {
     @Test(groups = "submit-multiple-thread", threadPoolSize = 4, invocationCount = 50)
     public void testSubmitEventAndSubscribeInMultiple() {
         eventBus.submit(new Object());
-        eventBus.register(event -> {
+        eventBus.subscribe(event -> {
         });
     }
 }

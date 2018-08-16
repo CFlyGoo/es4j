@@ -42,12 +42,12 @@ public final class EventBus {
 
     /* Global subscribe */
 
-    public String register(EventHandler handler) {
+    public String subscribe(EventHandler handler) {
         return subscribe(Object.class, handler);
     }
 
-    public String register(Object subscriber, Method handler) {
-        return subscribe(Object.class, subscriber, handler);
+    public String subscribe(Object handler, Method handleMethod) {
+        return subscribe(Object.class, handler, handleMethod);
     }
 
     /* Type specified subscribe */
@@ -56,8 +56,8 @@ public final class EventBus {
         return subscribe(Type.of(type), handler);
     }
 
-    public String subscribe(Class<?> type, Object subscriber, Method handler) {
-        return subscribe(Type.of(type), subscriber, handler);
+    public String subscribe(Class<?> type, Object handler, Method handleMethod) {
+        return subscribe(Type.of(type), handler, handleMethod);
     }
 
     public String subscribe(Type type, EventHandler handler) {
@@ -98,6 +98,7 @@ public final class EventBus {
             callback.onFailure();
         }
     }
+
     /* Submit */
 
     public void submit(Object event) {
