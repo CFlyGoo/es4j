@@ -43,7 +43,7 @@ public class FieldValueFinder {
             throw new NestedCheckException(e);
         }
         if (index != -1) {
-            value = getFiledValue(value, fieldDescriptor.substring(index));
+            value = getFiledValue(value, fieldDescriptor.substring(index + 1));
         }
         return value;
     }
