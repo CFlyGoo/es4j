@@ -53,6 +53,9 @@ public final class ClassUtils {
 
     public static boolean isNonStatusClass(Class<?> cls) {
         Objects.requireNonNull(cls, "Class must not be null");
+        if (cls.isArray()) {
+            return false;
+        }
         if (NON_STATUS_CLASSES.contains(cls)) {
             return true;
         }
