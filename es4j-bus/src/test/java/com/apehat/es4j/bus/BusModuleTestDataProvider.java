@@ -26,14 +26,14 @@ import org.testng.annotations.DataProvider;
  */
 public class BusModuleTestDataProvider {
 
+    protected static Event newEventFixture() {
+        return EventFixtureProvider.newEventFixture();
+    }
+
     @DataProvider
     public Object[] eventFixtureProvider() {
         Object[] result = new Object[1];
         result[0] = newEventFixture();
         return result;
-    }
-
-    protected static Event newEventFixture() {
-        return EventFixtureProvider.newEventFixture();
     }
 }

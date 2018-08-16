@@ -16,9 +16,9 @@
 
 package com.apehat.es4j.bus.subscriber;
 
-import com.apehat.es4j.bus.event.Event;
 import com.apehat.es4j.bus.EventHandler;
 import com.apehat.es4j.bus.EventHandlingException;
+import com.apehat.es4j.bus.event.Event;
 import com.apehat.es4j.util.AsmParameterNameDiscoverer;
 import com.apehat.es4j.util.ReflectionParameterNameDiscoverer;
 import com.apehat.es4j.util.ReflectionUtils;
