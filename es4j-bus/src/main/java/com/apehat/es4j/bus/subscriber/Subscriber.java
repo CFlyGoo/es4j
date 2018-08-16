@@ -16,7 +16,6 @@
 
 package com.apehat.es4j.bus.subscriber;
 
-import com.apehat.es4j.bus.EventHandler;
 import com.apehat.es4j.bus.Type;
 import com.apehat.es4j.bus.event.PendingEvent;
 import java.util.Objects;
