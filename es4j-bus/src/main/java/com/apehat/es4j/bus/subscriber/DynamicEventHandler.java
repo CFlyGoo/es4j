@@ -25,7 +25,6 @@ import com.apehat.es4j.util.ReflectionUtils;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-import java.util.Objects;
 
 /**
  * @author hanpengfei
@@ -37,27 +36,26 @@ final class DynamicEventHandler implements EventHandler {
     private final Method handler;
     private transient volatile String[] cachedParameterNames;
 
-    DynamicEventHandler(Object proxy, Method handler) {
-        Objects.requireNonNull(handler, "Handle method must not be null");
-        final int modifiers = handler.getModifiers();
-        boolean isStatic = Modifier.isStatic(modifiers);
-        if (!isStatic && proxy == null) {
-            throw new IllegalArgumentException("Must specified proxy object for non static method");
+    DynamicEventHandler(Object handler, Method handleMethod) {
+        assert handleMethod != null;
+        if (!Modifier.isStatic(handleMethod.getModifiers()) && handler == null) {
+            throw new IllegalArgumentException(
+                "Must specified handler object for non static method");
         }
-        ReflectionUtils.toAccessible(handler);
-        this.handler = handler;
-        this.proxy = proxy;
+        this.handler = handleMethod;
+        this.proxy = handler;
     }
 
     @Override
     public void onEvent(Event event) {
         final Object[] args = getArguments(event);
-        try {
-            handler.invoke(proxy, args);
-        } catch (IllegalAccessException |
-            InvocationTargetException e) {
-            throw new EventHandlingException(e);
-        }
+        ReflectionUtils.access(handler, accessible -> {
+            try {
+                return accessible.invoke(proxy, args);
+            } catch (InvocationTargetException e) {
+                throw new EventHandlingException(e);
+            }
+        });
     }
 
     private Object[] getArguments(Event event) {
