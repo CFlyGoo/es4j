@@ -16,7 +16,6 @@
 
 package com.apehat.es4j.bus.event;
 
-import com.apehat.es4j.bus.Type;
 import java.util.Objects;
 
 /**
@@ -83,7 +82,7 @@ public final class Event {
         if (OCCURRED_ON.equals(name)) {
             return occurredOn();
         } else if (TYPE.equals(name)) {
-            return classType();
+            return type();
         } else if (SOURCE.equals(name)) {
             return source();
         } else if (Event.EVENT.equals(name)) {
@@ -105,12 +104,7 @@ public final class Event {
         return source;
     }
 
-    public Class<?> classType() {
+    public Class<?> type() {
         return prototype.getPrototype().getClass();
-    }
-
-    @Deprecated
-    public Type type() {
-        return Type.of(classType());
     }
 }

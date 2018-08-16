@@ -55,7 +55,7 @@ public class PendingEvent {
     }
 
     public Class<?> classType() {
-        return metadata.classType();
+        return metadata.type();
     }
 
     @Deprecated

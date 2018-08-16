@@ -33,7 +33,7 @@ public class EventTest {
     private final long occurredOn;
     private final String source;
     private final Event event;
-    private final Class<?> classType;
+    private final Class<?> type;
     private final UserRegistered prototype;
     private final UserId userId;
     private final String username;
@@ -42,7 +42,7 @@ public class EventTest {
     public EventTest() {
         occurredOn = System.currentTimeMillis();
         source = UUID.randomUUID().toString();
-        classType = UserRegistered.class;
+        type = UserRegistered.class;
         userId = new UserId(UUID.randomUUID().toString());
         username = "testUsername";
         registerOn = new Date();
@@ -55,7 +55,7 @@ public class EventTest {
     public void testGet() {
         assertEquals(occurredOn, event.get(Event.OCCURRED_ON));
         assertEquals(prototype, event.get(Event.EVENT));
-        assertEquals(classType, event.get(Event.TYPE));
+        assertEquals(type, event.get(Event.TYPE));
         assertEquals(source, event.get(Event.SOURCE));
 
         assertEquals(userId, event.get("userId"));
@@ -82,7 +82,7 @@ public class EventTest {
     }
 
     @Test
-    public void testClassType() {
-        assertEquals(classType, event.classType());
+    public void testType() {
+        assertEquals(type, event.type());
     }
 }
