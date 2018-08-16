@@ -38,19 +38,37 @@ public final class EventPrototype {
         this.prototype = ObjectUtils.deepClone(prototype);
     }
 
+    public Object getPrototype() {
+        return ObjectUtils.deepClone(prototype);
+    }
+
     Object get(String name) {
         assert name != null;
-        Result result = cachedNameResult.get(name);
-        if (result == null) {
-            FieldValueFinder finder = new FieldValueFinder();
-            Object value = finder.getFiledValue(prototype, name);
-            result = new Result(value);
-            cachedNameResult.put(name, result);
-        }
+        final Result lookupValue = lookupCache(name);
+        final Result result = (lookupValue == null) ? findByFinder(prototype, name) : lookupValue;
+        cachedNameResult.putIfAbsent(name, result);
         return ObjectUtils.deepClone(result.value());
     }
 
-    public Object getPrototype() {
-        return ObjectUtils.deepClone(prototype);
+    private Result lookupCache(String name) {
+        Result result = cachedNameResult.get(name);
+        if (result != null) {
+            return result;
+        }
+        final int idx = name.lastIndexOf('.');
+        if (idx == -1) {
+            return null;
+        }
+        result = lookupCache(name.substring(0, idx));
+        if (result != null) {
+            result = findByFinder(result.value(), name.substring(idx + 1));
+        }
+        return result;
+    }
+
+    private Result findByFinder(Object source, String name) {
+        FieldValueFinder finder = new FieldValueFinder();
+        Object value = finder.getFiledValue(source, name);
+        return new Result(value);
     }
 }
