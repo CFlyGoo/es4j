@@ -18,10 +18,9 @@ package com.apehat.es4j.bus;
 
 import com.apehat.es4j.bus.disptach.AsyncDispatcher;
 import com.apehat.es4j.bus.disptach.Dispatcher;
-import com.apehat.es4j.bus.event.EventPrototype;
-import com.apehat.es4j.bus.event.PendingEvent;
-import com.apehat.es4j.bus.subscriber.HandlerDescriptor;
+import com.apehat.es4j.bus.event.EventIdentityService;
 import com.apehat.es4j.bus.subscriber.Subscriber;
+import com.apehat.es4j.bus.subscriber.SubscriberIdentityService;
 import com.apehat.es4j.bus.subscriber.SubscriberRepository;
 import com.apehat.es4j.bus.subscriber.support.CopyOnArraySubscriberRepository;
 import java.lang.reflect.Method;
@@ -36,6 +35,9 @@ import java.util.Set;
 public final class EventBus {
 
     private SubscriberRepository subscriberRepo = new CopyOnArraySubscriberRepository();
+    private EventIdentityService eventIdentityService = new EventIdentityService();
+    private final SubscriberIdentityService subscriberIdentityService =
+        new SubscriberIdentityService(subscriberRepo);
 
     private Dispatcher dispatcher = new Dispatcher(subscriberRepo);
     private AsyncDispatcher asyncDispatcher = new AsyncDispatcher(subscriberRepo);
@@ -69,37 +71,26 @@ public final class EventBus {
     }
 
     public String subscribe(Type type, EventHandler handler) {
-        HandlerDescriptor descriptor = HandlerDescriptor.of(handler);
-        Subscriber subscriber = new Subscriber(descriptor, type);
-        this.subscriberRepo.save(subscriber);
-        return subscriber.id();
+        return subscriberIdentityService.provisionSubscriber(type, handler);
     }
 
     public String subscribe(Type type, Method handler) {
-        HandlerDescriptor descriptor = HandlerDescriptor.of(handler);
-        Subscriber subscriber = new Subscriber(descriptor, type);
-        this.subscriberRepo.save(subscriber);
-        return subscriber.id();
+        return subscriberIdentityService.provisionSubscriber(type, handler);
     }
 
     public String subscribe(Type type, Object handler, Method handleMethod) {
-        HandlerDescriptor descriptor = HandlerDescriptor.of(handleMethod, handler);
-        Subscriber subscriber = new Subscriber(descriptor, type);
-        this.subscriberRepo.save(subscriber);
-        return subscriber.id();
+        return subscriberIdentityService.provisionSubscriber(type, handler, handleMethod);
     }
 
     /* Publish */
 
     public void publish(Object event) {
-        PendingEvent pendingEvent = new PendingEvent(new EventPrototype(event), null);
-        dispatcher.dispatch(pendingEvent);
+        dispatcher.dispatch(eventIdentityService.provisionEvent(event, null));
     }
 
     public void publish(Object event, Callback callback) {
         try {
-            PendingEvent pendingEvent = new PendingEvent(new EventPrototype(event), null);
-            dispatcher.dispatch(pendingEvent);
+            dispatcher.dispatch(eventIdentityService.provisionEvent(event, null));
             callback.onSuccessfully();
         } catch (RuntimeException e) {
             callback.onFailure();
@@ -109,13 +100,11 @@ public final class EventBus {
     /* Submit */
 
     public void submit(Object event) {
-        PendingEvent pendingEvent = new PendingEvent(new EventPrototype(event), null);
-        asyncDispatcher.dispatch(pendingEvent);
+        asyncDispatcher.dispatch(eventIdentityService.provisionEvent(event, null));
     }
 
     public void submit(Object event, Callback callback) {
-        PendingEvent pendingEvent = new PendingEvent(new EventPrototype(event), null);
-        asyncDispatcher.dispatch(pendingEvent, callback);
+        asyncDispatcher.dispatch(eventIdentityService.provisionEvent(event, null), callback);
     }
 
     /* Query */
