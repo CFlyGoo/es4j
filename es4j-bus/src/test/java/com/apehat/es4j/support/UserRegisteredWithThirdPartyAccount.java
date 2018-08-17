@@ -30,12 +30,20 @@ public final class UserRegisteredWithThirdPartyAccount implements Serializable {
     static final String FIELD_REGISTERED_EVENT = "registeredEvent";
     static final String FIELD_ACCOUNT = "account";
 
-    private final UserRegistered registeredEvent;
-    private final ThirdPartyAccount account;
+    private UserRegistered registeredEvent;
+    private ThirdPartyAccount account;
 
     UserRegisteredWithThirdPartyAccount(
         UserRegistered registeredEvent, ThirdPartyAccount account) {
         this.registeredEvent = registeredEvent;
+        this.account = account;
+    }
+
+    public void setRegisteredEvent(UserRegistered registeredEvent) {
+        this.registeredEvent = registeredEvent;
+    }
+
+    public void setAccount(ThirdPartyAccount account) {
         this.account = account;
     }
 
