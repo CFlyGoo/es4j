@@ -27,12 +27,12 @@ public final class UserId implements Serializable {
 
     private static final long serialVersionUID = 2165353297611629274L;
 
-    public static final String FIELD_ID = "prototype";
+    public static final String FIELD_ID = "getId";
 
-    private String prototype;
+    private String id;
 
-    public UserId(String prototype) {
-        this.prototype = prototype;
+    public UserId(String id) {
+        this.id = id;
     }
 
     @Override
@@ -44,24 +44,24 @@ public final class UserId implements Serializable {
             return false;
         }
         UserId userId = (UserId) o;
-        return Objects.equals(prototype, userId.prototype);
+        return Objects.equals(id, userId.id);
     }
 
-    public void setPrototype(String prototype) {
-        this.prototype = prototype;
+    public void setId(String id) {
+        this.id = id;
     }
 
-    public String id() {
-        return prototype;
+    public String getId() {
+        return id;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(prototype);
+        return Objects.hash(id);
     }
 
     @Override
     public String toString() {
-        return prototype;
+        return id;
     }
 }

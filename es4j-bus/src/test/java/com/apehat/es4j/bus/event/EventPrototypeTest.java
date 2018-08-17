@@ -37,7 +37,7 @@ public class EventPrototypeTest {
 
     public EventPrototypeTest() {
         this.metadata = userRegisteredFixture();
-        this.metadata.getUserId().setPrototype(null);
+        this.metadata.getUserId().setId(null);
         this.metadata.setUsername(null);
         this.prototype = new EventPrototype(this.metadata);
     }
@@ -48,7 +48,7 @@ public class EventPrototypeTest {
         assertEquals(metadata.getUserId(), prototype.get(USER_REGISTERED_ID));
         assertEquals(metadata.getUsername(), prototype.get(USER_REGISTERED_NAME));
         assertEquals(metadata.getRegisterOn(), prototype.get(USER_REGISTERED_TIME));
-        assertEquals(metadata.getUserId().id(), prototype.get(USER_REGISTERED_ID_ID));
+        assertEquals(metadata.getUserId().getId(), prototype.get(USER_REGISTERED_ID_ID));
     }
 
     /**

@@ -52,12 +52,12 @@ public class EventTest {
         assertEquals(event.source(), event.get(Event.SOURCE));
 
         assertEquals(prototype.getUserId(), event.get(USER_REGISTERED_ID));
-        assertEquals(prototype.getUserId().id(), event.get(USER_REGISTERED_ID_ID));
+        assertEquals(prototype.getUserId().getId(), event.get(USER_REGISTERED_ID_ID));
         assertEquals(prototype.getUsername(), event.get(USER_REGISTERED_NAME));
         assertEquals(prototype.getRegisterOn(), event.get(USER_REGISTERED_TIME));
 
         assertEquals(prototype.getUserId(), event.get(Event.EVENT + "." + USER_REGISTERED_ID));
-        assertEquals(prototype.getUserId().id(),
+        assertEquals(prototype.getUserId().getId(),
             event.get(Event.EVENT + "." + USER_REGISTERED_ID_ID));
         assertEquals(prototype.getUsername(), event.get(Event.EVENT + "." + USER_REGISTERED_NAME));
         assertEquals(prototype.getRegisterOn(),
