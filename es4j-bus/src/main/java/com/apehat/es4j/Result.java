@@ -20,15 +20,15 @@ package com.apehat.es4j;
  * @author hanpengfei
  * @since 1.0
  */
-public final class Result {
+public final class Result<T> {
 
-    private final Object value;
+    private final T value;
 
-    public Result(Object value) {
+    public Result(T value) {
         this.value = value;
     }
 
-    public Object value() {
+    public T value() {
         return value;
     }
 }

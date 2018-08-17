@@ -31,7 +31,7 @@ public final class EventPrototype {
 
     private final Object prototype;
 
-    private transient volatile Map<String, Result> cachedNameResult = new HashMap<>();
+    private transient volatile Map<String, Result<?>> cachedNameResult = new HashMap<>();
 
     public EventPrototype(Object prototype) {
         Objects.requireNonNull(prototype, "Event prototype must not be null.");
@@ -44,14 +44,14 @@ public final class EventPrototype {
 
     Object get(String name) {
         assert name != null;
-        final Result lookupValue = lookupCache(name);
-        final Result result = (lookupValue == null) ? findByFinder(prototype, name) : lookupValue;
+        final Result<?> lookupValue = lookupCache(name);
+        final Result<?> result = (lookupValue == null) ? findByFinder(prototype, name) : lookupValue;
         cachedNameResult.putIfAbsent(name, result);
         return ObjectUtils.deepClone(result.value());
     }
 
-    private Result lookupCache(String name) {
-        Result result = cachedNameResult.get(name);
+    private Result<?> lookupCache(String name) {
+        Result<?> result = cachedNameResult.get(name);
         if (result != null) {
             return result;
         }
@@ -66,9 +66,9 @@ public final class EventPrototype {
         return result;
     }
 
-    private Result findByFinder(Object source, String name) {
+    private Result<?> findByFinder(Object source, String name) {
         FieldValueFinder finder = new FieldValueFinder();
         Object value = finder.getFiledValue(source, name);
-        return new Result(value);
+        return new Result<>(value);
     }
 }
