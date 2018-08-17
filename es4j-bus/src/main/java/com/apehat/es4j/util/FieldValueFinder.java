@@ -17,7 +17,8 @@
 package com.apehat.es4j.util;
 
 import com.apehat.es4j.NestedCheckException;
-import java.lang.reflect.Field;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -27,24 +28,48 @@ public class FieldValueFinder {
 
     private static final char SEPARATOR = '.';
 
-    public Object getFiledValue(Object object, String fieldDescriptor) {
-        if (object == null) {
+    private final Object source;
+
+    private transient volatile Map<String, Object> cache = new HashMap<>();
+
+    public FieldValueFinder(Object source) {
+        this.source = Objects.requireNonNull(source, "The source must not be null");
+    }
+
+    public Object lookup(String name) {
+        Objects.requireNonNull(name, "Name must not be null");
+        if (cache.containsKey(name)) {
+            return cache.get(name);
+        }
+        final Object result = resolve(parent(name), field(name));
+        cache.put(name, result);
+        return result;
+    }
+
+    private Object parent(String name) {
+        final String parentName = parentName(name);
+        return parentName == null ? source : lookup(parentName);
+    }
+
+    private String parentName(String name) {
+        final int idx = name.lastIndexOf(SEPARATOR);
+        return (idx == -1) ? null : name.substring(0, idx);
+    }
+
+    private String field(String name) {
+        return name.substring(name.lastIndexOf(SEPARATOR) + 1);
+    }
+
+    private Object resolve(Object obj, String name) {
+        assert name != null;
+        if (obj == null) {
             return null;
         }
-        Objects.requireNonNull(fieldDescriptor, "field descriptor must not be null");
-        final int index = fieldDescriptor.indexOf(SEPARATOR);
-        String fieldName = (index == -1) ? fieldDescriptor : fieldDescriptor.substring(0, index);
-        final Class<?> prototypeClass = object.getClass();
-        Object value;
         try {
-            Field field = prototypeClass.getDeclaredField(fieldName);
-            value = ReflectionUtils.access(field, accessible -> accessible.get(object));
+            return ReflectionUtils.access(obj.getClass().getDeclaredField(name),
+                accessible -> accessible.get(obj));
         } catch (NoSuchFieldException e) {
             throw new NestedCheckException(e);
         }
-        if (index != -1) {
-            value = getFiledValue(value, fieldDescriptor.substring(index + 1));
-        }
-        return value;
     }
 }

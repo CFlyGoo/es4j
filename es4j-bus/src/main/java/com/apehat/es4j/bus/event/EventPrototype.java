@@ -16,11 +16,8 @@
 
 package com.apehat.es4j.bus.event;
 
-import com.apehat.es4j.Result;
 import com.apehat.es4j.util.FieldValueFinder;
 import com.apehat.es4j.util.ObjectUtils;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -29,11 +26,8 @@ import java.util.Objects;
  */
 public final class EventPrototype {
 
-    private static final char SEPARATOR = '.';
-
+    private FieldValueFinder finder;
     private final Object root;
-
-    private transient volatile Map<String, Result<?>> cache = new HashMap<>();
 
     public EventPrototype(Object root) {
         Objects.requireNonNull(root, "Event prototype root must not be null.");
@@ -50,33 +44,9 @@ public final class EventPrototype {
 
     Object get(String name) {
         assert name != null;
-        return ObjectUtils.deepClone(lookup(name).value());
-    }
-
-    private Result<?> lookup(String name) {
-        Result<?> result = cache.get(name);
-        if (result == null) {
-            result = resolve(parent(name).value(), fieldName(name));
-            cache.put(name, result);
+        if (finder == null) {
+            finder = new FieldValueFinder(root);
         }
-        return result;
-    }
-
-    private Result<?> parent(String name) {
-        final String parent = parentNameOf(name);
-        return parent.isEmpty() ? new Result<>(root) : lookup(parent);
-    }
-
-    private String parentNameOf(String name) {
-        final int idx = name.lastIndexOf(SEPARATOR);
-        return (idx == -1) ? "" : name.substring(0, idx);
-    }
-
-    private String fieldName(String name) {
-        return name.substring(name.lastIndexOf(SEPARATOR) + 1);
-    }
-
-    private Result<?> resolve(Object source, String name) {
-        return new Result<>(new FieldValueFinder().getFiledValue(source, name));
+        return ObjectUtils.deepClone(finder.lookup(name));
     }
 }
