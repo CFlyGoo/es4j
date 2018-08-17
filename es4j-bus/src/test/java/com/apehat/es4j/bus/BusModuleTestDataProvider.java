@@ -16,24 +16,20 @@
 
 package com.apehat.es4j.bus;
 
-import com.apehat.es4j.bus.event.Event;
 import com.apehat.es4j.bus.event.EventFixtureProvider;
+import com.apehat.es4j.support.TestDataProvider;
 import org.testng.annotations.DataProvider;
 
 /**
  * @author hanpengfei
  * @since 1.0
  */
-public class BusModuleTestDataProvider {
-
-    protected static Event newEventFixture() {
-        return EventFixtureProvider.newEventFixture();
-    }
+public class BusModuleTestDataProvider implements TestDataProvider, EventFixtureProvider {
 
     @DataProvider
     public Object[] eventFixtureProvider() {
         Object[] result = new Object[1];
-        result[0] = newEventFixture();
+        result[0] = EventFixtureProvider.newEventFixture();
         return result;
     }
 }

@@ -16,11 +16,14 @@
 
 package com.apehat.es4j.bus.event;
 
+import static com.apehat.es4j.support.TestDataProvider.USER_REGISTERED_ID;
+import static com.apehat.es4j.support.TestDataProvider.USER_REGISTERED_ID_ID;
+import static com.apehat.es4j.support.TestDataProvider.USER_REGISTERED_NAME;
+import static com.apehat.es4j.support.TestDataProvider.USER_REGISTERED_TIME;
+import static com.apehat.es4j.support.TestDataProvider.userRegisteredFixture;
 import static org.testng.Assert.assertEquals;
 
-import com.apehat.es4j.bus.support.UserId;
-import com.apehat.es4j.bus.support.UserRegistered;
-import java.util.Date;
+import com.apehat.es4j.support.UserRegistered;
 import org.testng.annotations.Test;
 
 /**
@@ -29,20 +32,23 @@ import org.testng.annotations.Test;
  */
 public class EventPrototypeTest {
 
-    private final String userIdSource = null;
-    private final UserId userId = new UserId(userIdSource);
-    private final Date userRegisterDate = new Date();
-    private final String username = null;
-    private final UserRegistered metadata = new UserRegistered(userId, username, userRegisterDate);
-    private final EventPrototype prototype = new EventPrototype(metadata);
+    private final UserRegistered metadata;
+    private final EventPrototype prototype;
+
+    public EventPrototypeTest() {
+        this.metadata = userRegisteredFixture();
+        this.metadata.getUserId().setPrototype(null);
+        this.metadata.setUsername(null);
+        this.prototype = new EventPrototype(this.metadata);
+    }
 
     @Test
     public void testGetWithContainsNullFieldValueObject() {
         assertEquals(prototype.root(), metadata);
-        assertEquals(userId, prototype.get(UserRegistered.FIELD_USER_ID));
-        assertEquals(username, prototype.get(UserRegistered.FIELD_USERNAME));
-        assertEquals(userRegisterDate, prototype.get(UserRegistered.FIELD_REGISTER_ON));
-        assertEquals(userIdSource, prototype.get(UserRegistered.FIELD_USER_ID_ID));
+        assertEquals(metadata.getUserId(), prototype.get(USER_REGISTERED_ID));
+        assertEquals(metadata.getUsername(), prototype.get(USER_REGISTERED_NAME));
+        assertEquals(metadata.getRegisterOn(), prototype.get(USER_REGISTERED_TIME));
+        assertEquals(metadata.getUserId().id(), prototype.get(USER_REGISTERED_ID_ID));
     }
 
     /**

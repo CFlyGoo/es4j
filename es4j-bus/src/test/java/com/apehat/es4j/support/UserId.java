@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.apehat.es4j.bus.support;
+package com.apehat.es4j.support;
 
 import java.io.Serializable;
 import java.util.Objects;
@@ -27,7 +27,9 @@ public final class UserId implements Serializable {
 
     private static final long serialVersionUID = 2165353297611629274L;
 
-    private final String prototype;
+    public static final String FIELD_ID = "prototype";
+
+    private String prototype;
 
     public UserId(String prototype) {
         this.prototype = prototype;
@@ -43,6 +45,14 @@ public final class UserId implements Serializable {
         }
         UserId userId = (UserId) o;
         return Objects.equals(prototype, userId.prototype);
+    }
+
+    public void setPrototype(String prototype) {
+        this.prototype = prototype;
+    }
+
+    public String id() {
+        return prototype;
     }
 
     @Override

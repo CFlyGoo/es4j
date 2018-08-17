@@ -16,25 +16,21 @@
 
 package com.apehat.es4j.bus.event;
 
-import com.apehat.es4j.bus.support.UserId;
-import com.apehat.es4j.bus.support.UserRegistered;
-import java.util.Date;
+import com.apehat.es4j.support.TestDataProvider;
+import com.apehat.es4j.support.UserRegistered;
 import java.util.UUID;
 
 /**
  * @author hanpengfei
  * @since 1.0
  */
-public class EventFixtureProvider {
+public interface EventFixtureProvider {
 
-    public static Event newEventFixture() {
+    static Event newEventFixture() {
         long occurredOn = System.currentTimeMillis();
         String source = UUID.randomUUID().toString();
-        UserId userId = new UserId(UUID.randomUUID().toString());
-        String username = "testUsername";
-        Date registerOn = new Date();
-        UserRegistered prototype = new UserRegistered(userId, username, registerOn);
-        EventPrototype eventPrototype = EventTestHelper.newPrototype(prototype);
+        UserRegistered prototype = TestDataProvider.userRegisteredFixture();
+        EventPrototype eventPrototype = new EventPrototype(prototype);
         return new Event(occurredOn, eventPrototype, source);
     }
 }

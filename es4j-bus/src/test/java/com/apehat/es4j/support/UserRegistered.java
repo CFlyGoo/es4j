@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.apehat.es4j.bus.support;
+package com.apehat.es4j.support;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -28,18 +28,30 @@ import java.util.Objects;
  */
 public final class UserRegistered implements Serializable {
 
-    public static final String FIELD_USER_ID = "userId";
-    public static final String FIELD_USERNAME = "username";
-    public static final String FIELD_REGISTER_ON = "registerOn";
-    public static final String FIELD_USER_ID_ID = FIELD_USER_ID + ".prototype";
+    static final String FIELD_USER_ID = "userId";
+    static final String FIELD_USERNAME = "username";
+    static final String FIELD_REGISTER_ON = "registerOn";
     private static final long serialVersionUID = -3256210697855910724L;
-    private final UserId userId;
-    private final String username;
-    private final Date registerOn;
 
-    public UserRegistered(UserId userId, String username, Date registerOn) {
+    private UserId userId;
+    private String username;
+    private Date registerOn;
+
+    UserRegistered(UserId userId, String username, Date registerOn) {
         this.userId = userId;
         this.username = username;
+        this.registerOn = registerOn;
+    }
+
+    public void setUserId(UserId userId) {
+        this.userId = userId;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public void setRegisterOn(Date registerOn) {
         this.registerOn = registerOn;
     }
 
@@ -68,6 +80,7 @@ public final class UserRegistered implements Serializable {
             Objects.equals(username, that.username) &&
             Objects.equals(registerOn, that.registerOn);
     }
+
 
     @Override
     public int hashCode() {

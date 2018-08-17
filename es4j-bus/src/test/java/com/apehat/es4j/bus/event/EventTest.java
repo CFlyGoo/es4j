@@ -16,11 +16,14 @@
 
 package com.apehat.es4j.bus.event;
 
+import static com.apehat.es4j.support.TestDataProvider.USER_REGISTERED_ID;
+import static com.apehat.es4j.support.TestDataProvider.USER_REGISTERED_ID_ID;
+import static com.apehat.es4j.support.TestDataProvider.USER_REGISTERED_NAME;
+import static com.apehat.es4j.support.TestDataProvider.USER_REGISTERED_TIME;
+import static com.apehat.es4j.support.TestDataProvider.userRegisteredFixture;
 import static org.testng.Assert.assertEquals;
 
-import com.apehat.es4j.bus.support.UserId;
-import com.apehat.es4j.bus.support.UserRegistered;
-import java.util.Date;
+import com.apehat.es4j.support.UserRegistered;
 import java.util.UUID;
 import org.testng.annotations.Test;
 
@@ -30,64 +33,34 @@ import org.testng.annotations.Test;
  */
 public class EventTest {
 
-    private final long occurredOn;
-    private final String source;
     private final Event event;
-    private final Class<?> type;
     private final UserRegistered prototype;
-    private final UserId userId;
-    private final String username;
-    private final Date registerOn;
-    private final String userIdSource;
 
     public EventTest() {
-        this.occurredOn = System.currentTimeMillis();
-        this.source = UUID.randomUUID().toString();
-        this.type = UserRegistered.class;
-        this.userIdSource = UUID.randomUUID().toString();
-        this.userId = new UserId(userIdSource);
-        this.username = "testUsername";
-        this.registerOn = new Date();
-        this.prototype = new UserRegistered(userId, username, registerOn);
-        EventPrototype eventPrototype = EventTestHelper.newPrototype(prototype);
+        long occurredOn = System.currentTimeMillis();
+        String source = UUID.randomUUID().toString();
+        this.prototype = userRegisteredFixture();
+        EventPrototype eventPrototype = new EventPrototype(prototype);
         this.event = new Event(occurredOn, eventPrototype, source);
     }
 
     @Test
     public void testGet() {
-        assertEquals(occurredOn, event.get(Event.OCCURRED_ON));
-        assertEquals(prototype, event.get(Event.EVENT));
-        assertEquals(type, event.get(Event.TYPE));
-        assertEquals(source, event.get(Event.SOURCE));
+        assertEquals(event.occurredOn(), event.get(Event.OCCURRED_ON));
+        assertEquals(event.prototype(), event.get(Event.EVENT));
+        assertEquals(event.type(), event.get(Event.TYPE));
+        assertEquals(event.source(), event.get(Event.SOURCE));
 
-        assertEquals(userId, event.get(UserRegistered.FIELD_USER_ID));
-        assertEquals(userIdSource, event.get(UserRegistered.FIELD_USER_ID_ID));
-        assertEquals(username, event.get(UserRegistered.FIELD_USERNAME));
-        assertEquals(registerOn, event.get(UserRegistered.FIELD_REGISTER_ON));
+        assertEquals(prototype.getUserId(), event.get(USER_REGISTERED_ID));
+        assertEquals(prototype.getUserId().id(), event.get(USER_REGISTERED_ID_ID));
+        assertEquals(prototype.getUsername(), event.get(USER_REGISTERED_NAME));
+        assertEquals(prototype.getRegisterOn(), event.get(USER_REGISTERED_TIME));
 
-        assertEquals(userId, event.get(Event.EVENT + "." + UserRegistered.FIELD_USER_ID));
-        assertEquals(userIdSource, event.get(Event.EVENT + "." + UserRegistered.FIELD_USER_ID_ID));
-        assertEquals(username, event.get(Event.EVENT + "." + UserRegistered.FIELD_USERNAME));
-        assertEquals(registerOn, event.get(Event.EVENT + "." + UserRegistered.FIELD_REGISTER_ON));
-    }
-
-    @Test
-    public void testOccurredOn() {
-        assertEquals(occurredOn, event.occurredOn());
-    }
-
-    @Test
-    public void testPrototype() {
-        assertEquals(prototype, event.prototype());
-    }
-
-    @Test
-    public void testSource() {
-        assertEquals(source, event.source());
-    }
-
-    @Test
-    public void testType() {
-        assertEquals(type, event.type());
+        assertEquals(prototype.getUserId(), event.get(Event.EVENT + "." + USER_REGISTERED_ID));
+        assertEquals(prototype.getUserId().id(),
+            event.get(Event.EVENT + "." + USER_REGISTERED_ID_ID));
+        assertEquals(prototype.getUsername(), event.get(Event.EVENT + "." + USER_REGISTERED_NAME));
+        assertEquals(prototype.getRegisterOn(),
+            event.get(Event.EVENT + "." + USER_REGISTERED_TIME));
     }
 }
