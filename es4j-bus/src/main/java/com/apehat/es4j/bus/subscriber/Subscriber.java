@@ -39,7 +39,7 @@ public class Subscriber {
     private final long subscriptionOn;
     private final Type type;
 
-    public Subscriber(HandlerDescriptor handlerDescriptor, Type type) {
+    Subscriber(HandlerDescriptor handlerDescriptor, Type type) {
         this.subscriptionOn = System.currentTimeMillis();
         this.handlerDescriptor = Objects.requireNonNull(handlerDescriptor,
             "Handler descriptor must not be null");

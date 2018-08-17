@@ -24,12 +24,12 @@ import java.util.Objects;
  * @author hanpengfei
  * @since 1.0
  */
-public final class EventPrototype {
+final class EventPrototype {
 
     private FieldValueFinder finder;
     private final Object root;
 
-    public EventPrototype(Object root) {
+    EventPrototype(Object root) {
         Objects.requireNonNull(root, "Event prototype root must not be null.");
         this.root = ObjectUtils.deepClone(root);
     }

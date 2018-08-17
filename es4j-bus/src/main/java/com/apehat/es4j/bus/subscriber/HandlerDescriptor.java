@@ -26,20 +26,5 @@ import java.lang.reflect.Modifier;
  */
 public interface HandlerDescriptor {
 
-    static HandlerDescriptor of(Method handler) {
-        return new StaticHandlerDescriptor(handler);
-    }
-
-    static HandlerDescriptor of(Method handleMethod, Object handler) {
-        if (Modifier.isStatic(handleMethod.getModifiers())) {
-            return of(handleMethod);
-        }
-        return new NormalHandlerDescriptor(handler, handleMethod);
-    }
-
-    static HandlerDescriptor of(EventHandler handler) {
-        return new PlainHandleDescriptor(handler);
-    }
-
     EventHandler getHandler();
 }

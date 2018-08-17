@@ -42,7 +42,7 @@ public class PendingEvent {
 
     private Event metadata;
 
-    public PendingEvent(EventPrototype prototype, String source) {
+    PendingEvent(EventPrototype prototype, String source) {
         this.metadata = new Event(System.currentTimeMillis(), prototype, source);
     }
 
@@ -54,7 +54,7 @@ public class PendingEvent {
         return metadata.occurredOn();
     }
 
-    public Class<?> classType() {
+    private Class<?> classType() {
         return metadata.type();
     }
 
