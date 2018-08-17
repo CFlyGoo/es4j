@@ -40,10 +40,13 @@ public final class EventBus {
     private Dispatcher dispatcher = new Dispatcher(subscriberRepo);
     private AsyncDispatcher asyncDispatcher = new AsyncDispatcher(subscriberRepo);
 
-
     /* Global subscribe */
 
     public String subscribe(EventHandler handler) {
+        return subscribe(Object.class, handler);
+    }
+
+    public String subscribe(Method handler) {
         return subscribe(Object.class, handler);
     }
 
@@ -57,11 +60,22 @@ public final class EventBus {
         return subscribe(Type.of(type), handler);
     }
 
+    public String subscribe(Class<?> type, Method handler) {
+        return subscribe(Type.of(type), handler);
+    }
+
     public String subscribe(Class<?> type, Object handler, Method handleMethod) {
         return subscribe(Type.of(type), handler, handleMethod);
     }
 
     public String subscribe(Type type, EventHandler handler) {
+        HandlerDescriptor descriptor = HandlerDescriptor.of(handler);
+        Subscriber subscriber = new Subscriber(descriptor, type);
+        this.subscriberRepo.save(subscriber);
+        return subscriber.id();
+    }
+
+    public String subscribe(Type type, Method handler) {
         HandlerDescriptor descriptor = HandlerDescriptor.of(handler);
         Subscriber subscriber = new Subscriber(descriptor, type);
         this.subscriberRepo.save(subscriber);
