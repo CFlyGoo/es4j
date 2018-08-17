@@ -67,7 +67,7 @@ public final class Event {
     @Override
     public String toString() {
         return "Event{" +
-            "type=" + prototype.getPrototype().getClass() +
+            "type=" + prototype.type() +
             ", occurredOn=" + occurredOn +
             ", prototype=" + prototype +
             ", source='" + source + '\'' +
@@ -101,7 +101,7 @@ public final class Event {
     }
 
     public Object prototype() {
-        return prototype.getPrototype();
+        return prototype.root();
     }
 
     public String source() {
@@ -109,6 +109,6 @@ public final class Event {
     }
 
     public Class<?> type() {
-        return prototype.getPrototype().getClass();
+        return prototype.type();
     }
 }

@@ -29,46 +29,54 @@ import java.util.Objects;
  */
 public final class EventPrototype {
 
-    private final Object prototype;
+    private static final char SEPARATOR = '.';
 
-    private transient volatile Map<String, Result<?>> cachedNameResult = new HashMap<>();
+    private final Object root;
 
-    public EventPrototype(Object prototype) {
-        Objects.requireNonNull(prototype, "Event prototype must not be null.");
-        this.prototype = ObjectUtils.deepClone(prototype);
+    private transient volatile Map<String, Result<?>> cache = new HashMap<>();
+
+    public EventPrototype(Object root) {
+        Objects.requireNonNull(root, "Event prototype root must not be null.");
+        this.root = ObjectUtils.deepClone(root);
     }
 
-    public Object getPrototype() {
-        return ObjectUtils.deepClone(prototype);
+    Object root() {
+        return ObjectUtils.deepClone(root);
+    }
+
+    Class<?> type() {
+        return root.getClass();
     }
 
     Object get(String name) {
         assert name != null;
-        final Result<?> lookupValue = lookupCache(name);
-        final Result<?> result = (lookupValue == null) ? findByFinder(prototype, name) : lookupValue;
-        cachedNameResult.putIfAbsent(name, result);
-        return ObjectUtils.deepClone(result.value());
+        return ObjectUtils.deepClone(lookup(name).value());
     }
 
-    private Result<?> lookupCache(String name) {
-        Result<?> result = cachedNameResult.get(name);
-        if (result != null) {
-            return result;
-        }
-        final int idx = name.lastIndexOf('.');
-        if (idx == -1) {
-            return null;
-        }
-        result = lookupCache(name.substring(0, idx));
-        if (result != null) {
-            result = findByFinder(result.value(), name.substring(idx + 1));
+    private Result<?> lookup(String name) {
+        Result<?> result = cache.get(name);
+        if (result == null) {
+            result = resolve(parent(name).value(), fieldName(name));
+            cache.put(name, result);
         }
         return result;
     }
 
-    private Result<?> findByFinder(Object source, String name) {
-        FieldValueFinder finder = new FieldValueFinder();
-        Object value = finder.getFiledValue(source, name);
-        return new Result<>(value);
+    private Result<?> parent(String name) {
+        final String parent = parentNameOf(name);
+        return parent.isEmpty() ? new Result<>(root) : lookup(parent);
+    }
+
+    private String parentNameOf(String name) {
+        final int idx = name.lastIndexOf(SEPARATOR);
+        return (idx == -1) ? "" : name.substring(0, idx);
+    }
+
+    private String fieldName(String name) {
+        return name.substring(name.lastIndexOf(SEPARATOR) + 1);
+    }
+
+    private Result<?> resolve(Object source, String name) {
+        return new Result<>(new FieldValueFinder().getFiledValue(source, name));
     }
 }

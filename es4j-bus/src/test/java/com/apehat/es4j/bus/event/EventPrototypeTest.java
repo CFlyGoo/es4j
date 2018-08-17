@@ -38,7 +38,7 @@ public class EventPrototypeTest {
 
     @Test
     public void testGetWithContainsNullFieldValueObject() {
-        assertEquals(prototype.getPrototype(), metadata);
+        assertEquals(prototype.root(), metadata);
         assertEquals(userId, prototype.get(UserRegistered.FIELD_USER_ID));
         assertEquals(username, prototype.get(UserRegistered.FIELD_USERNAME));
         assertEquals(userRegisterDate, prototype.get(UserRegistered.FIELD_REGISTER_ON));
