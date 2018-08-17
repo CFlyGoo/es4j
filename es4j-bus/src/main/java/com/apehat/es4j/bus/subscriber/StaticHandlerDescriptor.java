@@ -31,7 +31,7 @@ final class StaticHandlerDescriptor implements HandlerDescriptor {
 
     StaticHandlerDescriptor(Method handler) {
         if (!Modifier.isStatic(handler.getModifiers())) {
-            throw new IllegalArgumentException("Must specify a static must.");
+            throw new IllegalArgumentException(handler + "isn't static method.");
         }
         this.handler = Objects.requireNonNull(handler, "Handler must not be null");
     }
