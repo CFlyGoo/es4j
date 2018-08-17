@@ -27,7 +27,7 @@ public final class UserId implements Serializable {
 
     private static final long serialVersionUID = 2165353297611629274L;
 
-    public static final String FIELD_ID = "getId";
+    static final String FIELD_ID = "id";
 
     private String id;
 
