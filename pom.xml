@@ -7,7 +7,7 @@
   <groupId>com.apehat</groupId>
   <artifactId>es4j</artifactId>
   <packaging>pom</packaging>
-  <version>0.0.2-SNAPSHOT</version>
+  <version>0.0.3-SNAPSHOT</version>
   <modules>
     <module>es4j-bus</module>
   </modules>
