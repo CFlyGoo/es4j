@@ -31,17 +31,21 @@ public interface TestDataProvider {
     String USER_REGISTERED_TIME = UserRegistered.FIELD_REGISTER_ON;
 
     String THIRD_PARTY_ACCOUNT = UserRegisteredWithThirdPartyAccount.FIELD_ACCOUNT;
-    String THIRD_PARTY_PLATFORM_NAME = THIRD_PARTY_ACCOUNT + '.' + ThirdPartyAccount.FIELD_PLATFORM_NAME;
-    String THIRD_PART_ACCOUNT_ID = THIRD_PARTY_ACCOUNT + '.' + ThirdPartyAccount.FIELD_THREAD_PARTY_ID;
+    String THIRD_PARTY_PLATFORM_NAME =
+        THIRD_PARTY_ACCOUNT + '.' + ThirdPartyAccount.FIELD_PLATFORM_NAME;
+    String THIRD_PART_ACCOUNT_ID =
+        THIRD_PARTY_ACCOUNT + '.' + ThirdPartyAccount.FIELD_THREAD_PARTY_ID;
     String THIRD_PART_ACCOUNT_ID_ID = THIRD_PART_ACCOUNT_ID + '.' + UserId.FIELD_ID;
 
     String THIRD_PART_USER_REGISTERED = UserRegisteredWithThirdPartyAccount.FIELD_REGISTERED_EVENT;
     String THIRD_PART_USER_REGISTERED_ID = THIRD_PART_USER_REGISTERED + '.' + USER_REGISTERED_ID;
-    String THIRD_PART_USER_REGISTERED_TIME = THIRD_PART_USER_REGISTERED + '.' + USER_REGISTERED_TIME;
-    String THIRD_PART_USER_REGISTERED_NAME = THIRD_PART_USER_REGISTERED + '.' + USER_REGISTERED_NAME;
+    String THIRD_PART_USER_REGISTERED_TIME =
+        THIRD_PART_USER_REGISTERED + '.' + USER_REGISTERED_TIME;
+    String THIRD_PART_USER_REGISTERED_NAME =
+        THIRD_PART_USER_REGISTERED + '.' + USER_REGISTERED_NAME;
     String THIRD_PART_USER_REGISTERED_ID_ID = THIRD_PART_USER_REGISTERED_ID + '.' + UserId.FIELD_ID;
 
-   static UserRegistered userRegisteredFixture() {
+    static UserRegistered userRegisteredFixture() {
         UserId userId = new UserId(UUID.randomUUID().toString());
         String username = "testUsername";
         Date registerOn = new Date();

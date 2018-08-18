@@ -43,28 +43,28 @@ public final class UserRegistered implements Serializable {
         this.registerOn = registerOn;
     }
 
-    public void setUserId(UserId userId) {
-        this.userId = userId;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public void setRegisterOn(Date registerOn) {
-        this.registerOn = registerOn;
-    }
-
     public UserId getUserId() {
         return userId;
+    }
+
+    public void setUserId(UserId userId) {
+        this.userId = userId;
     }
 
     public String getUsername() {
         return username;
     }
 
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
     public Date getRegisterOn() {
         return registerOn;
+    }
+
+    public void setRegisterOn(Date registerOn) {
+        this.registerOn = registerOn;
     }
 
     @Override

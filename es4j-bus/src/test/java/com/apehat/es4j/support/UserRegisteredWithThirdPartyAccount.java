@@ -25,11 +25,9 @@ import java.util.Objects;
  */
 public final class UserRegisteredWithThirdPartyAccount implements Serializable {
 
-    private static final long serialVersionUID = 1244066911786017876L;
-
     static final String FIELD_REGISTERED_EVENT = "registeredEvent";
     static final String FIELD_ACCOUNT = "account";
-
+    private static final long serialVersionUID = 1244066911786017876L;
     private UserRegistered registeredEvent;
     private ThirdPartyAccount account;
 
@@ -39,20 +37,20 @@ public final class UserRegisteredWithThirdPartyAccount implements Serializable {
         this.account = account;
     }
 
-    public void setRegisteredEvent(UserRegistered registeredEvent) {
-        this.registeredEvent = registeredEvent;
-    }
-
-    public void setAccount(ThirdPartyAccount account) {
-        this.account = account;
-    }
-
     public UserRegistered getRegisteredEvent() {
         return registeredEvent;
     }
 
+    public void setRegisteredEvent(UserRegistered registeredEvent) {
+        this.registeredEvent = registeredEvent;
+    }
+
     public ThirdPartyAccount getAccount() {
         return account;
+    }
+
+    public void setAccount(ThirdPartyAccount account) {
+        this.account = account;
     }
 
     @Override

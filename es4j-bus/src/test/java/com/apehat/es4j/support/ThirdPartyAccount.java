@@ -24,11 +24,9 @@ import java.io.Serializable;
  */
 public final class ThirdPartyAccount implements Serializable {
 
-    private static final long serialVersionUID = -7636905641359890942L;
-
     static final String FIELD_PLATFORM_NAME = "platformName";
     static final String FIELD_THREAD_PARTY_ID = "thirdPartyId";
-
+    private static final long serialVersionUID = -7636905641359890942L;
     private String platformName;
     private UserId thirdPartyId;
 
@@ -37,19 +35,19 @@ public final class ThirdPartyAccount implements Serializable {
         this.thirdPartyId = thirdPartyId;
     }
 
-    public void setPlatformName(String platformName) {
-        this.platformName = platformName;
-    }
-
-    public void setThirdPartyId(UserId thirdPartyId) {
-        this.thirdPartyId = thirdPartyId;
-    }
-
     public String getPlatformName() {
         return platformName;
     }
 
+    public void setPlatformName(String platformName) {
+        this.platformName = platformName;
+    }
+
     public UserId getThirdPartyId() {
         return thirdPartyId;
+    }
+
+    public void setThirdPartyId(UserId thirdPartyId) {
+        this.thirdPartyId = thirdPartyId;
     }
 }

@@ -25,10 +25,8 @@ import java.util.Objects;
  */
 public final class UserId implements Serializable {
 
-    private static final long serialVersionUID = 2165353297611629274L;
-
     static final String FIELD_ID = "id";
-
+    private static final long serialVersionUID = 2165353297611629274L;
     private String id;
 
     public UserId(String id) {
@@ -47,12 +45,12 @@ public final class UserId implements Serializable {
         return Objects.equals(id, userId.id);
     }
 
-    public void setId(String id) {
-        this.id = id;
-    }
-
     public String getId() {
         return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     @Override
