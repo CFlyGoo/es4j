@@ -17,8 +17,6 @@
 package com.apehat.es4j.bus.subscriber;
 
 import com.apehat.es4j.bus.EventHandler;
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
 
 /**
  * @author hanpengfei
