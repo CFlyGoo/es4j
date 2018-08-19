@@ -23,5 +23,5 @@ package com.apehat.es4j.util;
 @FunctionalInterface
 public interface Indicator<T> {
 
-    boolean isDirected(T o1, T o2);
+    boolean isDirection(T o1, T o2);
 }
