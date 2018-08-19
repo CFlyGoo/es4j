@@ -129,12 +129,12 @@ public final class StructuralModelAnalyzer<E> {
         return matrix;
     }
 
-    public Set<E> getReachableSet(Class<?> cls) {
-        return getItems(getReachableSet(indexOf(cls)));
+    public Set<E> getReachableSet(E item) {
+        return getItems(getReachableSet(indexOf(item)));
     }
 
-    public Set<E> getFirstSet(Class<?> cls) {
-        return getItems(getFirstSet(indexOf(cls)));
+    public Set<E> getFirstSet(E item) {
+        return getItems(getFirstSet(indexOf(item)));
     }
 
     // 先行集代表是他本身或他的子类
@@ -215,9 +215,9 @@ public final class StructuralModelAnalyzer<E> {
         return result;
     }
 
-    private int indexOf(Class<?> cls) {
+    private int indexOf(E item) {
         for (int i = 0; i < items.length; i++) {
-            if (this.items[i].equals(cls)) {
+            if (this.items[i].equals(item)) {
                 return i;
             }
         }
