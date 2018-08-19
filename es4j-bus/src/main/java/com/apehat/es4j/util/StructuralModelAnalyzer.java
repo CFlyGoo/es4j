@@ -225,12 +225,10 @@ public final class StructuralModelAnalyzer<E> {
     }
 
     private boolean isAdjacent(int start, int end) {
-        if (indicator != null) {
-            return indicator.isDirected(items[start], items[end]);
-        } else {
-            assert items[start] instanceof Directed;
-            //noinspection unchecked - safe
-            return ((Directed<E>) items[start]).isDirected(items[end]);
-        }
+        //noinspection unchecked - safe
+        return start == end ||
+            ((indicator == null) ?
+                ((Directed<E>) items[start]).isDirected(items[end]) :
+                indicator.isDirected(items[start], items[end]));
     }
 }
