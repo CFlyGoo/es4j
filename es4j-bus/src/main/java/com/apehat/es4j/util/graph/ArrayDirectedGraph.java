@@ -14,22 +14,24 @@
  * limitations under the License.
  */
 
-package com.apehat.es4j.util;
+package com.apehat.es4j.util.graph;
 
+import com.apehat.es4j.util.MatrixUtils;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 /**
  * @author hanpengfei
  * @since 1.0
  */
-public final class StructuralModelAnalyzer<E> {
+@SuppressWarnings("WeakerAccess")
+public class ArrayDirectedGraph<E> implements DirectedGraph<E> {
 
-    private final E[] items;
-    private final Indicator<E> indicator;
+    private final List<E> items;
+    private final Indicator<? super E> indicator;
 
     // caches
 
@@ -39,29 +41,53 @@ public final class StructuralModelAnalyzer<E> {
     private transient Integer[][] crossSet;
     private transient Integer[][] mergeSet;
 
-    public StructuralModelAnalyzer(Set<? extends Directed<E>> items) {
+    public ArrayDirectedGraph(Set<E> items, Indicator<? super E> indicator) {
         if (items == null || items.size() == 0) {
             throw new IllegalArgumentException("Must specified items");
         }
-        //noinspection unchecked - safe
-        this.items = (E[]) Collections.unmodifiableSet(items).toArray();
-        this.indicator = null;
+        this.items = new ArrayList<>(items);
+        this.indicator = indicator;
     }
 
-    public StructuralModelAnalyzer(Set<E> items, Indicator<E> indicator) {
-        if (items == null || items.size() == 0) {
-            throw new IllegalArgumentException("Must specified items");
-        }
-        //noinspection unchecked - safe
-        this.items = (E[]) Collections.unmodifiableSet(items).toArray();
-        this.indicator = indicator;
-//        getItemsLayer();
+    @Override
+    public Set<E> getReachableSet(E item) {
+        return itemsOf(getReachableSet(this.items.indexOf(item)));
+    }
+
+    @Override
+    public Set<E> getFirstSet(E item) {
+        return itemsOf(getFirstSet(this.items.indexOf(item)));
+    }
+
+    @Override
+    public boolean isDirected(E head, E tail) {
+        return isDirected(this.items.indexOf(head), this.items.indexOf(tail));
+    }
+
+    @Override
+    public int getLayerCount() {
+        return new LayerBuilder<>(this).calculateLayer().count();
+    }
+
+    @Override
+    public int getLayer(E node) {
+        return new LayerBuilder<>(this).calculateLayer().getLayerIndex(node);
+    }
+
+    @Override
+    public Set<E> getIn(int layer) {
+        return new LayerBuilder<>(this).calculateLayer().itemsIn(layer);
+    }
+
+    @Override
+    public Set<E> items() {
+        return new HashSet<>(items);
     }
 
     private void getItemsLayer() {
         // 等待计算层级的项目序数
         final Set<Integer> candidates = new HashSet<>();
-        for (int i = 0; i < this.items.length; i++) {
+        for (int i = 0; i < this.items.size(); i++) {
             candidates.add(i);
         }
         int layerIdx = 0;
@@ -101,11 +127,11 @@ public final class StructuralModelAnalyzer<E> {
     }
 
     private byte[][] getAdjacencyMatrix() {
-        final int length = this.items.length;
+        final int length = this.items.size();
         final byte[][] matrix = new byte[length][length];
         for (int start = 0; start < length; start++) {
             for (int end = 0; end < length; end++) {
-                if (isAdjacent(start, end)) {
+                if (isDirected(start, end)) {
                     matrix[start][end] = 1;
                 }
             }
@@ -113,22 +139,15 @@ public final class StructuralModelAnalyzer<E> {
         return matrix;
     }
 
-    public Set<E> getReachableSet(E item) {
-        return getItems(getReachableSet(indexOf(item)));
-    }
-
-    public Set<E> getFirstSet(E item) {
-        return getItems(getFirstSet(indexOf(item)));
-    }
-
-    // 先行集代表是他本身或他的子类
-    // 所有该列元素为1的
     private Integer[] getFirstSet(int idx) {
+        if (idx == -1) {
+            throw new IllegalArgumentException("Non item in " + -1);
+        }
         if (this.firstSet == null) {
-            this.firstSet = new Integer[this.items.length][];
+            this.firstSet = new Integer[this.items.size()][];
         }
         if (this.firstSet[idx] == null) {
-            final int length = this.items.length;
+            final int length = this.items.size();
             final ArrayList<Integer> firstSet = new ArrayList<>(length);
             for (int i = 0; i < length; i++) {
                 if (getReachableMatrix()[i][idx] == 1) {
@@ -140,14 +159,15 @@ public final class StructuralModelAnalyzer<E> {
         return this.firstSet[idx];
     }
 
-    // 可达集代表他本身或他的父类
-    // 所有该行表示为1的元素
     private Integer[] getReachableSet(int idx) {
+        if (idx == -1) {
+            throw new IllegalArgumentException("Non item in " + -1);
+        }
         if (this.reachableSet == null) {
-            this.reachableSet = new Integer[this.items.length][];
+            this.reachableSet = new Integer[this.items.size()][];
         }
         if (this.reachableSet[idx] == null) {
-            final int length = this.items.length;
+            final int length = this.items.size();
             ArrayList<Integer> reachableSet = new ArrayList<>(length);
             for (int j = 0; j < length; j++) {
                 if (this.getReachableMatrix()[idx][j] == 1) {
@@ -161,7 +181,7 @@ public final class StructuralModelAnalyzer<E> {
 
     private Integer[] getMergeSet(int idx) {
         if (this.mergeSet == null) {
-            this.mergeSet = new Integer[this.items.length][];
+            this.mergeSet = new Integer[this.items.size()][];
         }
         if (this.mergeSet[idx] == null) {
             final Integer[] firstSet = this.getFirstSet(idx);
@@ -173,9 +193,10 @@ public final class StructuralModelAnalyzer<E> {
         return this.mergeSet[idx];
     }
 
+
     private Integer[] getCrossSet(int idx) {
         if (this.crossSet == null) {
-            this.crossSet = new Integer[this.items.length][];
+            this.crossSet = new Integer[this.items.size()][];
         }
         if (this.crossSet[idx] == null) {
             final ArrayList<Integer> crossSet = new ArrayList<>();
@@ -191,28 +212,19 @@ public final class StructuralModelAnalyzer<E> {
         return this.crossSet[idx];
     }
 
-    private Set<E> getItems(Integer[] idxs) {
+    private Set<E> itemsOf(Integer[] idxs) {
         final HashSet<E> result = new HashSet<>();
         for (Integer idx : idxs) {
-            result.add(this.items[idx]);
+            result.add(this.items.get(idx));
         }
         return result;
     }
 
-    private int indexOf(E item) {
-        for (int i = 0; i < items.length; i++) {
-            if (this.items[i].equals(item)) {
-                return i;
-            }
-        }
-        throw new IllegalArgumentException("Cannot found " + cls);
-    }
-
-    private boolean isAdjacent(int start, int end) {
+    private boolean isDirected(int start, int end) {
         //noinspection unchecked - safe
         return start == end ||
             ((indicator == null) ?
-                ((Directed<E>) items[start]).isDirected(items[end]) :
-                indicator.isDirected(items[start], items[end]));
+                ((Directed<E>) items.get(start)).isDirected(items.get(end)) :
+                indicator.isDirection(items.get(start), items.get(end)));
     }
 }

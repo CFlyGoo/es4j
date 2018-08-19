@@ -14,14 +14,39 @@
  * limitations under the License.
  */
 
-package com.apehat.es4j.util;
+package com.apehat.es4j.util.graph;
+
+import java.util.Set;
 
 /**
  * @author hanpengfei
  * @since 1.0
  */
-@FunctionalInterface
-public interface Indicator<T> {
+public interface DirectedGraph<E> {
 
-    boolean isDirection(T o1, T o2);
+    Set<E> getReachableSet(E item);
+
+    Set<E> getFirstSet(E item);
+
+    default boolean isAdjacent(E head, E tail) {
+        return isDirected(head, tail) || isDirected(tail, head);
+    }
+
+    boolean isDirected(E head, E tail);
+
+    int getLayerCount();
+
+    default boolean isReachable(E head, E tail) {
+        return getReachableSet(head).contains(tail);
+    }
+
+    int getLayer(E node);
+
+    default Set<E> getTop() {
+        return getIn(1);
+    }
+
+    Set<E> getIn(int layer);
+
+    Set<E> items();
 }

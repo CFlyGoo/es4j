@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.apehat.es4j.util;
+package com.apehat.es4j.util.graph;
 
 /**
  * @author hanpengfei
