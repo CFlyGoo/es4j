@@ -14,21 +14,15 @@
  * limitations under the License.
  */
 
-package com.apehat.es4j.util;
-
-import java.util.Set;
+package com.apehat.es4j.util.graph;
 
 /**
  * @author hanpengfei
  * @since 1.0
  */
-public interface DirectedGraph<E> {
+public final class ArrayDirectedGraphTest extends DirectedGraphTest {
 
-    Set<E> getReachableSet(E item);
-
-    Set<E> getFirstSet(E item);
-
-    boolean isAdjacent(E head, E tail);
-
-    boolean isReachable(E head, E tail);
+    public ArrayDirectedGraphTest() {
+        super(new ArrayDirectedGraph<>(getSample(), getIndicator()));
+    }
 }

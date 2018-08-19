@@ -14,10 +14,14 @@
  * limitations under the License.
  */
 
-package com.apehat.es4j.util;
+package com.apehat.es4j.util.graph;
 
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.assertTrue;
 
+import com.apehat.es4j.util.graph.DirectedGraph;
+import com.apehat.es4j.util.graph.Indicator;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -92,9 +96,6 @@ public class DirectedGraphTest {
         return supers;
     }
 
-
-
-
     private interface SuperInterface1 {}
 
     private interface SuperInterface2 {}
@@ -165,13 +166,19 @@ public class DirectedGraphTest {
     private final DirectedGraph<Class<?>> directedGraph;
 
     DirectedGraphTest(DirectedGraph<Class<?>> directedGraph) {
+        assert directedGraph != null;
         this.directedGraph = directedGraph;
+    }
+
+    @Test
+    public void testGetLayer() {
+        assertEquals(2, directedGraph.getLayer(MiddleInterface3.class));
     }
 
     @Test
     public void testGetReachableSet() {
         for (Class<?> cls : getSample()) {
-            logger.debug("Start get reachable set of {}", cls);
+            logger.debug("Start getIn reachable set of {}", cls);
             assertEquals(directedGraph.getReachableSet(cls), REACHABLE_CLASSES.get(cls));
         }
     }
@@ -182,5 +189,63 @@ public class DirectedGraphTest {
             logger.debug("Start first set of {}", cls.getSimpleName());
             assertEquals(directedGraph.getFirstSet(cls), FIRST_CLASSES.get(cls));
         }
+    }
+
+    @Test
+    public void testIsAdjacent() {
+        for (Class<?> cls : getSample()) {
+            logger.debug("Start test is adjacent of {}", cls.getSimpleName());
+            Set<Class<?>> tempSample = new HashSet<>(Arrays.asList(cls.getInterfaces()));
+            tempSample.add(cls);
+            tempSample.add(cls.getSuperclass());
+            for (Class<?> sample : tempSample) {
+                if (getSample().contains(sample)) {
+                    assertTrue(directedGraph.isAdjacent(cls, sample));
+                    assertTrue(directedGraph.isAdjacent(sample, cls));
+                }
+            }
+        }
+    }
+
+    @Test
+    public void testIsReachable() {
+        for (Class<?> cls : getSample()) {
+            logger.debug("Start test is reachable of {}", cls.getSimpleName());
+            Set<Class<?>> tempSample = REACHABLE_CLASSES.get(cls);
+            for (Class<?> sample : tempSample) {
+                assertTrue(directedGraph.isReachable(cls, sample));
+                if (sample != cls) {
+                    assertFalse(directedGraph.isReachable(sample, cls));
+                }
+            }
+        }
+    }
+
+
+    @Test
+    public void testGetIn() {
+        Class<?>[] array = new Class[]{
+            MiddleClass1.class, MiddleClass2.class, MiddleClass3.class, MiddleClass4.class,
+            MiddleInterface1.class, MiddleInterface2.class, MiddleInterface3.class
+        };
+        assertEquals(directedGraph.getIn(2), new HashSet<>(Arrays.asList(array)));
+    }
+
+    @Test
+    public void testGetLayerCount() {
+        assertEquals(directedGraph.getLayerCount(), 3);
+    }
+
+    @Test(expectedExceptions = IllegalArgumentException.class)
+    public void testGetInWithOutOfLayerCount() {
+        directedGraph.getIn(4);
+    }
+
+    @Test
+    public void testGetTop() {
+        Class<?>[] topClasses = new Class[]{
+            SuperInterface1.class, SuperInterface2.class, SuperClass1.class
+        };
+        assertEquals(directedGraph.getTop(), new HashSet<>(Arrays.asList(topClasses)));
     }
 }
