@@ -87,7 +87,7 @@ public final class StructuralModelAnalyzer<E> {
     private byte[][] getReachableMatrix() {
         if (this.reachableMatrix == null) {
             final byte[][] adjacencyMatrix = getAdjacencyMatrix();
-            final byte[][] reachableMatrix = getMatrixProduct(adjacencyMatrix, adjacencyMatrix);
+            final byte[][] reachableMatrix = MatrixUtils.mul(adjacencyMatrix, adjacencyMatrix);
             for (int i = 0; i < reachableMatrix.length; i++) {
                 for (int j = 0; j < reachableMatrix.length; j++) {
                     if (reachableMatrix[i][j] > 0) {
@@ -98,22 +98,6 @@ public final class StructuralModelAnalyzer<E> {
             this.reachableMatrix = reachableMatrix;
         }
         return this.reachableMatrix;
-    }
-
-    // 矩阵求和
-    private byte[][] getMatrixProduct(byte[][] a, byte[][] b) {
-        assert a[0].length == b.length;
-        final int rowCount = a.length;
-        final int columnCount = b[0].length;
-        byte[][] result = new byte[rowCount][columnCount];
-        for (int r = 0; r < rowCount; r++) {
-            for (int c = 0; c < columnCount; c++) {
-                for (int k = 0; k < b.length; k++) {
-                    result[r][c] += a[r][k] * b[k][c];
-                }
-            }
-        }
-        return result;
     }
 
     private byte[][] getAdjacencyMatrix() {
