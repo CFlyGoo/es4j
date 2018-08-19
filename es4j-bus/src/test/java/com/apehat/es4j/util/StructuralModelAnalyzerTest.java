@@ -52,8 +52,8 @@ public final class StructuralModelAnalyzerTest {
             MiddleInterface1.class
         };
         this.sample = new HashSet<>(Arrays.asList(sampleArray));
-        this.analyzer = new StructuralModelAnalyzer<>(this.sample,
-            (o1, o2) -> o2.isAssignableFrom(o1));
+        this.analyzer = new StructuralModelAnalyzer<>(this.sample, (o1, o2) ->
+            o1 == o2 || Arrays.asList(o1.getInterfaces()).contains(o2) || o1.getSuperclass() == o2);
         init();
     }
 
