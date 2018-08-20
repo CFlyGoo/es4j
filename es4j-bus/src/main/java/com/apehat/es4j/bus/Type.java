@@ -30,4 +30,8 @@ public interface Type extends Serializable {
     }
 
     boolean isAssignableFrom(Class<?> cls);
+
+    Type add(Class<?> type);
+
+    Type remove(Class<?> type);
 }
