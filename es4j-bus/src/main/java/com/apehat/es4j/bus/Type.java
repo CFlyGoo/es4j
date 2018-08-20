@@ -16,7 +16,7 @@
 
 package com.apehat.es4j.bus;
 
-import com.apehat.es4j.bus.support.ClassType;
+import com.apehat.es4j.bus.support.CompositeType;
 import java.io.Serializable;
 
 /**
@@ -26,6 +26,8 @@ import java.io.Serializable;
 public interface Type extends Serializable {
 
     static Type of(Class<?> cls) {
-        return new ClassType(cls);
+        return new CompositeType(cls);
     }
+
+    boolean isAssignableFrom(Class<?> cls);
 }
