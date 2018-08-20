@@ -25,9 +25,4 @@ public class AcmeDirectedGraphTest extends DirectedGraphTest {
     AcmeDirectedGraphTest() {
         super(new AcmeDirectedGraph<>(getSample(), getIndicator()));
     }
-
-    @Override
-    public void testGetFirstSet() {
-        super.testGetFirstSet();
-    }
 }
