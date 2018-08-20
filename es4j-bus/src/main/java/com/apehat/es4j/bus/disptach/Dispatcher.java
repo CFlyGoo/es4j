@@ -16,7 +16,6 @@
 
 package com.apehat.es4j.bus.disptach;
 
-import com.apehat.es4j.bus.Type;
 import com.apehat.es4j.bus.event.PendingEvent;
 import com.apehat.es4j.bus.subscriber.Subscriber;
 import com.apehat.es4j.bus.subscriber.SubscriberRepository;
@@ -36,11 +35,10 @@ public class Dispatcher {
             subscriberRepo, "Subscriber repository must not be null");
     }
 
-    public void dispatch(PendingEvent pendingEvent) {
-        Type type = pendingEvent.type();
-        Set<Subscriber> subscribers = subscriberRepo.subscriberWithType(type);
+    public void dispatch(PendingEvent event) {
+        Set<Subscriber> subscribers = subscriberRepo.subscriberWithType(event.type());
         for (Subscriber subscriber : subscribers) {
-            subscriber.onEvent(pendingEvent);
+            subscriber.onEvent(event);
         }
     }
 }
