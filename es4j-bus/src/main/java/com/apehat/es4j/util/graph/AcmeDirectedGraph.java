@@ -31,7 +31,7 @@ import java.util.Set;
 @SuppressWarnings("WeakerAccess")
 public final class AcmeDirectedGraph<E> implements DirectedGraph<E> {
 
-    private final List<Acme<E>> acmes;
+    private final List<DynamicAcme<E>> acmes;
     private final Indicator<? super E> indicator;
 
     private Integer layerCount;
@@ -41,12 +41,12 @@ public final class AcmeDirectedGraph<E> implements DirectedGraph<E> {
         if (nodes == null || nodes.size() == 0) {
             throw new IllegalArgumentException("Must specified nodes");
         }
-        ArrayList<Acme<E>> temp = new ArrayList<>();
+        ArrayList<DynamicAcme<E>> temp = new ArrayList<>();
         for (E node : nodes) {
-            temp.add(new Acme<>(node));
+            temp.add(new DynamicAcme<>(node));
         }
-        for (Acme<E> head : temp) {
-            for (Acme<E> tail : temp) {
+        for (DynamicAcme<E> head : temp) {
+            for (DynamicAcme<E> tail : temp) {
                 if (!head.equals(tail) &&
                     indicator.isDirection(head.getValue(), tail.getValue())) {
                     new Extent<>(head, tail, true);
@@ -58,18 +58,18 @@ public final class AcmeDirectedGraph<E> implements DirectedGraph<E> {
     }
 
     public Set<E> getAdjacentReachableSet(E node) {
-        return Acme.values(this.acmes.get(indexOf(node)).getAdjacentReachableSet());
+        return DynamicAcme.values(this.acmes.get(indexOf(node)).getAdjacentReachableSetAcme());
     }
 
     public Set<E> getAdjacentFirstSet(E node) {
-        return Acme.values(this.acmes.get(indexOf(node)).getAdjacentFirstSet());
+        return DynamicAcme.values(this.acmes.get(indexOf(node)).getAdjacentFirstSetAcme());
     }
 
     @Override
     public Set<E> getIn(int layer) {
         if (currentBuildCompletedLayer >= layer) {
             Set<E> layerItems = new HashSet<>();
-            for (Acme<E> acme : acmes) {
+            for (DynamicAcme<E> acme : acmes) {
                 if (acme.getLayer() != null && acme.getLayer() == layer) {
                     layerItems.add(acme.getValue());
                 }
@@ -85,7 +85,7 @@ public final class AcmeDirectedGraph<E> implements DirectedGraph<E> {
 
     @Override
     public Set<E> items() {
-        return Acme.values(new HashSet<>(this.acmes));
+        return DynamicAcme.values(new HashSet<>(this.acmes));
     }
 
     @Override
@@ -115,7 +115,7 @@ public final class AcmeDirectedGraph<E> implements DirectedGraph<E> {
             return;
         }
         currentBuildCompletedLayer++;
-        for (Acme<E> candidate : snapshot.getPendingAcmes()) {
+        for (DynamicAcme<E> candidate : snapshot.getPendingAcmes()) {
             Set<E> currentReachableSet = new HashSet<>(getReachableSet(candidate.getValue()));
             currentReachableSet.removeAll(snapshot.getCompletedNodes());
             if (getCrossSet(candidate.getValue()).equals(currentReachableSet)) {
@@ -126,12 +126,12 @@ public final class AcmeDirectedGraph<E> implements DirectedGraph<E> {
 
     @Override
     public Set<E> getReachableSet(E node) {
-        return Acme.values(this.acmes.get(indexOf(node)).getReachableSet());
+        return DynamicAcme.values(this.acmes.get(indexOf(node)).getReachableSetAcme());
     }
 
     @Override
     public Set<E> getFirstSet(E node) {
-        return Acme.values(this.acmes.get(indexOf(node)).getFirstSet());
+        return DynamicAcme.values(this.acmes.get(indexOf(node)).getFirstSetAcme());
     }
 
     @Override
@@ -155,12 +155,12 @@ public final class AcmeDirectedGraph<E> implements DirectedGraph<E> {
 
     private final class BuildInfoSnapshot {
 
-        private final Set<Acme<E>> pendingAcmes;
-        private final Set<Acme<E>> completedAcmes;
+        private final Set<DynamicAcme<E>> pendingAcmes;
+        private final Set<DynamicAcme<E>> completedAcmes;
         private Set<E> completedNodes;
 
         public BuildInfoSnapshot() {
-            final Set<Acme<E>> completedAcmes = new HashSet<>(acmes);
+            final Set<DynamicAcme<E>> completedAcmes = new HashSet<>(acmes);
             if (layerCount != null) {
                 this.pendingAcmes = Collections.emptySet();
                 this.completedAcmes = completedAcmes;
@@ -171,21 +171,21 @@ public final class AcmeDirectedGraph<E> implements DirectedGraph<E> {
             }
         }
 
-        public Set<Acme<E>> getPendingAcmes() {
+        public Set<DynamicAcme<E>> getPendingAcmes() {
             return pendingAcmes;
         }
 
         public Set<E> getCompletedNodes() {
             if (this.completedNodes == null) {
-                this.completedNodes = Acme.values(completedAcmes);
+                this.completedNodes = DynamicAcme.values(completedAcmes);
             }
             return this.completedNodes;
         }
     }
 
-    private Set<Acme<E>> getAllPendingBuildItems() {
-        final Set<Acme<E>> pendingAcmes = new HashSet<>();
-        for (Acme<E> currentAcme : this.acmes) {
+    private Set<DynamicAcme<E>> getAllPendingBuildItems() {
+        final Set<DynamicAcme<E>> pendingAcmes = new HashSet<>();
+        for (DynamicAcme<E> currentAcme : this.acmes) {
             if (currentAcme.getLayer() == null) {
                 pendingAcmes.add(currentAcme);
             }
@@ -204,11 +204,11 @@ public final class AcmeDirectedGraph<E> implements DirectedGraph<E> {
 
     private static final class Extent<E> {
 
-        private final Acme<E> head;
-        private final Acme<E> tail;
+        private final DynamicAcme<E> head;
+        private final DynamicAcme<E> tail;
         private final boolean directed;
 
-        private Extent(Acme<E> head, Acme<E> tail, boolean directed) {
+        private Extent(DynamicAcme<E> head, DynamicAcme<E> tail, boolean directed) {
             if (head.equals(tail)) {
                 throw new IllegalArgumentException("head cannot same as tail");
             }
@@ -219,7 +219,7 @@ public final class AcmeDirectedGraph<E> implements DirectedGraph<E> {
             tail.addExtend(this);
         }
 
-        public Acme<E> vertexOf(Acme<E> acme) {
+        public DynamicAcme<E> vertexOf(DynamicAcme<E> acme) {
             if (head.equals(acme)) {
                 return tail();
             }
@@ -229,11 +229,11 @@ public final class AcmeDirectedGraph<E> implements DirectedGraph<E> {
             throw new IllegalArgumentException("Specified acme don't belong this extent");
         }
 
-        public Acme<E> head() {
+        public DynamicAcme<E> head() {
             return head;
         }
 
-        public Acme<E> tail() {
+        public DynamicAcme<E> tail() {
             return tail;
         }
 
@@ -261,7 +261,7 @@ public final class AcmeDirectedGraph<E> implements DirectedGraph<E> {
         }
     }
 
-    private static final class Acme<E> {
+    private static final class DynamicAcme<E> implements Acme<E> {
 
         private Set<Extent<E>> extents;
         private final E value;
@@ -275,19 +275,20 @@ public final class AcmeDirectedGraph<E> implements DirectedGraph<E> {
             return Collections.unmodifiableSet(this.extents);
         }
 
-        private Acme(E value) {
+        private DynamicAcme(E value) {
             this.value = Objects.requireNonNull(value, "Value must not be null");
             this.extents = new HashSet<>();
         }
 
-        public static <E> Set<E> values(Set<Acme<E>> acmes) {
+        public static <E> Set<E> values(Set<DynamicAcme<E>> acmes) {
             HashSet<E> values = new LinkedHashSet<>();
-            for (Acme<E> acme : acmes) {
+            for (DynamicAcme<E> acme : acmes) {
                 values.add(acme.getValue());
             }
             return values;
         }
 
+        @Override
         public void setLayer(Integer layer) {
             if (this.layer != null) {
                 throw new IllegalStateException("Already sets layer " + layer);
@@ -295,16 +296,38 @@ public final class AcmeDirectedGraph<E> implements DirectedGraph<E> {
             this.layer = layer;
         }
 
+        @Override
         public E getValue() {
             return value;
         }
 
+        @Override
         public Integer getLayer() {
             return layer;
         }
 
-        public Set<Acme<E>> getAdjacentFirstSet() {
-            HashSet<Acme<E>> set = new HashSet<>();
+        @Override
+        public Set<E> getAdjacentFirstSet() {
+            return values(getAdjacentFirstSetAcme());
+        }
+
+        @Override
+        public Set<E> getAdjacentReachableSet() {
+            return values(getAdjacentReachableSetAcme());
+        }
+
+        @Override
+        public Set<E> getFirstSet() {
+            return values(getFirstSetAcme());
+        }
+
+        @Override
+        public Set<E> getReachableSet() {
+            return values(getReachableSetAcme());
+        }
+
+        public Set<DynamicAcme<E>> getAdjacentFirstSetAcme() {
+            HashSet<DynamicAcme<E>> set = new HashSet<>();
             set.add(this);
             for (Extent<E> extent : extents) {
                 if (!extent.isDirected() || this.equals(extent.tail())) {
@@ -314,8 +337,8 @@ public final class AcmeDirectedGraph<E> implements DirectedGraph<E> {
             return set;
         }
 
-        public Set<Acme<E>> getAdjacentReachableSet() {
-            HashSet<Acme<E>> set = new HashSet<>();
+        public Set<DynamicAcme<E>> getAdjacentReachableSetAcme() {
+            HashSet<DynamicAcme<E>> set = new HashSet<>();
             set.add(this);
             for (Extent<E> extent : extents) {
                 if (!extent.isDirected() || this.equals(extent.head())) {
@@ -325,24 +348,24 @@ public final class AcmeDirectedGraph<E> implements DirectedGraph<E> {
             return set;
         }
 
-        public Set<Acme<E>> getFirstSet() {
-            final Set<Acme<E>> set = new HashSet<>(getAdjacentFirstSet());
-            HashSet<Acme<E>> temp = new HashSet<>();
-            for (Acme<E> first : set) {
+        public Set<DynamicAcme<E>> getFirstSetAcme() {
+            final Set<DynamicAcme<E>> set = new HashSet<>(getAdjacentFirstSetAcme());
+            HashSet<DynamicAcme<E>> temp = new HashSet<>();
+            for (DynamicAcme<E> first : set) {
                 if (!this.equals(first)) {
-                    temp.addAll(first.getAdjacentFirstSet());
+                    temp.addAll(first.getAdjacentFirstSetAcme());
                 }
             }
             set.addAll(temp);
             return set;
         }
 
-        public Set<Acme<E>> getReachableSet() {
-            final Set<Acme<E>> set = new HashSet<>(getAdjacentReachableSet());
-            HashSet<Acme<E>> temp = new HashSet<>();
-            for (Acme<E> first : set) {
+        public Set<DynamicAcme<E>> getReachableSetAcme() {
+            final Set<DynamicAcme<E>> set = new HashSet<>(getAdjacentReachableSetAcme());
+            HashSet<DynamicAcme<E>> temp = new HashSet<>();
+            for (DynamicAcme<E> first : set) {
                 if (!this.equals(first)) {
-                    temp.addAll(first.getAdjacentReachableSet());
+                    temp.addAll(first.getAdjacentReachableSetAcme());
                 }
             }
             set.addAll(temp);
@@ -357,7 +380,7 @@ public final class AcmeDirectedGraph<E> implements DirectedGraph<E> {
             if (o == null || getClass() != o.getClass()) {
                 return false;
             }
-            Acme acme = (Acme) o;
+            DynamicAcme acme = (DynamicAcme) o;
             return Objects.equals(value, acme.value);
         }
 

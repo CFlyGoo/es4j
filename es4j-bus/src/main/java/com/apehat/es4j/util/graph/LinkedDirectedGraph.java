@@ -43,7 +43,7 @@ public final class LinkedDirectedGraph<E> implements DirectedGraph<E> {
         }
         ArrayList<Acme<E>> temp = new ArrayList<>();
         for (E node : nodes) {
-            temp.add(new Acme<>(node));
+            temp.add(new LinkedAcme<>(node));
         }
         this.acmes = Collections.unmodifiableList(temp);
         this.indicator = indicator;
@@ -216,24 +216,6 @@ public final class LinkedDirectedGraph<E> implements DirectedGraph<E> {
         }
     }
 
-    private Set<E> getAllBuildCompletedNodes() {
-        final HashSet<E> completed = new HashSet<>();
-        for (Acme<E> completedAcme : getAllBuildCompletedItems()) {
-            completed.add(completedAcme.getValue());
-        }
-        return completed;
-    }
-
-    private Set<Acme<E>> getAllBuildCompletedItems() {
-        final Set<Acme<E>> completed = new HashSet<>();
-        for (Acme<E> currentAcme : this.acmes) {
-            if (currentAcme.getLayer() != null) {
-                completed.add(currentAcme);
-            }
-        }
-        return completed;
-    }
-
     private Set<Acme<E>> getAllPendingBuildItems() {
         final Set<Acme<E>> pendingAcmes = new HashSet<>();
         for (Acme<E> currentAcme : this.acmes) {
@@ -254,7 +236,7 @@ public final class LinkedDirectedGraph<E> implements DirectedGraph<E> {
     }
 
 
-    private static final class Acme<E> {
+    private static final class LinkedAcme<E> implements Acme<E> {
 
         private final E value;
         private Integer layer;
@@ -263,7 +245,7 @@ public final class LinkedDirectedGraph<E> implements DirectedGraph<E> {
         private Set<E> firstSet;
         private Set<E> reachableSet;
 
-        private Acme(E value) {
+        private LinkedAcme(E value) {
             this.value = Objects.requireNonNull(value, "Value must not be null");
             this.adjacentFirstSet = new LinkedHashSet<>();
             this.adjacentReachableSet = new LinkedHashSet<>();
@@ -271,14 +253,7 @@ public final class LinkedDirectedGraph<E> implements DirectedGraph<E> {
             this.reachableSet = new LinkedHashSet<>();
         }
 
-        public static <E> Set<E> values(Set<Acme<E>> acmes) {
-            HashSet<E> values = new LinkedHashSet<>();
-            for (Acme<E> acme : acmes) {
-                values.add(acme.getValue());
-            }
-            return values;
-        }
-
+        @Override
         public void setLayer(Integer layer) {
             if (this.layer != null) {
                 throw new IllegalStateException("Already sets layer " + layer);
@@ -286,26 +261,32 @@ public final class LinkedDirectedGraph<E> implements DirectedGraph<E> {
             this.layer = layer;
         }
 
+        @Override
         public E getValue() {
             return value;
         }
 
+        @Override
         public Integer getLayer() {
             return layer;
         }
 
+        @Override
         public Set<E> getAdjacentFirstSet() {
             return adjacentFirstSet;
         }
 
+        @Override
         public Set<E> getAdjacentReachableSet() {
             return adjacentReachableSet;
         }
 
+        @Override
         public Set<E> getFirstSet() {
             return firstSet;
         }
 
+        @Override
         public Set<E> getReachableSet() {
             return reachableSet;
         }
@@ -318,7 +299,7 @@ public final class LinkedDirectedGraph<E> implements DirectedGraph<E> {
             if (o == null || getClass() != o.getClass()) {
                 return false;
             }
-            Acme acme = (Acme) o;
+            LinkedAcme acme = (LinkedAcme) o;
             return Objects.equals(value, acme.value);
         }
 

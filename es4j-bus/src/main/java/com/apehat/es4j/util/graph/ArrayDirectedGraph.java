@@ -17,8 +17,8 @@
 package com.apehat.es4j.util.graph;
 
 import com.apehat.es4j.util.MatrixUtils;
+import com.apehat.es4j.util.layer.LayerBuilder;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -38,8 +38,6 @@ public class ArrayDirectedGraph<E> implements DirectedGraph<E> {
     private transient byte[][] reachableMatrix;
     private transient Integer[][] reachableSet;
     private transient Integer[][] firstSet;
-    private transient Integer[][] crossSet;
-    private transient Integer[][] mergeSet;
 
     public ArrayDirectedGraph(Set<E> items, Indicator<? super E> indicator) {
         if (items == null || items.size() == 0) {
@@ -66,48 +64,22 @@ public class ArrayDirectedGraph<E> implements DirectedGraph<E> {
 
     @Override
     public int getLayerCount() {
-        return new LayerBuilder<>(this).calculateLayer().count();
+        return new LayerBuilder<>(this).calculateLayer().indexOf();
     }
 
     @Override
     public int getLayer(E node) {
-        return new LayerBuilder<>(this).calculateLayer().getLayerIndex(node);
+        return new LayerBuilder<>(this).calculateLayer().indexOf(node);
     }
 
     @Override
     public Set<E> getIn(int layer) {
-        return new LayerBuilder<>(this).calculateLayer().itemsIn(layer);
+        return new LayerBuilder<>(this).calculateLayer().getAll(layer);
     }
 
     @Override
     public Set<E> items() {
         return new HashSet<>(items);
-    }
-
-    private void getItemsLayer() {
-        // 等待计算层级的项目序数
-        final Set<Integer> candidates = new HashSet<>();
-        for (int i = 0; i < this.items.size(); i++) {
-            candidates.add(i);
-        }
-        int layerIdx = 0;
-        final Set<Integer> completedItems = new HashSet<>();
-        while (!candidates.isEmpty()) {
-            layerIdx++;
-            Set<Integer> currentLayerItems = new HashSet<>();
-            for (Integer candidate : candidates) {
-                Set<Integer> cachedReachableSet = new HashSet<>(
-                    Arrays.asList(getReachableSet(candidate)));
-                cachedReachableSet.removeAll(completedItems);
-                Integer[] currentReachableSet = cachedReachableSet.toArray(new Integer[0]);
-
-                if (Arrays.equals(currentReachableSet, getCrossSet(candidate))) {
-                    currentLayerItems.add(candidate);
-                }
-            }
-            completedItems.addAll(currentLayerItems);
-            candidates.removeAll(currentLayerItems);
-        }
     }
 
     private byte[][] getReachableMatrix() {
@@ -177,39 +149,6 @@ public class ArrayDirectedGraph<E> implements DirectedGraph<E> {
             this.reachableSet[idx] = reachableSet.toArray(new Integer[0]);
         }
         return this.reachableSet[idx];
-    }
-
-    private Integer[] getMergeSet(int idx) {
-        if (this.mergeSet == null) {
-            this.mergeSet = new Integer[this.items.size()][];
-        }
-        if (this.mergeSet[idx] == null) {
-            final Integer[] firstSet = this.getFirstSet(idx);
-            final Integer[] reachableSet = this.getReachableSet(idx);
-            Set<Integer> merge = new HashSet<>(Arrays.asList(firstSet));
-            merge.addAll(Arrays.asList(reachableSet));
-            this.mergeSet[idx] = merge.toArray(new Integer[0]);
-        }
-        return this.mergeSet[idx];
-    }
-
-
-    private Integer[] getCrossSet(int idx) {
-        if (this.crossSet == null) {
-            this.crossSet = new Integer[this.items.size()][];
-        }
-        if (this.crossSet[idx] == null) {
-            final ArrayList<Integer> crossSet = new ArrayList<>();
-            final Set<Integer> firstSetOfIdx = new HashSet<>(Arrays.asList(getFirstSet(idx)));
-            final Integer[] reachableSetOfIdx = this.getReachableSet(idx);
-            for (final Integer reachableItem : reachableSetOfIdx) {
-                if (firstSetOfIdx.contains(reachableItem)) {
-                    crossSet.add(reachableItem);
-                }
-            }
-            this.crossSet[idx] = crossSet.toArray(new Integer[0]);
-        }
-        return this.crossSet[idx];
     }
 
     private Set<E> itemsOf(Integer[] idxs) {
