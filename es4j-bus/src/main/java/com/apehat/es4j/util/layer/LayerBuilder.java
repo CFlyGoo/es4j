@@ -14,8 +14,9 @@
  * limitations under the License.
  */
 
-package com.apehat.es4j.util.graph;
+package com.apehat.es4j.util.layer;
 
+import com.apehat.es4j.util.graph.DirectedGraph;
 import java.util.HashSet;
 import java.util.Set;
 

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.apehat.es4j.util.graph;
+package com.apehat.es4j.util.layer;
 
 import java.util.Objects;
 import java.util.Set;
@@ -42,17 +42,17 @@ public class Layer<E> {
         }
     }
 
-    public Set<E> itemsIn(int index) {
+    public Set<E> getAll(int index) {
         if (index == this.index) {
             return getItems();
         }
         if (nextLayer == null) {
             throw new IllegalArgumentException("Don't have " + index + " layer");
         }
-        return nextLayer.itemsIn(index);
+        return nextLayer.getAll(index);
     }
 
-    public int getLayerIndex(E value) {
+    public int indexOf(E value) {
         for (E item : items) {
             if (item.equals(value)) {
                 return index;
@@ -61,17 +61,17 @@ public class Layer<E> {
         if (nextLayer == null) {
             throw new IllegalArgumentException("Cannot find " + value);
         }
-        return nextLayer.getLayerIndex(value);
+        return nextLayer.indexOf(value);
     }
 
     public Set<E> getItems() {
         return items;
     }
 
-    public int count() {
+    public int indexOf() {
         if (nextLayer == null) {
             return index;
         }
-        return nextLayer.count();
+        return nextLayer.indexOf();
     }
 }
