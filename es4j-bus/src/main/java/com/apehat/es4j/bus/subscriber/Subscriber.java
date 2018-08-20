@@ -47,7 +47,7 @@ public class Subscriber {
     }
 
     public void onEvent(PendingEvent event) {
-        if (!type.equals(event.type())) {
+        if (!type.isAssignableFrom(event.type())) {
             throw new IllegalArgumentException("Hadn't subscription to " + event.type());
         }
         if (subscriptionOn > event.occurredOn()) {
