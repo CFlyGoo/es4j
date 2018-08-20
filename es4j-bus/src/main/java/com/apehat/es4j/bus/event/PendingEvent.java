@@ -54,12 +54,7 @@ public class PendingEvent {
         return metadata.occurredOn();
     }
 
-    private Class<?> classType() {
+    public Class<?> type() {
         return metadata.type();
-    }
-
-    @Deprecated
-    public Type type() {
-        return Type.of(classType());
     }
 }
