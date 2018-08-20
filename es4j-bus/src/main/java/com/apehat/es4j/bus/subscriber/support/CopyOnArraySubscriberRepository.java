@@ -16,7 +16,6 @@
 
 package com.apehat.es4j.bus.subscriber.support;
 
-import com.apehat.es4j.bus.Type;
 import com.apehat.es4j.bus.subscriber.Subscriber;
 import com.apehat.es4j.bus.subscriber.SubscriberRepository;
 import java.util.HashSet;
@@ -37,11 +36,11 @@ public class CopyOnArraySubscriberRepository implements SubscriberRepository {
     }
 
     @Override
-    public Set<Subscriber> subscriberWithType(Type type) {
+    public Set<Subscriber> subscriberWithType(Class<?> type) {
         final Set<Subscriber> registeredSubscribers = this.subscribers;
         final Set<Subscriber> subscribers = new HashSet<>();
         for (Subscriber subscriber : registeredSubscribers) {
-            if (subscriber.subscriptionType().equals(type)) {
+            if (subscriber.subscriptionType().isAssignableFrom(type)) {
                 subscribers.add(subscriber);
             }
         }

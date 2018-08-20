@@ -16,7 +16,6 @@
 
 package com.apehat.es4j.bus.subscriber;
 
-import com.apehat.es4j.bus.Type;
 import java.util.Set;
 
 /**
@@ -27,5 +26,5 @@ public interface SubscriberRepository {
 
     void save(Subscriber subscriber);
 
-    Set<Subscriber> subscriberWithType(Type type);
+    Set<Subscriber> subscriberWithType(Class<?> type);
 }
