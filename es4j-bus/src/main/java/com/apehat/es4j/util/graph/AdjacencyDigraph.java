@@ -151,7 +151,7 @@ public final class AdjacencyDigraph<E> implements Digraph<E> {
         private Set<Edge<E>> outEdges;
 
         static <E> Set<E> values(Set<Vertex<E>> vertices) {
-            HashSet<E> values = new LinkedHashSet<>();
+            final Set<E> values = new LinkedHashSet<>();
             for (Vertex<E> vertex : vertices) {
                 values.add(vertex.value());
             }
@@ -177,19 +177,19 @@ public final class AdjacencyDigraph<E> implements Digraph<E> {
         }
 
         Set<Vertex<E>> adjacentInVertices() {
-            return adjacencies(inEdges, this);
+            return adjacencies(inEdges);
         }
 
         Set<Vertex<E>> adjacentOutVertices() {
-            return adjacencies(outEdges, this);
+            return adjacencies(outEdges);
         }
 
-        private Set<Vertex<E>> adjacencies(Set<Edge<E>> edges, Vertex<E> vertex) {
+        private Set<Vertex<E>> adjacencies(Set<Edge<E>> edges) {
             final Set<Vertex<E>> adjacencies = new HashSet<>();
             for (Edge<E> edge : edges) {
                 adjacencies.add(edge.adjacentVertexOf(this));
             }
-            adjacencies.add(vertex);
+            adjacencies.add(this);
             return adjacencies;
         }
 
