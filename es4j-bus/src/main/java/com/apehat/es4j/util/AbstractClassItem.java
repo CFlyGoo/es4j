@@ -19,7 +19,6 @@ package com.apehat.es4j.util;
 import com.apehat.es4j.util.graph.AcmeDirectedGraph;
 import com.apehat.es4j.util.graph.DirectedGraph;
 import com.apehat.es4j.util.graph.Indicator;
-import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -42,32 +41,6 @@ public abstract class AbstractClassItem extends AbstractItem<Class<?>> {
     @Override
     public final boolean isManageable(Class<?> cls) {
         return value().isAssignableFrom(cls);
-    }
-
-    public Set<Item<Class<?>>> rebuildSlots(Set<Item<Class<?>>> slots) {
-        if (slots == null || slots.isEmpty()) {
-            return slots;
-        }
-        DirectedGraph<Item<Class<?>>> graph = createNewDirectedGraph(slots);
-        final Set<Item<Class<?>>> mergeable = graph.items();
-        final Set<Item<Class<?>>> top = graph.getTop();
-        if (top.size() == mergeable.size()) {
-            return graph.items();
-        }
-        final Set<Item<Class<?>>> newSlots = new HashSet<>(top);
-        mergeable.removeAll(top);
-        for (Item<Class<?>> item : mergeable) {
-            Set<Item<Class<?>>> reachableSet = graph.getReachableSet(item);
-            for (Item<Class<?>> reachable : reachableSet) {
-                if (newSlots.contains(reachable)) {
-                    final Set<Item<Class<?>>> temp = new HashSet<>(reachable.slots());
-                    temp.addAll(item.slots());
-                    newSlots.remove(reachable);
-                    newSlots.add(reachable.newInstance(reachable.value(), rebuildSlots(temp)));
-                }
-            }
-        }
-        return newSlots;
     }
 
     protected Indicator<Item<Class<?>>> getIndicator() {
