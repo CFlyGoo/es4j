@@ -151,6 +151,27 @@ abstract class AbstractItem<T> implements Item<T> {
     }
 
     @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        AbstractItem<?> that = (AbstractItem<?>) o;
+        return Objects.equals(value, that.value) &&
+            Objects.equals(slots, that.slots);
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 195;
+        hash += 31 * hash + value.hashCode();
+        hash += 31 * hash + slots.hashCode();
+        return hash;
+    }
+
+    @Override
     public String toString() {
         return "AbstractItem{" +
             "value=" + value +
