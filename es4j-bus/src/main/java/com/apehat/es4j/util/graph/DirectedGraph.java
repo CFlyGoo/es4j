@@ -28,25 +28,29 @@ public interface DirectedGraph<E> {
 
     Set<E> getFirstSet(E item);
 
-    default boolean isAdjacent(E head, E tail) {
-        return isDirected(head, tail) || isDirected(tail, head);
+    @Deprecated
+    int getLayerCount();
+
+    @Deprecated
+    int getLayer(E node);
+
+    @Deprecated
+    default Set<E> getTop() {
+        return getIn(1);
     }
 
-    boolean isDirected(E head, E tail);
+    @Deprecated
+    Set<E> getIn(int layer);
 
-    int getLayerCount();
+    Set<E> items();
+
+    boolean isDirected(E head, E tail);
 
     default boolean isReachable(E head, E tail) {
         return getReachableSet(head).contains(tail);
     }
 
-    int getLayer(E node);
-
-    default Set<E> getTop() {
-        return getIn(1);
+    default boolean isAdjacent(E head, E tail) {
+        return isDirected(head, tail) || isDirected(tail, head);
     }
-
-    Set<E> getIn(int layer);
-
-    Set<E> items();
 }
