@@ -38,6 +38,7 @@ import com.apehat.es4j.support.sample.SampleMiddleInterface3;
 import com.apehat.es4j.support.sample.SampleSuperClass;
 import com.apehat.es4j.support.sample.SampleSuperInterface1;
 import com.apehat.es4j.support.sample.SampleSuperInterface2;
+import com.apehat.es4j.util.ClassUtils;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -86,7 +87,7 @@ public class DirectedGraphTest {
         }
 
         for (Class<?> cls : SAMPLE) {
-            Set<Class<?>> supers = getSupers(cls);
+            Set<Class<?>> supers = ClassUtils.getAllSuperclassesAndInterfaces(cls);
             for (Class<?> aSuper : supers) {
                 if (SAMPLE.contains(aSuper)) {
                     REACHABLE_CLASSES.get(cls).add(aSuper);
@@ -94,20 +95,6 @@ public class DirectedGraphTest {
                 }
             }
         }
-    }
-
-    private static Set<Class<?>> getSupers(Class<?> cls) {
-        Class<?> superclass = cls.getSuperclass();
-        HashSet<Class<?>> supers = new HashSet<>(Arrays.asList(cls.getInterfaces()));
-        if (superclass != null) {
-            supers.add(superclass);
-        }
-        HashSet<Class<?>> temp = new HashSet<>();
-        for (Class<?> aSuper : supers) {
-            temp.addAll(getSupers(aSuper));
-        }
-        supers.addAll(temp);
-        return supers;
     }
 
     public static Set<Class<?>> getSample() {
