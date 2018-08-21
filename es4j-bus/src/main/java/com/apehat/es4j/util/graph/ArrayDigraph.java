@@ -17,69 +17,78 @@
 package com.apehat.es4j.util.graph;
 
 import com.apehat.es4j.util.MatrixUtils;
-import com.apehat.es4j.util.layer.LayerBuilder;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 /**
  * @author hanpengfei
  * @since 1.0
  */
-@SuppressWarnings("WeakerAccess")
-public class ArrayDirectedGraph<E> implements DirectedGraph<E> {
+public class ArrayDigraph<E> implements Digraph<E> {
 
-    private final List<E> items;
+    private final List<E> vertices;
     private final Indicator<? super E> indicator;
 
-    // caches
-
+    private transient byte[][] adjacencyMatrix;
     private transient byte[][] reachableMatrix;
     private transient Integer[][] reachableSet;
     private transient Integer[][] firstSet;
 
-    public ArrayDirectedGraph(Set<E> items, Indicator<? super E> indicator) {
-        if (items == null || items.size() == 0) {
-            throw new IllegalArgumentException("Must specified items");
+    public ArrayDigraph(Set<E> vertices, Indicator<? super E> indicator) {
+        if (vertices == null || vertices.size() == 0) {
+            throw new IllegalArgumentException("Must specified vertices");
         }
-        this.items = new ArrayList<>(items);
-        this.indicator = indicator;
+        this.indicator = Objects.requireNonNull(indicator, "Indicator must not be null");
+        this.vertices = new ArrayList<>(vertices);
     }
 
     @Override
-    public Set<E> getReachableSet(E item) {
-        return itemsOf(getReachableSet(this.items.indexOf(item)));
+    public Set<E> getAdjacentFirstVertices(E node) {
+        byte[][] adjacencyMatrix = getAdjacencyMatrix();
+        final Set<E> vertices = new HashSet<>();
+        final int idx = this.vertices.indexOf(node);
+        for (int i = 0; i < adjacencyMatrix.length; i++) {
+            if (adjacencyMatrix[i][idx] == 1) {
+                vertices.add(this.vertices.get(i));
+            }
+        }
+        return vertices;
     }
 
     @Override
-    public Set<E> getFirstSet(E item) {
-        return itemsOf(getFirstSet(this.items.indexOf(item)));
+    public Set<E> getAdjacentReachableVertices(E vertex) {
+        byte[][] adjacencyMatrix = getAdjacencyMatrix();
+        final byte[] adjacencyList = adjacencyMatrix[this.vertices.indexOf(vertex)];
+        final Set<E> vertices = new HashSet<>();
+        for (int i = 0; i < adjacencyList.length; i++) {
+            if (adjacencyList[i] == 1) {
+                vertices.add(this.vertices.get(i));
+            }
+        }
+        return vertices;
     }
 
     @Override
-    public boolean isDirected(E head, E tail) {
-        return isDirected(this.items.indexOf(head), this.items.indexOf(tail));
+    public Set<E> getReachableVertices(E item) {
+        return indexOf(getReachableSet(this.vertices.indexOf(item)));
     }
 
     @Override
-    public int getLayerCount() {
-        return new LayerBuilder<>(this).calculateLayer().indexOf();
+    public Set<E> getFirstVertices(E item) {
+        return indexOf(getFirstSet(this.vertices.indexOf(item)));
     }
 
     @Override
-    public int getLayer(E node) {
-        return new LayerBuilder<>(this).calculateLayer().indexOf(node);
+    public boolean isDirected(E from, E to) {
+        return from.equals(to) || indicator.isDirection(from, to);
     }
 
     @Override
-    public Set<E> getIn(int layer) {
-        return new LayerBuilder<>(this).calculateLayer().getAll(layer);
-    }
-
-    @Override
-    public Set<E> items() {
-        return new HashSet<>(items);
+    public Set<E> vertices() {
+        return new HashSet<>(vertices);
     }
 
     private byte[][] getReachableMatrix() {
@@ -99,16 +108,19 @@ public class ArrayDirectedGraph<E> implements DirectedGraph<E> {
     }
 
     private byte[][] getAdjacencyMatrix() {
-        final int length = this.items.size();
-        final byte[][] matrix = new byte[length][length];
-        for (int start = 0; start < length; start++) {
-            for (int end = 0; end < length; end++) {
-                if (isDirected(start, end)) {
-                    matrix[start][end] = 1;
+        if (adjacencyMatrix == null) {
+            final int length = this.vertices.size();
+            final byte[][] matrix = new byte[length][length];
+            for (int from = 0; from < length; from++) {
+                for (int to = 0; to < length; to++) {
+                    if (isDirected(from, to)) {
+                        matrix[from][to] = 1;
+                    }
                 }
             }
+            this.adjacencyMatrix = matrix;
         }
-        return matrix;
+        return adjacencyMatrix;
     }
 
     private Integer[] getFirstSet(int idx) {
@@ -116,10 +128,10 @@ public class ArrayDirectedGraph<E> implements DirectedGraph<E> {
             throw new IllegalArgumentException("Non item in " + -1);
         }
         if (this.firstSet == null) {
-            this.firstSet = new Integer[this.items.size()][];
+            this.firstSet = new Integer[this.vertices.size()][];
         }
         if (this.firstSet[idx] == null) {
-            final int length = this.items.size();
+            final int length = this.vertices.size();
             final ArrayList<Integer> firstSet = new ArrayList<>(length);
             for (int i = 0; i < length; i++) {
                 if (getReachableMatrix()[i][idx] == 1) {
@@ -136,10 +148,10 @@ public class ArrayDirectedGraph<E> implements DirectedGraph<E> {
             throw new IllegalArgumentException("Non item in " + -1);
         }
         if (this.reachableSet == null) {
-            this.reachableSet = new Integer[this.items.size()][];
+            this.reachableSet = new Integer[this.vertices.size()][];
         }
         if (this.reachableSet[idx] == null) {
-            final int length = this.items.size();
+            final int length = this.vertices.size();
             ArrayList<Integer> reachableSet = new ArrayList<>(length);
             for (int j = 0; j < length; j++) {
                 if (this.getReachableMatrix()[idx][j] == 1) {
@@ -151,19 +163,16 @@ public class ArrayDirectedGraph<E> implements DirectedGraph<E> {
         return this.reachableSet[idx];
     }
 
-    private Set<E> itemsOf(Integer[] idxs) {
+    private Set<E> indexOf(Integer[] idxs) {
         final HashSet<E> result = new HashSet<>();
         for (Integer idx : idxs) {
-            result.add(this.items.get(idx));
+            result.add(this.vertices.get(idx));
         }
         return result;
     }
 
-    private boolean isDirected(int start, int end) {
-        //noinspection unchecked - safe
-        return start == end ||
-            ((indicator == null) ?
-                ((Directed<E>) items.get(start)).isDirected(items.get(end)) :
-                indicator.isDirection(items.get(start), items.get(end)));
+    private boolean isDirected(int from, int to) {
+        return vertices.get(from).equals(vertices.get(to)) ||
+            indicator.isDirection(vertices.get(from), vertices.get(to));
     }
 }

@@ -16,35 +16,31 @@
 
 package com.apehat.es4j.util.graph;
 
-import java.util.HashSet;
-import java.util.LinkedHashSet;
 import java.util.Set;
 
 /**
  * @author hanpengfei
  * @since 1.0
  */
-public interface Acme<E> {
+public interface Digraph<E> {
 
-    static <E> Set<E> values(Set<Acme<E>> acmes) {
-        HashSet<E> values = new LinkedHashSet<>();
-        for (Acme<E> acme : acmes) {
-            values.add(acme.getValue());
-        }
-        return values;
+    Set<E> getAdjacentFirstVertices(E node);
+
+    Set<E> getAdjacentReachableVertices(E vertex);
+
+    Set<E> getReachableVertices(E item);
+
+    Set<E> getFirstVertices(E item);
+
+    Set<E> vertices();
+
+    boolean isDirected(E head, E tail);
+
+    default boolean isReachable(E from, E to) {
+        return getReachableVertices(from).contains(to);
     }
 
-    void setLayer(Integer layer);
-
-    E getValue();
-
-    Integer getLayer();
-
-    Set<E> getAdjacentFirstSet();
-
-    Set<E> getAdjacentReachableSet();
-
-    Set<E> getFirstSet();
-
-    Set<E> getReachableSet();
+    default boolean isAdjacent(E head, E tail) {
+        return isDirected(head, tail) || isDirected(tail, head);
+    }
 }
