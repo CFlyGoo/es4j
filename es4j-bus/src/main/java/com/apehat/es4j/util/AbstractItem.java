@@ -16,10 +16,10 @@
 
 package com.apehat.es4j.util;
 
-import com.apehat.es4j.util.graph.AcmeDirectedGraph;
-import com.apehat.es4j.util.graph.DirectedGraph;
+import com.apehat.es4j.util.graph.AdjacencyDigraph;
+import com.apehat.es4j.util.graph.Digraph;
 import com.apehat.es4j.util.graph.Indicator;
-import com.apehat.es4j.util.layer.DirectedGraphQuantizer;
+import com.apehat.es4j.util.layer.DigraphLayerAnalyzer;
 import com.apehat.es4j.util.layer.Layer;
 import java.util.Collections;
 import java.util.HashSet;
@@ -118,8 +118,8 @@ abstract class AbstractItem<T> implements Item<T> {
         if (slots == null || slots.isEmpty()) {
             return slots;
         }
-        final DirectedGraph<Item<T>> graph = createNewDirectedGraph(slots);
-        final Set<Item<T>> mergeable = graph.items();
+        final Digraph<Item<T>> graph = createNewDirectedGraph(slots);
+        final Set<Item<T>> mergeable = graph.vertices();
         final Set<Item<T>> top = layer(graph).top().currentLayerItems();
         if (top.size() == mergeable.size()) {
             return slots;
@@ -127,7 +127,7 @@ abstract class AbstractItem<T> implements Item<T> {
         final Set<Item<T>> newSlots = new HashSet<>(top);
         mergeable.removeAll(top);
         for (Item<T> item : mergeable) {
-            Set<Item<T>> reachableSet = graph.getReachableSet(item);
+            Set<Item<T>> reachableSet = graph.getReachableVertices(item);
             for (Item<T> reachable : reachableSet) {
                 if (newSlots.contains(reachable)) {
                     final Set<Item<T>> temp = new HashSet<>(reachable.slots());
@@ -142,11 +142,19 @@ abstract class AbstractItem<T> implements Item<T> {
 
     protected abstract Indicator<Item<T>> getIndicator();
 
-    protected Layer<Item<T>> layer(DirectedGraph<Item<T>> graph) {
-        return new DirectedGraphQuantizer<>(graph).calculateLayer();
+    protected Layer<Item<T>> layer(Digraph<Item<T>> graph) {
+        return new DigraphLayerAnalyzer<>(graph).calculateLayer();
     }
 
-    protected DirectedGraph<Item<T>> createNewDirectedGraph(Set<Item<T>> slots) {
-        return new AcmeDirectedGraph<>(slots, getIndicator());
+    protected Digraph<Item<T>> createNewDirectedGraph(Set<Item<T>> slots) {
+        return new AdjacencyDigraph<>(slots, getIndicator());
+    }
+
+    @Override
+    public String toString() {
+        return "AbstractItem{" +
+            "value=" + value +
+            ", slots=" + slots +
+            '}';
     }
 }
