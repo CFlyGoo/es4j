@@ -80,6 +80,8 @@ public final class CompositeType implements Type {
             }
             if (item.value().isAssignableFrom(type)) {
                 newItems.add(item.remove(type));
+            } else {
+                newItems.add(item);
             }
         }
         return new CompositeType(newItems);
