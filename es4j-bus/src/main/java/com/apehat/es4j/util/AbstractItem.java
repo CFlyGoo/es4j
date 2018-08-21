@@ -173,7 +173,7 @@ abstract class AbstractItem<T> implements Item<T> {
 
     @Override
     public String toString() {
-        return "AbstractItem{" +
+        return getClass().getSimpleName() + "{" +
             "value=" + value +
             ", slots=" + slots +
             '}';
