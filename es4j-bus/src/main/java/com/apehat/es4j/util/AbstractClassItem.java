@@ -16,8 +16,6 @@
 
 package com.apehat.es4j.util;
 
-import com.apehat.es4j.util.graph.AcmeDirectedGraph;
-import com.apehat.es4j.util.graph.DirectedGraph;
 import com.apehat.es4j.util.graph.Indicator;
 import java.util.Set;
 
@@ -45,9 +43,5 @@ public abstract class AbstractClassItem extends AbstractItem<Class<?>> {
 
     protected Indicator<Item<Class<?>>> getIndicator() {
         return INDICATOR;
-    }
-
-    protected DirectedGraph<Item<Class<?>>> createNewDirectedGraph(Set<Item<Class<?>>> slots) {
-        return new AcmeDirectedGraph<>(slots, getIndicator());
     }
 }
