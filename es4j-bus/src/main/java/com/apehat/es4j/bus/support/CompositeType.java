@@ -17,6 +17,7 @@
 package com.apehat.es4j.bus.support;
 
 import com.apehat.es4j.bus.Type;
+import com.apehat.es4j.util.AbstractClassItem;
 import com.apehat.es4j.util.Item;
 import java.util.HashSet;
 import java.util.Set;
@@ -28,7 +29,7 @@ import java.util.Set;
 public final class CompositeType implements Type {
 
     private static final long serialVersionUID = -467998764902780604L;
-    private static final IncludeItem ITEMS_REBUILD_HELPER = new IncludeItem(CompositeType.class);
+    private static final ClassItemsRebuildHelper ITEMS_REBUILD_HELPER = new ClassItemsRebuildHelper();
 
     private static Set<Item<Class<?>>> items(Class<?>... classes) {
         final Set<Item<Class<?>>> items = new HashSet<>();
@@ -92,5 +93,32 @@ public final class CompositeType implements Type {
             }
         }
         return false;
+    }
+
+    private static class ClassItemsRebuildHelper extends AbstractClassItem {
+
+        private ClassItemsRebuildHelper() {
+            super(ClassItemsRebuildHelper.class);
+        }
+
+        @Override
+        public Item<Class<?>> newInstance(Class<?> value, Set<Item<Class<?>>> slots) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public Item<Class<?>> newReverseInstance(Class<?> cls) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public boolean isEnable() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public Set<Item<Class<?>>> rebuildSlots(Set<Item<Class<?>>> slots) {
+            return super.rebuildSlots(slots);
+        }
     }
 }
