@@ -19,6 +19,7 @@ package com.apehat.es4j.bus.support;
 import com.apehat.es4j.bus.Type;
 import com.apehat.es4j.util.AbstractClassItem;
 import com.apehat.es4j.util.Item;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -31,9 +32,13 @@ public final class CompositeType implements Type {
     private static final long serialVersionUID = -467998764902780604L;
     private static final ClassItemsRebuildHelper ITEMS_REBUILD_HELPER = new ClassItemsRebuildHelper();
 
-    private static Set<Item<Class<?>>> items(Class<?>... classes) {
+    private static Set<Item<Class<?>>> items(Class<?>... types) {
+        if (types == null || types.length == 0) {
+            throw new IllegalArgumentException("Must specified types");
+        }
+        final Set<Class<?>> set = new HashSet<>(Arrays.asList(types));
         final Set<Item<Class<?>>> items = new HashSet<>();
-        for (Class<?> cls : classes) {
+        for (Class<?> cls : set) {
             items.add(new IncludeItem(cls));
         }
         return items;
@@ -41,8 +46,8 @@ public final class CompositeType implements Type {
 
     private Set<Item<Class<?>>> items;
 
-    public CompositeType(Class<?>... classes) {
-        this(items(classes));
+    public CompositeType(Class<?>... types) {
+        this(items(types));
     }
 
     private CompositeType(Set<Item<Class<?>>> items) {
