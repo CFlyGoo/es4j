@@ -20,9 +20,9 @@ package com.apehat.es4j.util.graph;
  * @author hanpengfei
  * @since 1.0
  */
-public class AcmeDirectedGraphTest extends DirectedGraphTest {
+public final class AdjacencyDigraphTest extends DigraphTest {
 
-    AcmeDirectedGraphTest() {
-        super(new AcmeDirectedGraph<>(getSample(), getIndicator()));
+    public AdjacencyDigraphTest() {
+        super(new AdjacencyDigraph<>(getSample(), getIndicator()));
     }
 }

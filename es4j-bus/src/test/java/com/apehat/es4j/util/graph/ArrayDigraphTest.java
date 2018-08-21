@@ -20,9 +20,9 @@ package com.apehat.es4j.util.graph;
  * @author hanpengfei
  * @since 1.0
  */
-public final class LinkedDirectedGraphTest extends DirectedGraphTest {
+public final class ArrayDigraphTest extends DigraphTest {
 
-    public LinkedDirectedGraphTest() {
-        super(new LinkedDirectedGraph<>(getSample(), getIndicator()));
+    public ArrayDigraphTest() {
+        super(new ArrayDigraph<>(getSample(), getIndicator()));
     }
 }

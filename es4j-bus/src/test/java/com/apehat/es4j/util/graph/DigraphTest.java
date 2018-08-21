@@ -52,11 +52,13 @@ import org.testng.annotations.Test;
  * @author hanpengfei
  * @since 1.0
  */
-public class DirectedGraphTest {
+public class DigraphTest {
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
     private static final Set<Class<?>> SAMPLE;
+    private static final Map<Class<?>, Set<Class<?>>> ADJACENT_FIRST_CLASSES = new HashMap<>();
+    private static final Map<Class<?>, Set<Class<?>>> ADJACENT_REACHABLE_CLASSES = new HashMap<>();
     private static final Map<Class<?>, Set<Class<?>>> FIRST_CLASSES = new HashMap<>();
     private static final Map<Class<?>, Set<Class<?>>> REACHABLE_CLASSES = new HashMap<>();
 
@@ -78,12 +80,28 @@ public class DirectedGraphTest {
 
     private static void init() {
         for (Class<?> cls : SAMPLE) {
-            HashSet<Class<?>> fcs = new HashSet<>();
-            HashSet<Class<?>> rcs = new HashSet<>();
+            Set<Class<?>> fcs = new HashSet<>();
+            Set<Class<?>> rcs = new HashSet<>();
+            Set<Class<?>> afcs = new HashSet<>();
+            Set<Class<?>> arcs = new HashSet<>();
             fcs.add(cls);
             rcs.add(cls);
+            afcs.add(cls);
+            arcs.add(cls);
             FIRST_CLASSES.put(cls, fcs);
             REACHABLE_CLASSES.put(cls, rcs);
+            ADJACENT_FIRST_CLASSES.put(cls, afcs);
+            ADJACENT_REACHABLE_CLASSES.put(cls, arcs);
+        }
+
+        for (Class<?> cls : SAMPLE) {
+            Set<Class<?>> supers = ClassUtils.getSuperclassAndInterfaces(cls);
+            for (Class<?> aSuper : supers) {
+                if (SAMPLE.contains(aSuper)) {
+                    ADJACENT_REACHABLE_CLASSES.get(cls).add(aSuper);
+                    ADJACENT_FIRST_CLASSES.get(aSuper).add(cls);
+                }
+            }
         }
 
         for (Class<?> cls : SAMPLE) {
@@ -101,35 +119,62 @@ public class DirectedGraphTest {
         return SAMPLE;
     }
 
-    protected static Indicator<Class<?>> getIndicator() {
+    static Indicator<Class<?>> getIndicator() {
         return INDICATOR;
     }
 
-    private final DirectedGraph<Class<?>> directedGraph;
+    private final Digraph<Class<?>> digraph;
 
-    DirectedGraphTest(DirectedGraph<Class<?>> directedGraph) {
-        assert directedGraph != null;
-        this.directedGraph = directedGraph;
+    DigraphTest(Digraph<Class<?>> digraph) {
+        assert digraph != null;
+        this.digraph = digraph;
     }
 
     @Test
-    public void testGetLayer() {
-        assertEquals(2, directedGraph.getLayer(SampleMiddleInterface3.class));
-    }
-
-    @Test
-    public void testGetReachableSet() {
+    public void testGetAdjacentFirstVertices() {
         for (Class<?> cls : getSample()) {
-            logger.debug("Start getIn reachable set of {}", cls);
-            assertEquals(directedGraph.getReachableSet(cls), REACHABLE_CLASSES.get(cls));
+            logger.debug("Start get adjacent first vertices of {}", cls.getSimpleName());
+            assertEquals(
+                digraph.getAdjacentFirstVertices(cls), ADJACENT_FIRST_CLASSES.get(cls));
         }
     }
 
     @Test
-    public void testGetFirstSet() {
+    public void testGetAdjacentReachableVertices() {
         for (Class<?> cls : getSample()) {
-            logger.debug("Start first set of {}", cls.getSimpleName());
-            assertEquals(directedGraph.getFirstSet(cls), FIRST_CLASSES.get(cls));
+            logger.debug("Start get adjacent reachable vertices of {}", cls);
+            assertEquals(
+                digraph.getAdjacentReachableVertices(cls), ADJACENT_REACHABLE_CLASSES.get(cls));
+        }
+    }
+
+    @Test
+    public void testGetReachableVertices() {
+        for (Class<?> cls : getSample()) {
+            logger.debug("Start get reachable vertices of {}", cls);
+            assertEquals(digraph.getReachableVertices(cls), REACHABLE_CLASSES.get(cls));
+        }
+    }
+
+    @Test
+    public void testGetFirstVertices() {
+        for (Class<?> cls : getSample()) {
+            logger.debug("Start get first vertices of {}", cls.getSimpleName());
+            assertEquals(digraph.getFirstVertices(cls), FIRST_CLASSES.get(cls));
+        }
+    }
+
+    @Test
+    public void testIsReachable() {
+        for (Class<?> cls : getSample()) {
+            logger.debug("Start test is reachable of {}", cls.getSimpleName());
+            Set<Class<?>> tempSample = REACHABLE_CLASSES.get(cls);
+            for (Class<?> sample : tempSample) {
+                assertTrue(digraph.isReachable(cls, sample));
+                if (sample != cls) {
+                    assertFalse(digraph.isReachable(sample, cls));
+                }
+            }
         }
     }
 
@@ -142,52 +187,10 @@ public class DirectedGraphTest {
             tempSample.add(cls.getSuperclass());
             for (Class<?> sample : tempSample) {
                 if (getSample().contains(sample)) {
-                    assertTrue(directedGraph.isAdjacent(cls, sample));
-                    assertTrue(directedGraph.isAdjacent(sample, cls));
+                    assertTrue(digraph.isAdjacent(cls, sample));
+                    assertTrue(digraph.isAdjacent(sample, cls));
                 }
             }
         }
-    }
-
-    @Test
-    public void testIsReachable() {
-        for (Class<?> cls : getSample()) {
-            logger.debug("Start test is reachable of {}", cls.getSimpleName());
-            Set<Class<?>> tempSample = REACHABLE_CLASSES.get(cls);
-            for (Class<?> sample : tempSample) {
-                assertTrue(directedGraph.isReachable(cls, sample));
-                if (sample != cls) {
-                    assertFalse(directedGraph.isReachable(sample, cls));
-                }
-            }
-        }
-    }
-
-    @Test
-    public void testGetIn() {
-        Class<?>[] array = new Class[]{
-            SampleMiddleClass1.class, SampleMiddleClass2.class, SampleMiddleClass3.class,
-            SampleMiddleClass4.class,
-            SampleMiddleInterface1.class, SampleMiddleInterface2.class, SampleMiddleInterface3.class
-        };
-        assertEquals(directedGraph.getIn(2), new HashSet<>(Arrays.asList(array)));
-    }
-
-    @Test
-    public void testGetLayerCount() {
-        assertEquals(directedGraph.getLayerCount(), 3);
-    }
-
-    @Test(expectedExceptions = IllegalArgumentException.class)
-    public void testGetInWithOutOfLayerCount() {
-        directedGraph.getIn(4);
-    }
-
-    @Test
-    public void testGetTop() {
-        Class<?>[] topClasses = new Class[]{
-            SampleSuperInterface1.class, SampleSuperInterface2.class, SampleSuperClass.class
-        };
-        assertEquals(directedGraph.getTop(), new HashSet<>(Arrays.asList(topClasses)));
     }
 }
