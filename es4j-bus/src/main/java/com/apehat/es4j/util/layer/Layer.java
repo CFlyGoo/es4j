@@ -16,62 +16,73 @@
 
 package com.apehat.es4j.util.layer;
 
-import java.util.Objects;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 /**
  * @author hanpengfei
  * @since 1.0
  */
-public class Layer<E> {
+public interface Layer<E> {
 
-    private final int index;
-    private final Set<E> items;
-    private Layer<E> nextLayer;
+    Set<E> currentLayerItems();
 
-    public Layer(int index, Set<E> items) {
-        this.index = index;
-        this.items = Objects.requireNonNull(items, "items must not be null");
+    int index();
+
+    void addAsFloor(Set<E> e);
+
+    Layer<E> pre();
+
+    Layer<E> next();
+
+    default int count() {
+        return next() == null ? index() + 1 : next().count();
     }
 
-    public void add(Layer<E> layer) {
-        if (nextLayer == null) {
-            nextLayer = layer;
-        } else {
-            nextLayer.add(layer);
+    default int layerOf(E e) {
+        if (currentLayerItems().contains(e)) {
+            return index();
         }
+        if (pre() != null) {
+            return pre().layerOf(e);
+        }
+        if (next() == null) {
+            throw new IllegalArgumentException("Cannot find " + e);
+        }
+        return next().layerOf(e);
     }
 
-    public Set<E> getAll(int index) {
-        if (index == this.index) {
-            return getItems();
+    default Set<E> allItems() {
+        if (pre() != null) {
+            return pre().allItems();
         }
-        if (nextLayer == null) {
-            throw new IllegalArgumentException("Don't have " + index + " layer");
+        final Set<E> items = new LinkedHashSet<>();
+        Layer<E> currentLayer = this;
+        while (currentLayer != null) {
+            items.addAll(currentLayer.allItems());
+            currentLayer = currentLayer.next();
         }
-        return nextLayer.getAll(index);
-    }
-
-    public int indexOf(E value) {
-        for (E item : items) {
-            if (item.equals(value)) {
-                return index;
-            }
-        }
-        if (nextLayer == null) {
-            throw new IllegalArgumentException("Cannot find " + value);
-        }
-        return nextLayer.indexOf(value);
-    }
-
-    public Set<E> getItems() {
         return items;
     }
 
-    public int indexOf() {
-        if (nextLayer == null) {
-            return index;
+    default Layer<E> getLayer(int i) {
+        if (i >= count()) {
+            throw new IllegalArgumentException("Only have " + count() + " layer.");
         }
-        return nextLayer.indexOf();
+        if (i == index()) {
+            return this;
+        } else if (i < index()) {
+            return pre().getLayer(i);
+        } else {
+            return next().getLayer(i);
+        }
+    }
+
+    default Layer<E> top() {
+        return getLayer(0);
+    }
+
+    default Layer<E> floor() {
+        return getLayer(count() - 1);
     }
 }

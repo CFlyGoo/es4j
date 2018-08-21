@@ -16,7 +16,7 @@
 
 package com.apehat.es4j.util.layer;
 
-import com.apehat.es4j.util.graph.DirectedGraph;
+import com.apehat.es4j.util.graph.Digraph;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -24,25 +24,23 @@ import java.util.Set;
  * @author hanpengfei
  * @since 1.0
  */
-public class LayerBuilder<E> {
+public class DigraphLayerAnalyzer<E> {
 
-    private DirectedGraph<E> graph;
-    private Layer<E> firstLayer;
+    private Digraph<E> graph;
+    private DigraphLayer<E> firstLayer;
 
-    public LayerBuilder(DirectedGraph<E> graph) {
+    public DigraphLayerAnalyzer(Digraph<E> graph) {
         this.graph = graph;
     }
 
-    public Layer<E> calculateLayer() {
-        final Set<E> pendingItems = graph.items();
+    public DigraphLayer<E> calculateLayer() {
+        final Set<E> pendingItems = graph.vertices();
         final Set<E> completed = new HashSet<>();
 
-        int layer = 0;
         while (!pendingItems.isEmpty()) {
-            layer++;
             Set<E> currentLayerItems = new HashSet<>();
             for (E item : pendingItems) {
-                final Set<E> reachableSet = graph.getReachableSet(item);
+                final Set<E> reachableSet = graph.getReachableVertices(item);
                 reachableSet.removeAll(completed);
                 if (getCrossSet(item).equals(reachableSet)) {
                     currentLayerItems.add(item);
@@ -51,20 +49,18 @@ public class LayerBuilder<E> {
             pendingItems.removeAll(currentLayerItems);
             completed.addAll(currentLayerItems);
 
-            Layer<E> newLayer = new Layer<>(layer, currentLayerItems);
             if (firstLayer == null) {
-                firstLayer = newLayer;
+                firstLayer = new DigraphLayer<>(currentLayerItems);
             } else {
-                firstLayer.add(newLayer);
+                firstLayer.addAsFloor(currentLayerItems);
             }
         }
         return firstLayer;
     }
 
-
     private Set<E> getCrossSet(E item) {
-        Set<E> firstSet = graph.getFirstSet(item);
-        Set<E> reachableSet = graph.getReachableSet(item);
+        Set<E> firstSet = graph.getFirstVertices(item);
+        Set<E> reachableSet = graph.getReachableVertices(item);
         final Set<E> crossSet = new HashSet<>();
         for (E reachable : reachableSet) {
             if (firstSet.contains(reachable)) {
