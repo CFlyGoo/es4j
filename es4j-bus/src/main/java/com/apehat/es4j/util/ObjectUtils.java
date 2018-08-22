@@ -168,7 +168,7 @@ public final class ObjectUtils {
             paramTypes[i] = args[i].getClass();
         }
         try {
-            Constructor<T> constructor = cls.getConstructor(paramTypes);
+            Constructor<T> constructor = cls.getDeclaredConstructor(paramTypes);
             return ReflectionUtils.access(constructor, accessible -> {
                 try {
                     return constructor.newInstance(args);
