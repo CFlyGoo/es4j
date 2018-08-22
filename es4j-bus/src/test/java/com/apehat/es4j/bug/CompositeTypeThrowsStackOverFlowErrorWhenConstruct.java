@@ -16,7 +16,7 @@
 
 package com.apehat.es4j.bug;
 
-import com.apehat.es4j.bus.support.CompositeType;
+import com.apehat.es4j.bus.subscriber.CompositeType;
 import com.apehat.es4j.support.sample.SampleClass4;
 import com.apehat.es4j.support.sample.SampleClass6;
 import com.apehat.es4j.support.sample.SampleMiddleClass1;
@@ -32,7 +32,7 @@ import org.testng.annotations.Test;
 public class CompositeTypeThrowsStackOverFlowErrorWhenConstruct {
 
     // Sample
-    // [main] DEBUG com.apehat.es4j.bus.support.CompositeTypeTest -
+    // [main] DEBUG com.apehat.es4j.bus.subscriber.CompositeTypeTest -
     // Construct CompositeType with [
     // class com.apehat.es4j.support.sample.SampleMiddleClass2,
     // class com.apehat.es4j.support.sample.SampleMiddleClass2,
