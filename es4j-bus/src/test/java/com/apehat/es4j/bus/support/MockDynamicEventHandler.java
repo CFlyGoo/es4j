@@ -67,7 +67,7 @@ public class MockDynamicEventHandler {
     }
 
     private void handleEvent(long occurredOn, Event info, String source, Object event) {
-        LOGGER.info("Start handler event with {}, {}", occurredOn, info);
+        LOGGER.info("Start handler event occur on {}, {}", occurredOn, info);
         handled = true;
         if (expected != null) {
             assertEquals(expected, info);

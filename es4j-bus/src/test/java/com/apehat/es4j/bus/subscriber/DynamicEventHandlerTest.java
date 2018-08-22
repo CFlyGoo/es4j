@@ -33,12 +33,12 @@ public class DynamicEventHandlerTest {
 
     @Test(dataProviderClass = BusModuleTestDataProvider.class, dataProvider = "eventFixtureProvider")
     public void testOnEvent(Event event) {
-        final MockDynamicEventHandler proxy = new MockDynamicEventHandler(event);
-        final Method handler = MockDynamicEventHandler.getEventHandler();
-        DynamicEventHandler dynamicEventHandler = new DynamicEventHandler(proxy, handler);
+        final MockDynamicEventHandler handler = new MockDynamicEventHandler(event);
+        final Method handleMethod = handler.getHandleMethod();
+        DynamicEventHandler dynamicEventHandler = new DynamicEventHandler(handler, handleMethod);
 
-        assertFalse(proxy.isHandled());
+        assertFalse(handler.isHandled());
         dynamicEventHandler.onEvent(event);
-        assertTrue(proxy.isHandled());
+        assertTrue(handler.isHandled());
     }
 }

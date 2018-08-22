@@ -19,7 +19,6 @@ package com.apehat.es4j.util;
 import static org.testng.Assert.assertEquals;
 
 import com.apehat.es4j.bus.support.MockDynamicEventHandler;
-import java.lang.reflect.Method;
 import org.testng.annotations.Test;
 
 /**
@@ -30,9 +29,9 @@ public class AsmParameterNameDiscovererTest {
 
     @Test
     public void testGetParameterNames() {
-        final Method handler = MockDynamicEventHandler.getEventHandler();
         final String[] exceptedNames = MockDynamicEventHandler.getHandlerParameterNames();
-        String[] parameterNames = new AsmParameterNameDiscoverer().getParameterNames(handler);
+        String[] parameterNames = new AsmParameterNameDiscoverer()
+            .getParameterNames(new MockDynamicEventHandler().getHandleMethod());
         assertEquals(parameterNames, exceptedNames);
     }
 }
