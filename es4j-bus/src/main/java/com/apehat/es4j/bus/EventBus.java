@@ -88,23 +88,10 @@ public final class EventBus {
         dispatcher.dispatch(eventIdentityService.provisionEvent(event, null));
     }
 
-    public void publish(Object event, Callback callback) {
-        try {
-            dispatcher.dispatch(eventIdentityService.provisionEvent(event, null));
-            callback.onSuccessfully();
-        } catch (RuntimeException e) {
-            callback.onFailure();
-        }
-    }
-
     /* Submit */
 
     public void submit(Object event) {
         asyncDispatcher.dispatch(eventIdentityService.provisionEvent(event, null));
-    }
-
-    public void submit(Object event, Callback callback) {
-        asyncDispatcher.dispatch(eventIdentityService.provisionEvent(event, null), callback);
     }
 
     /* Query - For Test */

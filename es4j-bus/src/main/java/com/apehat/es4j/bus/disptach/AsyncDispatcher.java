@@ -16,7 +16,6 @@
 
 package com.apehat.es4j.bus.disptach;
 
-import com.apehat.es4j.bus.Callback;
 import com.apehat.es4j.bus.event.PendingEvent;
 import com.apehat.es4j.bus.subscriber.Subscriber;
 import com.apehat.es4j.bus.subscriber.SubscriberRepository;
@@ -62,19 +61,6 @@ public class AsyncDispatcher {
         pool.submit(task);
     }
 
-    public void dispatch(PendingEvent event, Callback callback) {
-        Set<Subscriber> subscribers = subscribers(event);
-        if (subscribers.isEmpty()) {
-            if (LOGGER.isWarnEnabled()) {
-                LOGGER.warn("Non subscriber for " + event);
-            }
-            callback.onSkip();
-            return;
-        }
-        AsyncDispatchTask task = new AsyncDispatchTask(subscribers, event, callback);
-        pool.submit(task);
-    }
-
     private Set<Subscriber> subscribers(PendingEvent event) {
         Set<Subscriber> subscribers = subscriberRepo.subscriberWithType(event.type());
         return subscribers == null ? Collections.emptySet() : subscribers;
@@ -84,20 +70,13 @@ public class AsyncDispatcher {
 
         private final Set<Subscriber> subscribers;
         private final PendingEvent event;
-        private final Callback callback;
 
         AsyncDispatchTask(Set<Subscriber> subscribers, PendingEvent event) {
-            this(subscribers, event, null);
-        }
-
-        AsyncDispatchTask(Set<Subscriber> subscribers, PendingEvent event,
-            Callback callback) {
             assert event != null;
             assert subscribers != null;
             assert !subscribers.isEmpty();
             this.subscribers = subscribers;
             this.event = event;
-            this.callback = callback;
         }
 
         @Override
@@ -106,16 +85,9 @@ public class AsyncDispatcher {
                 for (Subscriber subscriber : subscribers) {
                     subscriber.onEvent(event);
                 }
-                if (callback != null) {
-                    callback.onSuccessfully();
-                }
             } catch (RuntimeException e) {
                 LOGGER.warn("Async dispatch failure", e);
-                if (callback != null) {
-                    callback.onFailure();
-                } else {
-                    throw e;
-                }
+                throw e;
             }
         }
     }

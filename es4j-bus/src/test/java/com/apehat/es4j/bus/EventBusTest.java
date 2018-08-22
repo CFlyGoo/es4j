@@ -125,13 +125,11 @@ public class EventBusTest {
      */
     @Test(groups = "publish")
     public void testPublishEvent() {
-        eventBus.publish(new Object(), new Callback() {
-            @Override
-            public void onSuccessfully() {
-                handled = true;
-            }
-        });
-        assertTrue(handled);
+        EventBus eventBus = new EventBus();
+        final boolean[] handled = {false};
+        eventBus.subscribe(event -> handled[0] = true);
+        eventBus.publish(new Object());
+        assertTrue(handled[0]);
     }
 
     /**
@@ -139,14 +137,12 @@ public class EventBusTest {
      */
     @Test(groups = "submit")
     public void testSubmitEvent() throws Exception {
-        eventBus.submit(new Object(), new Callback() {
-            @Override
-            public void onSuccessfully() {
-                handled = true;
-            }
-        });
+        EventBus eventBus = new EventBus();
+        final boolean[] handled = {false};
+        eventBus.subscribe(event -> handled[0] = true);
+        eventBus.submit(new Object());
         Thread.sleep(50);
-        assertTrue(handled);
+        assertTrue(handled[0]);
     }
 
     @Test(groups = "submit-multiple-thread", threadPoolSize = 4, invocationCount = 50)
