@@ -81,13 +81,12 @@ public class AsyncDispatcher {
 
         @Override
         public void run() {
-            try {
-                for (Subscriber subscriber : subscribers) {
+            for (Subscriber subscriber : subscribers) {
+                try {
                     subscriber.onEvent(event);
+                } catch (RuntimeException e) {
+                    LOGGER.warn("Async dispatch failure", e);
                 }
-            } catch (RuntimeException e) {
-                LOGGER.warn("Async dispatch failure", e);
-                throw e;
             }
         }
     }
