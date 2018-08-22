@@ -22,7 +22,7 @@ import com.apehat.es4j.bus.event.EventIdentityService;
 import com.apehat.es4j.bus.subscriber.Subscriber;
 import com.apehat.es4j.bus.subscriber.SubscriberIdentityService;
 import com.apehat.es4j.bus.subscriber.SubscriberRepository;
-import com.apehat.es4j.bus.subscriber.support.CopyOnArraySubscriberRepository;
+import com.apehat.es4j.bus.subscriber.support.CopyOnWriteSubscriberRepository;
 import java.lang.reflect.Method;
 import java.util.HashSet;
 import java.util.Set;
@@ -34,7 +34,7 @@ import java.util.Set;
 @SuppressWarnings("WeakerAccess")
 public final class EventBus {
 
-    private SubscriberRepository subscriberRepo = new CopyOnArraySubscriberRepository();
+    private SubscriberRepository subscriberRepo = new CopyOnWriteSubscriberRepository();
     private EventIdentityService eventIdentityService = new EventIdentityService();
     private final SubscriberIdentityService subscriberIdentityService =
         new SubscriberIdentityService(subscriberRepo);
@@ -59,26 +59,14 @@ public final class EventBus {
     /* Type specified subscribe */
 
     public String subscribe(Class<?> type, EventHandler handler) {
-        return subscribe(Type.of(type), handler);
+        return subscriberIdentityService.provisionSubscriber(type, handler);
     }
 
     public String subscribe(Class<?> type, Method handler) {
-        return subscribe(Type.of(type), handler);
+        return subscriberIdentityService.provisionSubscriber(type, handler);
     }
 
     public String subscribe(Class<?> type, Object handler, Method handleMethod) {
-        return subscribe(Type.of(type), handler, handleMethod);
-    }
-
-    public String subscribe(Type type, EventHandler handler) {
-        return subscriberIdentityService.provisionSubscriber(type, handler);
-    }
-
-    public String subscribe(Type type, Method handler) {
-        return subscriberIdentityService.provisionSubscriber(type, handler);
-    }
-
-    public String subscribe(Type type, Object handler, Method handleMethod) {
         return subscriberIdentityService.provisionSubscriber(type, handler, handleMethod);
     }
 
