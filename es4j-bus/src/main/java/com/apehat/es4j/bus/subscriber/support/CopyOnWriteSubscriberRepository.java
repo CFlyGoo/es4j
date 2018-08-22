@@ -26,7 +26,7 @@ import java.util.concurrent.CopyOnWriteArraySet;
  * @author hanpengfei
  * @since 1.0
  */
-public class CopyOnArraySubscriberRepository implements SubscriberRepository {
+public class CopyOnWriteSubscriberRepository implements SubscriberRepository {
 
     private final Set<Subscriber> subscribers = new CopyOnWriteArraySet<>();
 
