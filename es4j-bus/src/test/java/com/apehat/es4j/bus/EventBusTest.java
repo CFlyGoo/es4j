@@ -17,19 +17,17 @@
 package com.apehat.es4j.bus;
 
 import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertTrue;
+import static org.testng.AssertJUnit.assertFalse;
 
 import com.apehat.es4j.bus.support.MockDynamicEventHandler;
-import java.util.Set;
+import java.util.Random;
+import java.util.concurrent.atomic.AtomicInteger;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.testng.annotations.BeforeGroups;
 import org.testng.annotations.Test;
 
 /**
- * The class {@code EventBusTest} bus used to test {@code EventBus} api.
- *
  * @author hanpengfei
  * @since 1.0
  */
@@ -37,118 +35,131 @@ public class EventBusTest {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(EventBusTest.class);
 
-    private EventBus eventBus;
+    @Test
+    public void testPublishBeforeRegisterEventHandler() {
+        // Terminal will print warn log
+        final EventBus bus = provisionEventBus();
+        bus.publish(new EventPublished());
 
-    private boolean handled;
-
-    public EventBusTest() {
-        this.eventBus = new EventBus();
-    }
-
-    /**
-     * Before publish, subscribe a global subscriber to wait handle event
-     */
-    @BeforeGroups(groups = {"publish", "submit"})
-    public void beforePublish() {
-        String subscriberId = eventBus.subscribe(Object.class, event -> {
-            handled = true;
-            LOGGER.info("Handle event {}", event);
-        });
-        assertNotNull(subscriberId);
-    }
-
-    /**
-     * Register a new EventHandler with arbitrary method
-     */
-    @Test(groups = "subscribe")
-    public void testRegisterEventListenerWithMethod() {
-        MockDynamicEventHandler subscriber = new MockDynamicEventHandler();
-        String subscriberId = eventBus
-            .subscribe(subscriber, MockDynamicEventHandler.getEventHandler());
-        assertNotNull(subscriberId);
-        Set<String> subscriberIds = eventBus.allGlobalSubscribers();
-        assertTrue(subscriberIds.contains(subscriberId));
-    }
-
-    /**
-     * Register a new EventHandler which implemented {@code EventHandler} interface
-     */
-    @Test(groups = "subscribe")
-    public void testRegisterEventListenerWithInterfaceImplementor() {
-        String subscriberId = eventBus
-            .subscribe(event -> LOGGER.info("START handler with {}", event));
-        assertNotNull(subscriberId);
-        Set<String> subscriberIds = eventBus.allGlobalSubscribers();
-        assertTrue(subscriberIds.contains(subscriberId));
-    }
-
-    /**
-     * Register a new EventHandler and specified event type
-     */
-    @Test(groups = "subscribe")
-    public void testRegisterEventListenerWithSpecifiedClass() {
-        MockDynamicEventHandler subscriber = new MockDynamicEventHandler();
-        String subscriberId =
-            eventBus.subscribe(Object.class, subscriber, MockDynamicEventHandler.getEventHandler());
-        assertNotNull(subscriberId);
-        Set<String> subscriberIds = eventBus.allGlobalSubscribers();
-        assertTrue(subscriberIds.contains(subscriberId));
-    }
-
-    /**
-     * Register a new EventHandler and specified event type
-     */
-    @Test(groups = "subscribe")
-    public void testRegisterEventListenerWithSpecifiedType() {
-        MockDynamicEventHandler subscriber = new MockDynamicEventHandler();
-        String subscriberId =
-            eventBus.subscribe(Type.of(Object.class), subscriber,
-                MockDynamicEventHandler.getEventHandler());
-        assertNotNull(subscriberId);
-        Set<String> subscriberIds = eventBus.allGlobalSubscribers();
-        assertTrue(subscriberIds.contains(subscriberId));
-    }
-
-    /**
-     * Register same handler with multiple time
-     */
-    @Test(groups = "subscribe")
-    public void testMultipleRegisterWithSameHandler() {
-        EventHandler handler = event -> LOGGER.info("Start handle {}", event);
-        String first = eventBus.subscribe(handler);
-        String second = eventBus.subscribe(handler);
-        assertEquals(first, second);
-    }
-
-    /**
-     * Synchronize publish a event
-     */
-    @Test(groups = "publish")
-    public void testPublishEvent() {
-        EventBus eventBus = new EventBus();
         final boolean[] handled = {false};
-        eventBus.subscribe(event -> handled[0] = true);
-        eventBus.publish(new Object());
+        bus.subscribe(EventPublished.class, event -> handled[0] = true);
+
+        assertFalse(handled[0]);
+    }
+
+    @Test
+    public void testPublishAfterRegisteredEventHandler() {
+        final EventBus bus = provisionEventBus();
+
+        final boolean[] handled = {false};
+        bus.subscribe(EventPublished.class, event -> handled[0] = true);
+
+        bus.publish(new EventPublished());
         assertTrue(handled[0]);
     }
 
-    /**
-     * Asynchronous publish a event
-     */
-    @Test(groups = "submit")
-    public void testSubmitEvent() throws Exception {
-        EventBus eventBus = new EventBus();
+    @Test
+    public void testPublishBeforeRegisterMethod() {
+        // Terminal will print warn log
+        final EventBus bus = provisionEventBus();
+        bus.publish(new EventPublished());
+
+        final MockDynamicEventHandler handler = new MockDynamicEventHandler();
+        bus.subscribe(EventPublished.class, handler, handler.getHandleMethod());
+
+        assertFalse(handler.isHandled());
+    }
+
+    @Test
+    public void testPublishAfterRegisteredMethod() {
+        final EventBus bus = provisionEventBus();
+        final MockDynamicEventHandler handler = new MockDynamicEventHandler();
+        bus.subscribe(EventPublished.class, handler, handler.getHandleMethod());
+        bus.publish(new EventPublished());
+        assertTrue(handler.isHandled());
+    }
+
+    @Test
+    public void testSubmitBeforeRegisterEventHandler() throws Exception {
+        // Terminal will print warn log
+        final EventBus bus = provisionEventBus();
+        bus.submit(new EventSubmitted());
+
         final boolean[] handled = {false};
-        eventBus.subscribe(event -> handled[0] = true);
-        eventBus.submit(new Object());
+        bus.subscribe(EventSubmitted.class, event -> handled[0] = true);
+
+        Thread.sleep(1000);
+        assertFalse(handled[0]);
+    }
+
+    @Test
+    public void testSubmitAfterRegisteredEventHandler() throws Exception {
+        final EventBus bus = provisionEventBus();
+        final boolean[] handled = {false};
+        bus.subscribe(EventSubmitted.class, event -> handled[0] = true);
+        bus.submit(new EventSubmitted());
         Thread.sleep(50);
         assertTrue(handled[0]);
     }
 
-    @Test(groups = "submit-multiple-thread", threadPoolSize = 4, invocationCount = 50)
-    public void testSubmitEventAndSubscribeInMultiple() {
-        eventBus.submit(new Object());
-        eventBus.subscribe(event -> {
-        });
+    @Test
+    public void testSubmitBeforeRegisterMethod() throws Exception {
+        final EventBus bus = provisionEventBus();
+        bus.submit(new EventSubmitted());
+
+        final MockDynamicEventHandler handler = new MockDynamicEventHandler();
+        bus.subscribe(EventSubmitted.class, handler, handler.getHandleMethod());
+
+        Thread.sleep(100);
+        assertFalse(handler.isHandled());
     }
+
+    @Test
+    public void testSubmitAfterRegisteredMethod() throws Exception {
+        final EventBus bus = provisionEventBus();
+        final MockDynamicEventHandler handler = new MockDynamicEventHandler();
+        bus.subscribe(EventSubmitted.class, handler, handler.getHandleMethod());
+        bus.submit(new EventSubmitted());
+        Thread.sleep(50);
+        assertTrue(handler.isHandled());
+    }
+
+    @Test
+    public void testMultipleRegisterWithSameHandlerThenPublish() {
+        AtomicInteger handleCount = new AtomicInteger();
+        final EventBus bus = provisionEventBus();
+        registerSameHandler(handleCount, bus, "publish");
+        bus.publish(new EventPublished());
+        assertEquals(handleCount.get(), 1);
+    }
+
+    @Test
+    public void testMultipleRegisterWithSameHandlerThenSubmit() throws Exception {
+        final AtomicInteger handleCount = new AtomicInteger();
+        final EventBus bus = provisionEventBus();
+        registerSameHandler(handleCount, bus, "submit");
+        bus.submit(new EventSubmitted());
+        Thread.sleep(100);
+        assertEquals(handleCount.get(), 1);
+    }
+
+    private void registerSameHandler(final AtomicInteger handleCount, EventBus bus, String action) {
+        int registerCount;
+        //noinspection StatementWithEmptyBody
+        while ((registerCount = new Random().nextInt(50)) < 10) {
+        }
+
+        final EventHandler handler = event -> LOGGER.debug(
+            "multiple register with same handler then {}, handle time {}",
+            action, handleCount.incrementAndGet());
+        for (int i = 0; i < registerCount; i++) {
+            bus.subscribe(handler);
+        }
+    }
+
+    private EventBus provisionEventBus() {
+        return new EventBus();
+    }
+
+    // TODO  test submit by multiple thread
 }
