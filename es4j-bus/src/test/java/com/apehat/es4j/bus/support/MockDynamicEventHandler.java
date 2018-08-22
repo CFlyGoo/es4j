@@ -33,11 +33,14 @@ public class MockDynamicEventHandler {
     private static final Logger LOGGER = LoggerFactory.getLogger(MockDynamicEventHandler.class);
 
     private static final Method HANDLE_METHOD;
+    private static final Method STATIC_HANDLE_METHOD;
 
     static {
         try {
             HANDLE_METHOD = MockDynamicEventHandler.class.getDeclaredMethod(
                 "handleEvent", long.class, Event.class, String.class, Object.class);
+            STATIC_HANDLE_METHOD = MockDynamicEventHandler.class.getDeclaredMethod(
+                "staticEventHandler", long.class, Event.class, String.class, Object.class);
         } catch (Exception e) {
             throw new IllegalStateException("Cannot find method");
         }
@@ -54,16 +57,26 @@ public class MockDynamicEventHandler {
         this.expected = Objects.requireNonNull(expected, "Expected must not be null.");
     }
 
-    public static Method getEventHandler() {
-        return HANDLE_METHOD;
+    public static Method getStaticEventHandler() {
+        return STATIC_HANDLE_METHOD;
     }
 
     public static String[] getHandlerParameterNames() {
         return new String[]{"occurredOn", "info", "source", "event"};
     }
 
+    public Method getHandleMethod() {
+        return HANDLE_METHOD;
+    }
+
     public boolean isHandled() {
         return handled;
+    }
+
+
+    private static void staticEventHandler(
+        long occurredOn, Event info, String source, Object event) {
+        LOGGER.info("Start handler event with {}, {}", occurredOn, info);
     }
 
     private void handleEvent(long occurredOn, Event info, String source, Object event) {
