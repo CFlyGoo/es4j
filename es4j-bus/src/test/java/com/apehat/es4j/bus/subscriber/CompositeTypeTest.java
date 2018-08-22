@@ -14,12 +14,11 @@
  * limitations under the License.
  */
 
-package com.apehat.es4j.bus.support;
+package com.apehat.es4j.bus.subscriber;
 
 import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
 
-import com.apehat.es4j.bus.Type;
 import com.apehat.es4j.support.sample.SampleClass1;
 import com.apehat.es4j.support.sample.SampleClass2;
 import com.apehat.es4j.support.sample.SampleClass3;
