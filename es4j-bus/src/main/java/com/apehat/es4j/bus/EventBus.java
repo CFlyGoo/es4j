@@ -81,19 +81,4 @@ public final class EventBus {
     public void submit(Object event) {
         asyncDispatcher.dispatch(eventIdentityService.provisionEvent(event, null));
     }
-
-    /* Query - For Test */
-
-    Set<String> allGlobalSubscribers() {
-        return subscribersOf(Object.class);
-    }
-
-    Set<String> subscribersOf(@SuppressWarnings("SameParameterValue") Class<?> type) {
-        Set<Subscriber> subscribers = subscriberRepo.subscriberWithType(type);
-        Set<String> subscriberIds = new HashSet<>();
-        for (Subscriber subscriber : subscribers) {
-            subscriberIds.add(subscriber.id());
-        }
-        return subscriberIds;
-    }
 }
