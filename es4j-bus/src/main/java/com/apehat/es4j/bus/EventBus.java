@@ -19,13 +19,10 @@ package com.apehat.es4j.bus;
 import com.apehat.es4j.bus.disptach.AsyncDispatcher;
 import com.apehat.es4j.bus.disptach.Dispatcher;
 import com.apehat.es4j.bus.event.EventIdentityService;
-import com.apehat.es4j.bus.subscriber.Subscriber;
 import com.apehat.es4j.bus.subscriber.SubscriberIdentityService;
 import com.apehat.es4j.bus.subscriber.SubscriberRepository;
 import com.apehat.es4j.bus.subscriber.support.CopyOnWriteSubscriberRepository;
 import java.lang.reflect.Method;
-import java.util.HashSet;
-import java.util.Set;
 
 /**
  * @author hanpengfei
@@ -44,30 +41,30 @@ public final class EventBus {
 
     /* Global subscribe */
 
-    public String subscribe(EventHandler handler) {
-        return subscribe(Object.class, handler);
+    public void subscribe(EventHandler handler) {
+        subscribe(Object.class, handler);
     }
 
-    public String subscribe(Method handler) {
-        return subscribe(Object.class, handler);
+    public void subscribe(Method handler) {
+        subscribe(Object.class, handler);
     }
 
-    public String subscribe(Object handler, Method handleMethod) {
-        return subscribe(Object.class, handler, handleMethod);
+    public void subscribe(Object handler, Method handleMethod) {
+        subscribe(Object.class, handler, handleMethod);
     }
 
     /* Type specified subscribe */
 
-    public String subscribe(Class<?> type, EventHandler handler) {
-        return subscriberIdentityService.provisionSubscriber(type, handler);
+    public void subscribe(Class<?> type, EventHandler handler) {
+        subscriberIdentityService.provisionSubscriber(type, handler);
     }
 
-    public String subscribe(Class<?> type, Method handler) {
-        return subscriberIdentityService.provisionSubscriber(type, handler);
+    public void subscribe(Class<?> type, Method handler) {
+        subscriberIdentityService.provisionSubscriber(type, handler);
     }
 
-    public String subscribe(Class<?> type, Object handler, Method handleMethod) {
-        return subscriberIdentityService.provisionSubscriber(type, handler, handleMethod);
+    public void subscribe(Class<?> type, Object handler, Method handleMethod) {
+        subscriberIdentityService.provisionSubscriber(type, handler, handleMethod);
     }
 
     /* Publish */

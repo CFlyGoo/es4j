@@ -33,23 +33,18 @@ public class SubscriberIdentityService {
             "Subscriber repository must not be null");
     }
 
-    public String provisionSubscriber(Class<?> type, Object handler, Method handleMethod) {
-        Subscriber subscriber =
-            new Subscriber(new NormalHandlerDescriptor(handler, handleMethod), Type.of(type));
-        this.subscriberRepo.save(subscriber);
-        return subscriber.id();
+    public void provisionSubscriber(Class<?> type, Object handler, Method handleMethod) {
+        this.subscriberRepo.save(new Subscriber(
+            new NormalHandlerDescriptor(handler, handleMethod), Type.of(type)));
     }
 
-    public String provisionSubscriber(Class<?> type, EventHandler handler) {
-        Subscriber subscriber = new Subscriber(new PlainHandleDescriptor(handler), Type.of(type));
-        this.subscriberRepo.save(subscriber);
-        return subscriber.id();
+    public void provisionSubscriber(Class<?> type, EventHandler handler) {
+        this.subscriberRepo.save(new Subscriber(
+            new PlainHandleDescriptor(handler), Type.of(type)));
     }
 
-    public String provisionSubscriber(Class<?> type, Method handler) {
-        final Subscriber subscriber = new Subscriber(new StaticHandlerDescriptor(handler),
-            Type.of(type));
-        this.subscriberRepo.save(subscriber);
-        return subscriber.id();
+    public void provisionSubscriber(Class<?> type, Method handler) {
+        this.subscriberRepo.save(new Subscriber(
+            new StaticHandlerDescriptor(handler), Type.of(type)));
     }
 }
