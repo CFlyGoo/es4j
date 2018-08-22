@@ -40,7 +40,7 @@ public class CopyOnWriteSubscriberRepository implements SubscriberRepository {
         final Set<Subscriber> registeredSubscribers = this.subscribers;
         final Set<Subscriber> subscribers = new HashSet<>();
         for (Subscriber subscriber : registeredSubscribers) {
-            if (subscriber.subscriptionType().isAssignableFrom(type)) {
+            if (subscriber.isSubscribed(type)) {
                 subscribers.add(subscriber);
             }
         }

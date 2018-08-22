@@ -56,10 +56,6 @@ public class Subscriber {
         handlerDescriptor.getHandler().onEvent(event.toEvent());
     }
 
-    public Type subscriptionType() {
-        return type;
-    }
-
     public String id() {
         return handlerDescriptor.toString();
     }
