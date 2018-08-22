@@ -28,15 +28,7 @@ import java.util.Set;
  */
 public class Dispatcher {
 
-    private SubscriberRepository subscriberRepo;
-
-    public Dispatcher(SubscriberRepository subscriberRepo) {
-        this.subscriberRepo = Objects.requireNonNull(
-            subscriberRepo, "Subscriber repository must not be null");
-    }
-
-    public void dispatch(PendingEvent event) {
-        Set<Subscriber> subscribers = subscriberRepo.subscriberWithType(event.type());
+    public void dispatch(PendingEvent event, Set<Subscriber> subscribers) {
         for (Subscriber subscriber : subscribers) {
             subscriber.onEvent(event);
         }

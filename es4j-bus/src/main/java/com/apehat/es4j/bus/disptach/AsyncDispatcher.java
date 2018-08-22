@@ -42,15 +42,8 @@ public class AsyncDispatcher {
         0L, TimeUnit.MILLISECONDS,
         new LinkedBlockingQueue<>(), r -> new Thread(r, "es4j-bus-pool-" + r.hashCode()),
         new DiscardOldestPolicy());
-    private SubscriberRepository subscriberRepo;
 
-    public AsyncDispatcher(SubscriberRepository subscriberRepo) {
-        this.subscriberRepo = Objects.requireNonNull(
-            subscriberRepo, "Subscriber repository must not be null");
-    }
-
-    public void dispatch(PendingEvent event) {
-        Set<Subscriber> subscribers = subscribers(event);
+    public void dispatch(PendingEvent event, Set<Subscriber> subscribers) {
         if (subscribers.isEmpty()) {
             if (LOGGER.isWarnEnabled()) {
                 LOGGER.warn("Non subscriber for " + event);
@@ -59,11 +52,6 @@ public class AsyncDispatcher {
         }
         AsyncDispatchTask task = new AsyncDispatchTask(subscribers, event);
         pool.submit(task);
-    }
-
-    private Set<Subscriber> subscribers(PendingEvent event) {
-        Set<Subscriber> subscribers = subscriberRepo.subscriberWithType(event.type());
-        return subscribers == null ? Collections.emptySet() : subscribers;
     }
 
     private static class AsyncDispatchTask implements Runnable {

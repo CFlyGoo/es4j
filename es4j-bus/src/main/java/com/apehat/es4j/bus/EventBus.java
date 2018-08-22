@@ -19,6 +19,7 @@ package com.apehat.es4j.bus;
 import com.apehat.es4j.bus.disptach.AsyncDispatcher;
 import com.apehat.es4j.bus.disptach.Dispatcher;
 import com.apehat.es4j.bus.event.EventIdentityService;
+import com.apehat.es4j.bus.event.PendingEvent;
 import com.apehat.es4j.bus.subscriber.SubscriberIdentityService;
 import com.apehat.es4j.bus.subscriber.SubscriberRepository;
 import com.apehat.es4j.bus.subscriber.support.CopyOnWriteSubscriberRepository;
@@ -36,8 +37,8 @@ public final class EventBus {
     private final SubscriberIdentityService subscriberIdentityService =
         new SubscriberIdentityService(subscriberRepo);
 
-    private Dispatcher dispatcher = new Dispatcher(subscriberRepo);
-    private AsyncDispatcher asyncDispatcher = new AsyncDispatcher(subscriberRepo);
+    private Dispatcher dispatcher = new Dispatcher();
+    private AsyncDispatcher asyncDispatcher = new AsyncDispatcher();
 
     /* Global subscribe */
 
@@ -70,12 +71,16 @@ public final class EventBus {
     /* Publish */
 
     public void publish(Object event) {
-        dispatcher.dispatch(eventIdentityService.provisionEvent(event, null));
+        final PendingEvent pendingEvent = eventIdentityService.provisionEvent(event, null);
+        dispatcher.dispatch(pendingEvent,
+            subscriberIdentityService.subscribersWith(pendingEvent.type()));
     }
 
     /* Submit */
 
     public void submit(Object event) {
-        asyncDispatcher.dispatch(eventIdentityService.provisionEvent(event, null));
+        PendingEvent pendingEvent = eventIdentityService.provisionEvent(event, null);
+        asyncDispatcher.dispatch(pendingEvent,
+            subscriberIdentityService.subscribersWith(pendingEvent.type()));
     }
 }

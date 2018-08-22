@@ -19,6 +19,7 @@ package com.apehat.es4j.bus.subscriber;
 import com.apehat.es4j.bus.EventHandler;
 import java.lang.reflect.Method;
 import java.util.Objects;
+import java.util.Set;
 
 /**
  * @author hanpengfei
@@ -46,5 +47,9 @@ public class SubscriberIdentityService {
     public void provisionSubscriber(Class<?> type, Method handler) {
         this.subscriberRepo.save(new Subscriber(
             new StaticHandlerDescriptor(handler), Type.of(type)));
+    }
+
+    public Set<Subscriber> subscribersWith(Class<?> type) {
+        return subscriberRepo.subscriberWithType(type);
     }
 }
