@@ -14,16 +14,15 @@
  * limitations under the License.
  */
 
-package com.apehat.es4j.bus;
+package com.apehat.es4j.bus.subscriber;
 
-import com.apehat.es4j.bus.support.CompositeType;
 import java.io.Serializable;
 
 /**
  * @author hanpengfei
  * @since 1.0
  */
-public interface Type extends Serializable {
+interface Type extends Serializable {
 
     static Type of(Class<?> cls) {
         return new CompositeType(cls);

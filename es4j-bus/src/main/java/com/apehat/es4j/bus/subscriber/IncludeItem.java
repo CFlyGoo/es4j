@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.apehat.es4j.bus.support;
+package com.apehat.es4j.bus.subscriber;
 
 import com.apehat.es4j.util.AbstractClassItem;
 import com.apehat.es4j.util.Item;
