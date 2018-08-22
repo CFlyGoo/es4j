@@ -39,7 +39,7 @@ public final class CompositeType implements Type {
         final Set<Class<?>> set = new HashSet<>(Arrays.asList(types));
         final Set<Item<Class<?>>> items = new HashSet<>();
         for (Class<?> cls : set) {
-            items.add(new IncludeItem(cls));
+            items.add(new IncludeType(cls));
         }
         return items;
     }
@@ -68,7 +68,7 @@ public final class CompositeType implements Type {
             }
         }
         if (!added) {
-            newItems.add(new IncludeItem(type));
+            newItems.add(new IncludeType(type));
         }
         return new CompositeType(newItems);
     }
@@ -126,6 +126,58 @@ public final class CompositeType implements Type {
         return "CompositeType{" +
             "items=" + items +
             '}';
+    }
+
+    private static final class ExceptedType extends AbstractClassItem {
+
+        ExceptedType(Class<?> value) {
+            super(value);
+        }
+
+        private ExceptedType(Class<?> value, Set<Item<Class<?>>> slots) {
+            super(value, slots);
+        }
+
+        @Override
+        public Item<Class<?>> newInstance(Class<?> value, Set<Item<Class<?>>> slots) {
+            return new ExceptedType(value, slots);
+        }
+
+        @Override
+        public Item<Class<?>> newReverseInstance(Class<?> cls) {
+            return new IncludeType(cls);
+        }
+
+        @Override
+        public boolean isEnable() {
+            return false;
+        }
+    }
+
+    private static final class IncludeType extends AbstractClassItem {
+
+        IncludeType(Class<?> value) {
+            super(value);
+        }
+
+        private IncludeType(Class<?> value, Set<Item<Class<?>>> slots) {
+            super(value, slots);
+        }
+
+        @Override
+        public Item<Class<?>> newInstance(Class<?> value, Set<Item<Class<?>>> slots) {
+            return new IncludeType(value, rebuildSlots(slots));
+        }
+
+        @Override
+        public Item<Class<?>> newReverseInstance(Class<?> cls) {
+            return new ExceptedType(cls);
+        }
+
+        @Override
+        public boolean isEnable() {
+            return true;
+        }
     }
 
     private static class ClassItemsRebuildHelper extends AbstractClassItem {
