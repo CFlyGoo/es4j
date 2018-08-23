@@ -28,32 +28,32 @@ import org.slf4j.LoggerFactory;
  * @author hanpengfei
  * @since 1.0
  */
-public class MockDynamicEventHandler {
+public class EventHandleMethodProvider {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(MockDynamicEventHandler.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(EventHandleMethodProvider.class);
 
-    private static final Method HANDLE_METHOD;
+    private static final Method NORMAL_HANDLE_METHOD;
     private static final Method STATIC_HANDLE_METHOD;
 
     static {
         try {
-            HANDLE_METHOD = MockDynamicEventHandler.class.getDeclaredMethod(
+            NORMAL_HANDLE_METHOD = EventHandleMethodProvider.class.getDeclaredMethod(
                 "handleEvent", long.class, Event.class, String.class, Object.class);
-            STATIC_HANDLE_METHOD = MockDynamicEventHandler.class.getDeclaredMethod(
+            STATIC_HANDLE_METHOD = EventHandleMethodProvider.class.getDeclaredMethod(
                 "staticEventHandler", long.class, Event.class, String.class, Object.class);
         } catch (Exception e) {
-            throw new IllegalStateException("Cannot find method");
+            throw new IllegalStateException("Cannot find handler");
         }
     }
 
     private final Event expected;
     private boolean handled;
 
-    public MockDynamicEventHandler() {
+    public EventHandleMethodProvider() {
         this.expected = null;
     }
 
-    public MockDynamicEventHandler(Event expected) {
+    public EventHandleMethodProvider(Event expected) {
         this.expected = Objects.requireNonNull(expected, "Expected must not be null.");
     }
 
@@ -66,7 +66,7 @@ public class MockDynamicEventHandler {
     }
 
     public Method getHandleMethod() {
-        return HANDLE_METHOD;
+        return NORMAL_HANDLE_METHOD;
     }
 
     public boolean isHandled() {
