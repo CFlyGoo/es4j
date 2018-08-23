@@ -14,31 +14,30 @@
  * limitations under the License.
  */
 
-package com.apehat.es4j.bus.subscriber;
+package com.apehat.es4j.bus.port.adapter;
 
 import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
 
 import com.apehat.es4j.bus.BusModuleTestDataProvider;
 import com.apehat.es4j.bus.event.Event;
-import com.apehat.es4j.bus.support.MockDynamicEventHandler;
-import java.lang.reflect.Method;
+import com.apehat.es4j.bus.support.EventHandleMethodProvider;
 import org.testng.annotations.Test;
 
 /**
  * @author hanpengfei
  * @since 1.0
  */
-public class DynamicEventHandlerTest {
+public class NormalMethodAdapterFactoryTest {
 
     @Test(dataProviderClass = BusModuleTestDataProvider.class, dataProvider = "eventFixtureProvider")
     public void testOnEvent(Event event) {
-        final MockDynamicEventHandler handler = new MockDynamicEventHandler(event);
-        final Method handleMethod = handler.getHandleMethod();
-        DynamicEventHandler dynamicEventHandler = new DynamicEventHandler(handler, handleMethod);
+        final EventHandleMethodProvider invoker = new EventHandleMethodProvider(event);
+        final NormalMethodAdapter adapter =
+            new NormalMethodAdapter(invoker, invoker.getHandleMethod());
 
-        assertFalse(handler.isHandled());
-        dynamicEventHandler.onEvent(event);
-        assertTrue(handler.isHandled());
+        assertFalse(invoker.isHandled());
+        adapter.onEvent(event);
+        assertTrue(invoker.isHandled());
     }
 }
