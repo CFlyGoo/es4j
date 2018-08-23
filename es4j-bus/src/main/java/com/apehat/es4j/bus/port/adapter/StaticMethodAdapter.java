@@ -56,6 +56,8 @@ final class StaticMethodAdapter extends AbstractMethodAdapter {
 
     @Override
     public int hashCode() {
-        return Objects.hash(getHandler());
+        int result = 229;
+        result = 31 * result + getHandler().hashCode();
+        return result;
     }
 }
