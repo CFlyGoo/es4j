@@ -17,7 +17,6 @@
 package com.apehat.es4j.bus.subscriber;
 
 import com.apehat.es4j.bus.EventHandler;
-import java.lang.reflect.Method;
 import java.util.Objects;
 import java.util.Set;
 
@@ -34,19 +33,8 @@ public class SubscriberIdentityService {
             "Subscriber repository must not be null");
     }
 
-    public void provisionSubscriber(Class<?> type, Object handler, Method handleMethod) {
-        this.subscriberRepo.save(new Subscriber(
-            new NormalHandlerDescriptor(handler, handleMethod), Type.of(type)));
-    }
-
     public void provisionSubscriber(Class<?> type, EventHandler handler) {
-        this.subscriberRepo.save(new Subscriber(
-            new PlainHandleDescriptor(handler), Type.of(type)));
-    }
-
-    public void provisionSubscriber(Class<?> type, Method handler) {
-        this.subscriberRepo.save(new Subscriber(
-            new StaticHandlerDescriptor(handler), Type.of(type)));
+        this.subscriberRepo.save(new Subscriber(handler, Type.of(type)));
     }
 
     public Set<Subscriber> subscribersWith(Class<?> type) {

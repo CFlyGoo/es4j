@@ -20,7 +20,6 @@ import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
 import static org.testng.AssertJUnit.assertFalse;
 
-import com.apehat.es4j.bus.support.MockDynamicEventHandler;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicInteger;
 import org.slf4j.Logger;
@@ -59,27 +58,6 @@ public class EventBusTest {
     }
 
     @Test
-    public void testPublishBeforeRegisterMethod() {
-        // Terminal will print warn log
-        final EventBus bus = provisionEventBus();
-        bus.publish(new EventPublished());
-
-        final MockDynamicEventHandler handler = new MockDynamicEventHandler();
-        bus.subscribe(EventPublished.class, handler, handler.getHandleMethod());
-
-        assertFalse(handler.isHandled());
-    }
-
-    @Test
-    public void testPublishAfterRegisteredMethod() {
-        final EventBus bus = provisionEventBus();
-        final MockDynamicEventHandler handler = new MockDynamicEventHandler();
-        bus.subscribe(EventPublished.class, handler, handler.getHandleMethod());
-        bus.publish(new EventPublished());
-        assertTrue(handler.isHandled());
-    }
-
-    @Test
     public void testSubmitBeforeRegisterEventHandler() throws Exception {
         // Terminal will print warn log
         final EventBus bus = provisionEventBus();
@@ -100,28 +78,6 @@ public class EventBusTest {
         bus.submit(new EventSubmitted());
         Thread.sleep(50);
         assertTrue(handled[0]);
-    }
-
-    @Test
-    public void testSubmitBeforeRegisterMethod() throws Exception {
-        final EventBus bus = provisionEventBus();
-        bus.submit(new EventSubmitted());
-
-        final MockDynamicEventHandler handler = new MockDynamicEventHandler();
-        bus.subscribe(EventSubmitted.class, handler, handler.getHandleMethod());
-
-        Thread.sleep(100);
-        assertFalse(handler.isHandled());
-    }
-
-    @Test
-    public void testSubmitAfterRegisteredMethod() throws Exception {
-        final EventBus bus = provisionEventBus();
-        final MockDynamicEventHandler handler = new MockDynamicEventHandler();
-        bus.subscribe(EventSubmitted.class, handler, handler.getHandleMethod());
-        bus.submit(new EventSubmitted());
-        Thread.sleep(50);
-        assertTrue(handler.isHandled());
     }
 
     @Test
