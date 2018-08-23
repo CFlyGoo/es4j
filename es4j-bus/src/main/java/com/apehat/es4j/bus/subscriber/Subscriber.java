@@ -16,6 +16,7 @@
 
 package com.apehat.es4j.bus.subscriber;
 
+import com.apehat.es4j.bus.EventHandler;
 import com.apehat.es4j.bus.event.PendingEvent;
 import java.util.Objects;
 
@@ -34,14 +35,13 @@ public class Subscriber {
      * 6. 否则，进行直接的调用
      */
 
-    private final HandlerDescriptor handlerDescriptor;
+    private final EventHandler handler;
     private final long subscriptionOn;
     private final Type type;
 
-    Subscriber(HandlerDescriptor handlerDescriptor, Type type) {
+    Subscriber(EventHandler handler, Type type) {
         this.subscriptionOn = System.currentTimeMillis();
-        this.handlerDescriptor = Objects.requireNonNull(handlerDescriptor,
-            "Handler descriptor must not be null");
+        this.handler = Objects.requireNonNull(handler, "Handler must not be null");
         this.type = Objects.requireNonNull(type, "Subscription type must not be null.");
     }
 
@@ -52,11 +52,7 @@ public class Subscriber {
         if (subscriptionOn > event.occurredOn()) {
             throw new IllegalArgumentException("Event already occurred");
         }
-        handlerDescriptor.getHandler().onEvent(event.toEvent());
-    }
-
-    public String id() {
-        return handlerDescriptor.toString();
+        handler.onEvent(event.toEvent());
     }
 
     public boolean isSubscribed(Class<?> cls) {
@@ -72,11 +68,13 @@ public class Subscriber {
             return false;
         }
         Subscriber that = (Subscriber) o;
-        return Objects.equals(handlerDescriptor, that.handlerDescriptor);
+        return Objects.equals(handler, that.handler);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(handlerDescriptor);
+        int result = 191;
+        result = 31 * result + handler.hashCode();
+        return result;
     }
 }
