@@ -14,15 +14,28 @@
  * limitations under the License.
  */
 
-package com.apehat.es4j.bus.subscriber;
+package com.apehat.es4j.bus;
 
-import com.apehat.es4j.bus.EventHandler;
+import com.apehat.es4j.util.DefaultParameterNameDiscoverer;
+import com.apehat.es4j.util.ParameterNameDiscoverer;
 
 /**
  * @author hanpengfei
  * @since 1.0
  */
-public interface HandlerDescriptor {
+public final class DomainRegistry {
 
-    EventHandler getHandler();
+    private static ParameterNameDiscoverer parameterNameDiscoverer =
+        new DefaultParameterNameDiscoverer();
+
+    private DomainRegistry() {
+    }
+
+    public static ParameterNameDiscoverer parameterNameDiscoverer() {
+        return parameterNameDiscoverer;
+    }
+
+    public static void setParameterNameDiscoverer(ParameterNameDiscoverer discoverer) {
+        DomainRegistry.parameterNameDiscoverer = discoverer;
+    }
 }

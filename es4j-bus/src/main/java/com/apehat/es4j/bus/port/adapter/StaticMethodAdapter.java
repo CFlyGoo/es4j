@@ -14,29 +14,25 @@
  * limitations under the License.
  */
 
-package com.apehat.es4j.bus.subscriber;
+package com.apehat.es4j.bus.port.adapter;
 
-import com.apehat.es4j.bus.EventHandler;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.util.Objects;
 
 /**
  * @author hanpengfei
  * @since 1.0
  */
-final class NormalHandlerDescriptor implements HandlerDescriptor {
+final class StaticMethodAdapter extends AbstractMethodAdapter {
 
-    private final Object handler;
-    private final Method handleMethod;
-
-    NormalHandlerDescriptor(Object proxy, Method handleMethod) {
-        this.handler = Objects.requireNonNull(proxy, "Handler must not be null");
-        this.handleMethod = Objects.requireNonNull(handleMethod, "Handle method must not be null");
+    StaticMethodAdapter(Method method) {
+        super(method);
     }
 
     @Override
-    public EventHandler getHandler() {
-        return new DynamicEventHandler(handler, handleMethod);
+    protected Object getInvoker() {
+        return null;
     }
 
     @Override
@@ -44,16 +40,22 @@ final class NormalHandlerDescriptor implements HandlerDescriptor {
         if (this == o) {
             return true;
         }
-        if (o == null || getClass() != o.getClass()) {
+        if (o == null || o.getClass() != this.getClass()) {
             return false;
         }
-        NormalHandlerDescriptor that = (NormalHandlerDescriptor) o;
-        return Objects.equals(handler, that.handler) &&
-            Objects.equals(handleMethod, that.handleMethod);
+        StaticMethodAdapter that = (StaticMethodAdapter) o;
+        return Objects.equals(getHandler(), that.getHandler());
+    }
+
+    @Override
+    protected void verify() {
+        if (!Modifier.isStatic(getHandler().getModifiers())) {
+            throw new IllegalArgumentException(getHandler() + " isn't static method");
+        }
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(handler, handleMethod);
+        return Objects.hash(getHandler());
     }
 }
