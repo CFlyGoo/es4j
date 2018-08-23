@@ -24,5 +24,9 @@ import java.lang.reflect.Method;
  */
 public interface ParameterNameDiscoverer {
 
+    default String getParameterName(Method exec, int index) {
+        return getParameterNames(exec)[index];
+    }
+
     String[] getParameterNames(Method exec);
 }
