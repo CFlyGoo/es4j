@@ -20,5 +20,5 @@ package com.apehat.es4j.support.sample;
  * @author hanpengfei
  * @since 1.0
  */
-public class SampleClass1 extends SampleMiddleClass1{
+public class SampleClass1 extends SampleMiddleClass1 {
 }

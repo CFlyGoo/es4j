@@ -54,14 +54,11 @@ import org.testng.annotations.Test;
  */
 public class DigraphTest {
 
-    private final Logger logger = LoggerFactory.getLogger(getClass());
-
     private static final Set<Class<?>> SAMPLE;
     private static final Map<Class<?>, Set<Class<?>>> ADJACENT_FIRST_CLASSES = new HashMap<>();
     private static final Map<Class<?>, Set<Class<?>>> ADJACENT_REACHABLE_CLASSES = new HashMap<>();
     private static final Map<Class<?>, Set<Class<?>>> FIRST_CLASSES = new HashMap<>();
     private static final Map<Class<?>, Set<Class<?>>> REACHABLE_CLASSES = new HashMap<>();
-
     private static final Indicator<Class<?>> INDICATOR =
         (o1, o2) -> o1.getSuperclass() == o2 || Arrays.asList(o1.getInterfaces()).contains(o2);
 
@@ -76,6 +73,14 @@ public class DigraphTest {
         };
         SAMPLE = new HashSet<>(Arrays.asList(sampleArray));
         init();
+    }
+
+    private final Logger logger = LoggerFactory.getLogger(getClass());
+    private final Digraph<Class<?>> digraph;
+
+    DigraphTest(Digraph<Class<?>> digraph) {
+        assert digraph != null;
+        this.digraph = digraph;
     }
 
     private static void init() {
@@ -121,13 +126,6 @@ public class DigraphTest {
 
     static Indicator<Class<?>> getIndicator() {
         return INDICATOR;
-    }
-
-    private final Digraph<Class<?>> digraph;
-
-    DigraphTest(Digraph<Class<?>> digraph) {
-        assert digraph != null;
-        this.digraph = digraph;
     }
 
     @Test

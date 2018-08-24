@@ -26,8 +26,8 @@ import java.util.Objects;
  */
 final class EventPrototype {
 
-    private FieldValueFinder finder;
     private final Object root;
+    private FieldValueFinder finder;
 
     EventPrototype(Object root) {
         Objects.requireNonNull(root, "Event prototype root must not be null.");

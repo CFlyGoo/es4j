@@ -32,6 +32,15 @@ public final class CompositeType implements Type {
 
     private static final long serialVersionUID = -467998764902780604L;
     private static final ClassItemsRebuildHelper ITEMS_REBUILD_HELPER = new ClassItemsRebuildHelper();
+    private final Set<Item<Class<?>>> items;
+
+    public CompositeType(Class<?>... types) {
+        this(items(types));
+    }
+
+    private CompositeType(Set<Item<Class<?>>> items) {
+        this.items = Collections.unmodifiableSet(ITEMS_REBUILD_HELPER.rebuildSlots(items));
+    }
 
     private static Set<Item<Class<?>>> items(Class<?>... types) {
         if (types == null || types.length == 0) {
@@ -43,16 +52,6 @@ public final class CompositeType implements Type {
             items.add(new IncludeType(cls));
         }
         return items;
-    }
-
-    private final Set<Item<Class<?>>> items;
-
-    public CompositeType(Class<?>... types) {
-        this(items(types));
-    }
-
-    private CompositeType(Set<Item<Class<?>>> items) {
-        this.items = Collections.unmodifiableSet(ITEMS_REBUILD_HELPER.rebuildSlots(items));
     }
 
     @Override

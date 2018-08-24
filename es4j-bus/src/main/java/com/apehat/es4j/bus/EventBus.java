@@ -32,10 +32,9 @@ import com.apehat.es4j.bus.subscriber.support.CopyOnWriteSubscriberRepository;
 public final class EventBus {
 
     private SubscriberRepository subscriberRepo = new CopyOnWriteSubscriberRepository();
-    private EventIdentityService eventIdentityService = new EventIdentityService();
     private final SubscriberIdentityService subscriberIdentityService =
         new SubscriberIdentityService(subscriberRepo);
-
+    private EventIdentityService eventIdentityService = new EventIdentityService();
     private Dispatcher dispatcher = new Dispatcher();
     private AsyncDispatcher asyncDispatcher = new AsyncDispatcher();
 

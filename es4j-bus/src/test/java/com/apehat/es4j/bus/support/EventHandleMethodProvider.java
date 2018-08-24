@@ -65,18 +65,17 @@ public class EventHandleMethodProvider {
         return new String[]{"occurredOn", "info", "source", "event"};
     }
 
+    private static void staticEventHandler(
+        long occurredOn, Event info, String source, Object event) {
+        LOGGER.info("Start handler event with {}, {}", occurredOn, info);
+    }
+
     public Method getHandleMethod() {
         return NORMAL_HANDLE_METHOD;
     }
 
     public boolean isHandled() {
         return handled;
-    }
-
-
-    private static void staticEventHandler(
-        long occurredOn, Event info, String source, Object event) {
-        LOGGER.info("Start handler event with {}, {}", occurredOn, info);
     }
 
     private void handleEvent(long occurredOn, Event info, String source, Object event) {

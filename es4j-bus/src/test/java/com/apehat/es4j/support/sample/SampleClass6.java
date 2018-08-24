@@ -21,5 +21,5 @@ package com.apehat.es4j.support.sample;
  * @since 1.0
  */
 public class SampleClass6
-    extends SampleMiddleClass1 implements SampleMiddleInterface1, SampleMiddleInterface2{
+    extends SampleMiddleClass1 implements SampleMiddleInterface1, SampleMiddleInterface2 {
 }

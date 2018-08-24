@@ -150,18 +150,18 @@ public final class AdjacencyDigraph<E> implements Digraph<E> {
         private Set<Edge<E>> inEdges;
         private Set<Edge<E>> outEdges;
 
+        private Vertex(E value) {
+            this.value = Objects.requireNonNull(value, "Vertex value must not be null");
+            this.inEdges = new HashSet<>();
+            this.outEdges = new HashSet<>();
+        }
+
         static <E> Set<E> values(Set<Vertex<E>> vertices) {
             final Set<E> values = new LinkedHashSet<>();
             for (Vertex<E> vertex : vertices) {
                 values.add(vertex.value());
             }
             return values;
-        }
-
-        private Vertex(E value) {
-            this.value = Objects.requireNonNull(value, "Vertex value must not be null");
-            this.inEdges = new HashSet<>();
-            this.outEdges = new HashSet<>();
         }
 
         void addOutEdge(Edge<E> edge) {

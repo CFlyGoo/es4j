@@ -18,8 +18,6 @@ package com.apehat.es4j.bus.disptach;
 
 import com.apehat.es4j.bus.event.PendingEvent;
 import com.apehat.es4j.bus.subscriber.Subscriber;
-import com.apehat.es4j.bus.subscriber.SubscriberRepository;
-import java.util.Objects;
 import java.util.Set;
 
 /**

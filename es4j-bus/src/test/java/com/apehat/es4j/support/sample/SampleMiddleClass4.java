@@ -20,5 +20,6 @@ package com.apehat.es4j.support.sample;
  * @author hanpengfei
  * @since 1.0
  */
-public class SampleMiddleClass4 extends SampleSuperClass implements SampleSuperInterface1, SampleSuperInterface2{
+public class SampleMiddleClass4 extends SampleSuperClass implements SampleSuperInterface1,
+    SampleSuperInterface2 {
 }

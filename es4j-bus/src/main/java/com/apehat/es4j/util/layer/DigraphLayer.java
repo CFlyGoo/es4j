@@ -26,9 +26,9 @@ import java.util.Set;
  */
 public class DigraphLayer<E> implements Layer<E> {
 
-    private Layer<E> pre;
     private final int index;
     private final Set<E> items;
+    private Layer<E> pre;
     private Layer<E> next;
 
     public DigraphLayer(Set<E> items) {
