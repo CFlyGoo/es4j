@@ -19,6 +19,7 @@ package com.apehat.es4j.bus.subscriber;
 import com.apehat.es4j.util.AbstractClassItem;
 import com.apehat.es4j.util.Item;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
@@ -44,14 +45,14 @@ public final class CompositeType implements Type {
         return items;
     }
 
-    private Set<Item<Class<?>>> items;
+    private final Set<Item<Class<?>>> items;
 
     public CompositeType(Class<?>... types) {
         this(items(types));
     }
 
     private CompositeType(Set<Item<Class<?>>> items) {
-        this.items = ITEMS_REBUILD_HELPER.rebuildSlots(items);
+        this.items = Collections.unmodifiableSet(ITEMS_REBUILD_HELPER.rebuildSlots(items));
     }
 
     @Override
