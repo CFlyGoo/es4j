@@ -33,6 +33,8 @@ import org.objectweb.asm.Type;
  */
 public class AsmParameterNameDiscoverer implements ParameterNameDiscoverer {
 
+    private static final String THIS = "this";
+
     @Override
     public String[] getParameterNames(Method exec) {
         final int count = exec.getParameterCount();
@@ -59,7 +61,7 @@ public class AsmParameterNameDiscoverer implements ParameterNameDiscoverer {
                     @Override
                     public void visitLocalVariable(String localVarName, String descriptor,
                         String signature, Label start, Label end, int index) {
-                        if ("this".equals(localVarName)) {
+                        if (THIS.equals(localVarName)) {
                             return;
                         }
                         if (paramNames.size() < count) {
