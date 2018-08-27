@@ -110,6 +110,7 @@ abstract class AbstractItem<T> implements Item<T> {
         return true;
     }
 
+    @Override
     public Set<Item<T>> slots() {
         return Collections.unmodifiableSet(slots);
     }

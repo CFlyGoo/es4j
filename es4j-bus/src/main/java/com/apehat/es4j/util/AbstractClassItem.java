@@ -41,6 +41,7 @@ public abstract class AbstractClassItem extends AbstractItem<Class<?>> {
         return value().isAssignableFrom(cls);
     }
 
+    @Override
     protected Indicator<Item<Class<?>>> getIndicator() {
         return INDICATOR;
     }
