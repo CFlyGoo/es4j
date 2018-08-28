@@ -19,6 +19,7 @@ package com.apehat.es4j.util;
 import static org.testng.Assert.assertEquals;
 
 import com.apehat.es4j.bus.support.EventHandleMethodProvider;
+import java.util.Date;
 import org.testng.annotations.Test;
 
 /**
@@ -27,11 +28,27 @@ import org.testng.annotations.Test;
  */
 public class AsmParameterNameDiscovererTest {
 
+    public AsmParameterNameDiscovererTest() {
+    }
+
+    private AsmParameterNameDiscovererTest(String str, int i, Date date) {
+
+    }
+
     @Test
     public void testGetParameterNames() {
         final String[] exceptedNames = EventHandleMethodProvider.getHandlerParameterNames();
         String[] parameterNames = new AsmParameterNameDiscoverer()
             .getParameterNames(new EventHandleMethodProvider().getHandleMethod());
         assertEquals(parameterNames, exceptedNames);
+    }
+
+    @Test
+    public void testGetParameterNamesWithConstructor() throws Exception {
+        final String[] exceptedNames = {"str", "i", "date"};
+        String[] parameterNames = new AsmParameterNameDiscoverer()
+            .getParameterNames(AsmParameterNameDiscovererTest.class
+                .getDeclaredConstructor(String.class, int.class, Date.class));
+        assertEquals(exceptedNames, parameterNames);
     }
 }

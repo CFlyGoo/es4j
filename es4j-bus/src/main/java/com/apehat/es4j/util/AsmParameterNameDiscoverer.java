@@ -18,6 +18,8 @@ package com.apehat.es4j.util;
 
 import com.apehat.es4j.NestedIOException;
 import java.io.IOException;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Executable;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import org.objectweb.asm.ClassReader;
@@ -35,8 +37,10 @@ public class AsmParameterNameDiscoverer implements ParameterNameDiscoverer {
 
     private static final String THIS = "this";
 
+    private static final int ASM_API = Opcodes.ASM6;
+
     @Override
-    public String[] getParameterNames(Method exec) {
+    public String[] getParameterNames(Executable exec) {
         final int count = exec.getParameterCount();
         if (count == 0) {
             return new String[0];
@@ -49,15 +53,14 @@ public class AsmParameterNameDiscoverer implements ParameterNameDiscoverer {
         } catch (IOException e) {
             throw new NestedIOException(e);
         }
-        String execDescriptor = Type.getMethodDescriptor(exec);
-        cr.accept(new ClassVisitor(Opcodes.ASM6) {
+        cr.accept(new ClassVisitor(ASM_API) {
             @Override
-            public MethodVisitor visitMethod(int access, String name, String descriptor,
-                String signature, String[] exceptions) {
-                if (!execDescriptor.equals(descriptor)) {
+            public MethodVisitor visitMethod(
+                int access, String name, String descriptor, String signature, String[] exceptions) {
+                if (!getExecDescriptor(exec).equals(descriptor)) {
                     return super.visitMethod(access, name, descriptor, signature, exceptions);
                 }
-                return new MethodVisitor(Opcodes.ASM6) {
+                return new MethodVisitor(ASM_API) {
                     @Override
                     public void visitLocalVariable(String localVarName, String descriptor,
                         String signature, Label start, Label end, int index) {
@@ -72,5 +75,11 @@ public class AsmParameterNameDiscoverer implements ParameterNameDiscoverer {
             }
         }, 0);
         return paramNames.toArray(new String[0]);
+    }
+
+    private String getExecDescriptor(Executable exec) {
+        return (exec instanceof Method) ?
+            Type.getMethodDescriptor((Method) exec) :
+            Type.getConstructorDescriptor((Constructor<?>) exec);
     }
 }

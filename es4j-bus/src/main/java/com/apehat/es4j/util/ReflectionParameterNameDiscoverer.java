@@ -16,6 +16,7 @@
 
 package com.apehat.es4j.util;
 
+import java.lang.reflect.Executable;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 
@@ -26,7 +27,7 @@ import java.lang.reflect.Parameter;
 public class ReflectionParameterNameDiscoverer implements ParameterNameDiscoverer {
 
     @Override
-    public String[] getParameterNames(Method exec) {
+    public String[] getParameterNames(Executable exec) {
         final int count = exec.getParameterCount();
         if (count == 0) {
             return new String[0];

@@ -16,6 +16,7 @@
 
 package com.apehat.es4j.util;
 
+import java.lang.reflect.Executable;
 import java.lang.reflect.Method;
 import java.util.LinkedList;
 import java.util.List;
@@ -33,7 +34,7 @@ public class PrioritizedParameterNameDiscoverer implements ParameterNameDiscover
     }
 
     @Override
-    public String[] getParameterNames(Method exec) {
+    public String[] getParameterNames(Executable exec) {
         for (ParameterNameDiscoverer discoverer : parameterNameDiscoverers) {
             String[] result = discoverer.getParameterNames(exec);
             if (result != null) {

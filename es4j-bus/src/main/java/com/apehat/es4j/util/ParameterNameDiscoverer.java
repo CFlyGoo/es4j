@@ -16,7 +16,7 @@
 
 package com.apehat.es4j.util;
 
-import java.lang.reflect.Method;
+import java.lang.reflect.Executable;
 
 /**
  * @author hanpengfei
@@ -24,9 +24,9 @@ import java.lang.reflect.Method;
  */
 public interface ParameterNameDiscoverer {
 
-    default String getParameterName(Method exec, int index) {
+    default String getParameterName(Executable exec, int index) {
         return getParameterNames(exec)[index];
     }
 
-    String[] getParameterNames(Method exec);
+    String[] getParameterNames(Executable exec);
 }
