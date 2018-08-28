@@ -31,11 +31,7 @@ abstract class AbstractItem<T> implements Item<T> {
     private final Set<Item<T>> slots;
 
     protected AbstractItem() {
-        this(null);
-    }
-
-    protected AbstractItem(T value) {
-        this(value, Collections.emptySet());
+        this(null, null);
     }
 
     protected AbstractItem(T value, Set<Item<T>> slots) {
