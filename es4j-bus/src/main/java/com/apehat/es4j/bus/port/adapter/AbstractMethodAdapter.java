@@ -16,9 +16,11 @@
 
 package com.apehat.es4j.bus.port.adapter;
 
+import com.apehat.es4j.bus.DomainRegistry;
 import com.apehat.es4j.bus.EventHandler;
 import com.apehat.es4j.bus.EventHandlingException;
 import com.apehat.es4j.bus.event.Event;
+import com.apehat.es4j.util.ArgumentsAssembler;
 import com.apehat.es4j.util.ReflectionUtils;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -31,6 +33,10 @@ import java.util.Objects;
 @SuppressWarnings("WeakerAccess")
 public abstract class AbstractMethodAdapter implements EventHandler {
 
+    private static final ArgumentsAssembler<Event> ARGUMENTS_ASSEMBLER =
+        new EventArgumentsAssembler(DomainRegistry.parameterNameDiscoverer(),
+            new EventArgumentExtractor());
+
     protected final Method handler;
 
     protected AbstractMethodAdapter(Method handler) {
@@ -42,8 +48,8 @@ public abstract class AbstractMethodAdapter implements EventHandler {
     public void onEvent(Event event) {
         ReflectionUtils.access(handler, accessible -> {
             try {
-                return accessible.invoke(getInvoker(),
-                    new EventHandlerArgumentsAssembler().getArguments(handler, event));
+                return accessible.invoke(
+                    getInvoker(), ARGUMENTS_ASSEMBLER.assemble(handler, event));
             } catch (InvocationTargetException e) {
                 throw new EventHandlingException(e);
             }
