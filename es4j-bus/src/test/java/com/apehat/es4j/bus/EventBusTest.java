@@ -34,11 +34,13 @@ public class EventBusTest {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(EventBusTest.class);
 
+    private static final String SOURCE = EventBusTest.class.getName();
+
     @Test
     public void testPublishBeforeRegisterEventHandler() {
         // Terminal will print warn log
         final EventBus bus = provisionEventBus();
-        bus.publish(new EventPublished());
+        bus.publish(SOURCE, new EventPublished());
 
         final boolean[] handled = {false};
         bus.subscribe(EventPublished.class, event -> handled[0] = true);
@@ -53,7 +55,7 @@ public class EventBusTest {
         final boolean[] handled = {false};
         bus.subscribe(EventPublished.class, event -> handled[0] = true);
 
-        bus.publish(new EventPublished());
+        bus.publish(SOURCE, new EventPublished());
         assertTrue(handled[0]);
     }
 
@@ -61,7 +63,7 @@ public class EventBusTest {
     public void testSubmitBeforeRegisterEventHandler() throws Exception {
         // Terminal will print warn log
         final EventBus bus = provisionEventBus();
-        bus.submit(new EventSubmitted());
+        bus.submit(SOURCE, new EventSubmitted());
 
         final boolean[] handled = {false};
         bus.subscribe(EventSubmitted.class, event -> handled[0] = true);
@@ -75,7 +77,7 @@ public class EventBusTest {
         final EventBus bus = provisionEventBus();
         final boolean[] handled = {false};
         bus.subscribe(EventSubmitted.class, event -> handled[0] = true);
-        bus.submit(new EventSubmitted());
+        bus.submit(SOURCE, new EventSubmitted());
         Thread.sleep(50);
         assertTrue(handled[0]);
     }
@@ -85,7 +87,7 @@ public class EventBusTest {
         AtomicInteger handleCount = new AtomicInteger();
         final EventBus bus = provisionEventBus();
         registerSameHandler(handleCount, bus, "publish");
-        bus.publish(new EventPublished());
+        bus.publish(SOURCE, new EventPublished());
         assertEquals(handleCount.get(), 1);
     }
 
@@ -94,7 +96,7 @@ public class EventBusTest {
         final AtomicInteger handleCount = new AtomicInteger();
         final EventBus bus = provisionEventBus();
         registerSameHandler(handleCount, bus, "submit");
-        bus.submit(new EventSubmitted());
+        bus.submit(SOURCE, new EventSubmitted());
         Thread.sleep(100);
         assertEquals(handleCount.get(), 1);
     }
