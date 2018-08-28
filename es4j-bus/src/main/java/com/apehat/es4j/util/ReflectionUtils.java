@@ -20,6 +20,7 @@ import com.apehat.es4j.NestedCheckException;
 import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
+import java.lang.reflect.Parameter;
 
 /**
  * @author hanpengfei
@@ -37,6 +38,17 @@ public class ReflectionUtils {
         } finally {
             object.setAccessible(flag);
         }
+    }
+
+    public static int getParameterIndex(Parameter parameter) {
+        Parameter[] parameters = parameter.getDeclaringExecutable().getParameters();
+        for (int i = 0; i < parameters.length; i++) {
+            if (parameters[i].equals(parameter)) {
+                return i;
+            }
+        }
+        // will not happen
+        return -1;
     }
 
     public static void setFieldValue(Field field, Object instance, Object value) {
