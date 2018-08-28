@@ -45,48 +45,48 @@ abstract class AbstractItem<T> implements Item<T> {
     }
 
     @Override
-    public Item<T> add(T cls) {
-        if (!isManageable(cls)) {
+    public Item<T> add(T value) {
+        if (!isManageable(value)) {
             return this;
         }
-        if (cls == value) {
-            return slots.isEmpty() ? this : newInstance(value, Collections.emptySet());
+        if (value == this.value) {
+            return slots.isEmpty() ? this : newInstance(this.value, Collections.emptySet());
         }
 
         final Set<Item<T>> newSlots = new HashSet<>();
         for (Item<T> slot : slots) {
-            if (slot.value() != cls) {
-                newSlots.add(slot.contains(cls) ? slot.remove(cls) : slot);
+            if (slot.value() != value) {
+                newSlots.add(slot.contains(value) ? slot.remove(value) : slot);
             }
         }
-        return newInstance(value, newSlots);
+        return newInstance(this.value, newSlots);
     }
 
     @Override
-    public Item<T> remove(T cls) {
-        if (!isManageable(cls)) {
+    public Item<T> remove(T value) {
+        if (!isManageable(value)) {
             return this;
         }
-        if (cls == value) {
-            throw new IllegalStateException("Cannot remove myself with " + cls);
+        if (value == this.value) {
+            throw new IllegalStateException("Cannot remove myself with " + value);
         }
         boolean removed = false;
         final Set<Item<T>> newSlots = new HashSet<>();
         for (Item<T> slot : slots) {
-            if (slot.value() == cls) {
+            if (slot.value() == value) {
                 newSlots.add(newReverseInstance(slot.value()));
                 removed = true;
-            } else if (slot.isManageable(cls)) {
-                newSlots.add(slot.add(cls));
+            } else if (slot.isManageable(value)) {
+                newSlots.add(slot.add(value));
                 removed = true;
             } else {
                 newSlots.add(slot);
             }
         }
         if (!removed) {
-            newSlots.add(newReverseInstance(cls));
+            newSlots.add(newReverseInstance(value));
         }
-        return newInstance(value, newSlots);
+        return newInstance(this.value, newSlots);
     }
 
     @Override

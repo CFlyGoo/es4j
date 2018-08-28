@@ -144,8 +144,8 @@ public final class CompositeType implements Type {
         }
 
         @Override
-        public Item<Class<?>> newReverseInstance(Class<?> cls) {
-            return new IncludeType(cls);
+        public Item<Class<?>> newReverseInstance(Class<?> value) {
+            return new IncludeType(value);
         }
 
         @Override
@@ -170,8 +170,8 @@ public final class CompositeType implements Type {
         }
 
         @Override
-        public Item<Class<?>> newReverseInstance(Class<?> cls) {
-            return new ExceptedType(cls);
+        public Item<Class<?>> newReverseInstance(Class<?> value) {
+            return new ExceptedType(value);
         }
 
         @Override
@@ -192,7 +192,7 @@ public final class CompositeType implements Type {
         }
 
         @Override
-        public Item<Class<?>> newReverseInstance(Class<?> cls) {
+        public Item<Class<?>> newReverseInstance(Class<?> value) {
             throw new UnsupportedOperationException();
         }
 

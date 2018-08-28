@@ -37,8 +37,8 @@ public abstract class AbstractClassItem extends AbstractItem<Class<?>> {
     }
 
     @Override
-    public final boolean isManageable(Class<?> cls) {
-        return value().isAssignableFrom(cls);
+    public final boolean isManageable(Class<?> value) {
+        return value().isAssignableFrom(value);
     }
 
     @Override

@@ -24,9 +24,9 @@ import java.util.Set;
  */
 public interface Item<T> {
 
-    Item<T> add(T cls);
+    Item<T> add(T value);
 
-    Item<T> remove(T cls);
+    Item<T> remove(T value);
 
     T value();
 
@@ -34,11 +34,11 @@ public interface Item<T> {
 
     Item<T> newInstance(T value, Set<Item<T>> slots);
 
-    Item<T> newReverseInstance(T cls);
+    Item<T> newReverseInstance(T value);
 
-    boolean isManageable(T cls);
+    boolean isManageable(T value);
 
     boolean isEnable();
 
-    boolean contains(T cls);
+    boolean contains(T value);
 }
