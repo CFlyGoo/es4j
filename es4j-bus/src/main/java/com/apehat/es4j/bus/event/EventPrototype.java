@@ -16,7 +16,6 @@
 
 package com.apehat.es4j.bus.event;
 
-import com.apehat.es4j.util.FieldValueFinder;
 import com.apehat.es4j.util.ObjectUtils;
 import java.util.Objects;
 
@@ -27,7 +26,6 @@ import java.util.Objects;
 final class EventPrototype {
 
     private final Object root;
-    private FieldValueFinder finder;
 
     EventPrototype(Object root) {
         Objects.requireNonNull(root, "Event prototype root must not be null.");
@@ -40,13 +38,5 @@ final class EventPrototype {
 
     Class<?> type() {
         return root.getClass();
-    }
-
-    Object get(String name) {
-        assert name != null;
-        if (finder == null) {
-            finder = new FieldValueFinder(root);
-        }
-        return ObjectUtils.deepClone(finder.lookup(name));
     }
 }

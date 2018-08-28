@@ -29,7 +29,6 @@ public final class Event {
     public static final String TYPE = "type";
     public static final String SOURCE = "source";
     public static final String EVENT = "event";
-    private static final String PREFIX = EVENT + '.';
 
     private final long occurredOn;
     private final EventPrototype prototype;
@@ -72,28 +71,6 @@ public final class Event {
             ", prototype=" + prototype +
             ", source='" + source + '\'' +
             '}';
-    }
-
-    public Object get(String name) {
-        Objects.requireNonNull(name, "Attribute name must not be null.");
-        if (OCCURRED_ON.equals(name)) {
-            return occurredOn();
-        } else if (TYPE.equals(name)) {
-            return type();
-        } else if (SOURCE.equals(name)) {
-            return source();
-        } else if (Event.EVENT.equals(name)) {
-            return prototype();
-        } else {
-            return prototype.get(clearName(name));
-        }
-    }
-
-    private String clearName(String name) {
-        if (name.startsWith(PREFIX)) {
-            name = name.substring(PREFIX.length());
-        }
-        return name;
     }
 
     public long occurredOn() {
