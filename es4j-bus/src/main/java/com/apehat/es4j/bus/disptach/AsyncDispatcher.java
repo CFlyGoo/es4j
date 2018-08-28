@@ -18,12 +18,9 @@ package com.apehat.es4j.bus.disptach;
 
 import com.apehat.es4j.bus.event.PendingEvent;
 import com.apehat.es4j.bus.subscriber.Subscriber;
+import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.ThreadPoolExecutor.DiscardOldestPolicy;
-import java.util.concurrent.TimeUnit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,11 +31,12 @@ import org.slf4j.LoggerFactory;
 public class AsyncDispatcher {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AsyncDispatcher.class);
+    private final ExecutorService pool;
 
-    private ExecutorService pool = new ThreadPoolExecutor(4, 4,
-        0L, TimeUnit.MILLISECONDS,
-        new LinkedBlockingQueue<>(), r -> new Thread(r, "es4j-bus-pool-" + r.hashCode()),
-        new DiscardOldestPolicy());
+    public AsyncDispatcher(ExecutorService pool) {
+        this.pool = Objects.requireNonNull(pool, "Pool must not be null");
+    }
+
 
     public void dispatch(PendingEvent event, Set<Subscriber> subscribers) {
         if (subscribers.isEmpty()) {

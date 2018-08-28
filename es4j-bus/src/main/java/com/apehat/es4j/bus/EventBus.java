@@ -23,6 +23,12 @@ import com.apehat.es4j.bus.event.PendingEvent;
 import com.apehat.es4j.bus.subscriber.SubscriberIdentityService;
 import com.apehat.es4j.bus.subscriber.SubscriberRepository;
 import com.apehat.es4j.bus.subscriber.support.CopyOnWriteSubscriberRepository;
+import java.util.Set;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.ThreadPoolExecutor.DiscardOldestPolicy;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author hanpengfei
@@ -36,7 +42,13 @@ public final class EventBus {
         new SubscriberIdentityService(subscriberRepo);
     private EventIdentityService eventIdentityService = new EventIdentityService();
     private Dispatcher dispatcher = new Dispatcher();
-    private AsyncDispatcher asyncDispatcher = new AsyncDispatcher();
+
+    private ExecutorService pool = new ThreadPoolExecutor(4, 4,
+        0L, TimeUnit.MILLISECONDS,
+        new LinkedBlockingQueue<>(), r -> new Thread(r, "es4j-bus-pool-" + r.hashCode()),
+        new DiscardOldestPolicy());
+
+    private AsyncDispatcher asyncDispatcher = new AsyncDispatcher(pool);
 
     /* Global subscribe */
 
