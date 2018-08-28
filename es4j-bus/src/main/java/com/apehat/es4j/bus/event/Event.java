@@ -16,6 +16,7 @@
 
 package com.apehat.es4j.bus.event;
 
+import com.apehat.es4j.util.ObjectUtils;
 import java.util.Objects;
 
 /**
@@ -31,11 +32,12 @@ public final class Event {
     public static final String EVENT = "event";
 
     private final long occurredOn;
-    private final EventPrototype prototype;
+    private final Object prototype;
     private final String source;
 
-    Event(long occurredOn, EventPrototype prototype, String source) {
-        this.prototype = Objects.requireNonNull(prototype, "Event prototype must not be null");
+    Event(long occurredOn, Object prototype, String source) {
+        this.prototype = ObjectUtils.deepClone(
+            Objects.requireNonNull(prototype, "Event prototype must not be null"));
         this.occurredOn = occurredOn;
         this.source = source;
     }
@@ -66,7 +68,7 @@ public final class Event {
     @Override
     public String toString() {
         return "Event{" +
-            "type=" + prototype.type() +
+            "type=" + type() +
             ", occurredOn=" + occurredOn +
             ", prototype=" + prototype +
             ", source='" + source + '\'' +
@@ -78,7 +80,7 @@ public final class Event {
     }
 
     public Object prototype() {
-        return prototype.root();
+        return ObjectUtils.deepClone(prototype);
     }
 
     public String source() {
@@ -86,6 +88,6 @@ public final class Event {
     }
 
     public Class<?> type() {
-        return prototype.type();
+        return prototype.getClass();
     }
 }

@@ -23,6 +23,6 @@ package com.apehat.es4j.bus.event;
 public class EventIdentityService {
 
     public PendingEvent provisionEvent(Object eventPrototype, String source) {
-        return new PendingEvent(new EventPrototype(eventPrototype), source);
+        return new PendingEvent(eventPrototype, source);
     }
 }

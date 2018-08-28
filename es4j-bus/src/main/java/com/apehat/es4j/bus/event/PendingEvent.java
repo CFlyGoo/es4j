@@ -40,7 +40,7 @@ public class PendingEvent {
 
     private Event metadata;
 
-    PendingEvent(EventPrototype prototype, String source) {
+    PendingEvent(Object prototype, String source) {
         this.metadata = new Event(System.currentTimeMillis(), prototype, source);
     }
 
