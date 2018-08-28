@@ -28,27 +28,24 @@ import com.apehat.es4j.util.Value;
 final class EventArgumentExtractor implements ArgumentExtractor<Event> {
 
     private static final String PREFIX = Event.EVENT + '.';
+    private static final ArgumentExtractor<Object> EXTRACTOR = new ReflectionArgumentExtractor();
 
     @Override
-    public Value<?> extract(String name, Event prototype) {
+    public Value<?> extract(String name, Event event) {
         if (Event.OCCURRED_ON.equals(name)) {
-            return new Value<>(prototype.occurredOn());
+            return new Value<>(event.occurredOn());
         } else if (Event.TYPE.equals(name)) {
-            return new Value<>(prototype.type());
+            return new Value<>(event.type());
         } else if (Event.SOURCE.equals(name)) {
-            return new Value<>(prototype.source());
+            return new Value<>(event.source());
         } else if (Event.EVENT.equals(name)) {
-            return new Value<>(prototype.prototype());
+            return new Value<>(event.prototype());
         } else {
-            return new ReflectionArgumentExtractor()
-                .extract(clearName(name), prototype.prototype());
+            return EXTRACTOR.extract(clearName(name), event.prototype());
         }
     }
 
     private String clearName(String name) {
-        if (name.startsWith(PREFIX)) {
-            name = name.substring(PREFIX.length());
-        }
-        return name;
+        return name.startsWith(PREFIX) ? name.substring(PREFIX.length()) : name;
     }
 }
