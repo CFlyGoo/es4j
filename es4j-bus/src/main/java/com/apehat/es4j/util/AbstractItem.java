@@ -16,11 +16,6 @@
 
 package com.apehat.es4j.util;
 
-import com.apehat.es4j.util.graph.AdjacencyDigraph;
-import com.apehat.es4j.util.graph.Digraph;
-import com.apehat.es4j.util.graph.Indicator;
-import com.apehat.es4j.util.layer.DigraphLayerAnalyzer;
-import com.apehat.es4j.util.layer.Layer;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Objects;
@@ -45,8 +40,7 @@ abstract class AbstractItem<T> implements Item<T> {
 
     protected AbstractItem(T value, Set<Item<T>> slots) {
         this.value = value;
-        this.slots = Collections.unmodifiableSet(rebuildSlots(
-            (slots == null) ? Collections.emptySet() : slots));
+        this.slots = (slots == null) ? Collections.emptySet() : Collections.unmodifiableSet(slots);
     }
 
     @Override
@@ -118,42 +112,6 @@ abstract class AbstractItem<T> implements Item<T> {
     @Override
     public Set<Item<T>> slots() {
         return Collections.unmodifiableSet(slots);
-    }
-
-    protected Set<Item<T>> rebuildSlots(Set<Item<T>> slots) {
-        if (slots == null || slots.isEmpty()) {
-            return slots;
-        }
-        final Digraph<Item<T>> graph = createNewDirectedGraph(slots);
-        final Set<Item<T>> mergeable = graph.vertices();
-        final Set<Item<T>> top = layer(graph).top().currentLayerItems();
-        if (top.size() == mergeable.size()) {
-            return slots;
-        }
-        final Set<Item<T>> newSlots = new HashSet<>(top);
-        mergeable.removeAll(top);
-        for (Item<T> item : mergeable) {
-            Set<Item<T>> reachableSet = graph.getReachableVertices(item);
-            for (Item<T> reachable : reachableSet) {
-                if (newSlots.contains(reachable)) {
-                    final Set<Item<T>> temp = new HashSet<>(reachable.slots());
-                    temp.addAll(item.slots());
-                    newSlots.remove(reachable);
-                    newSlots.add(reachable.newInstance(reachable.value(), temp));
-                }
-            }
-        }
-        return newSlots;
-    }
-
-    protected abstract Indicator<Item<T>> getIndicator();
-
-    protected Layer<Item<T>> layer(Digraph<Item<T>> graph) {
-        return new DigraphLayerAnalyzer<>(graph).calculateLayer();
-    }
-
-    protected Digraph<Item<T>> createNewDirectedGraph(Set<Item<T>> slots) {
-        return new AdjacencyDigraph<>(slots, getIndicator());
     }
 
     @Override

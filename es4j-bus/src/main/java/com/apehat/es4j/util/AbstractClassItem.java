@@ -16,7 +16,6 @@
 
 package com.apehat.es4j.util;
 
-import com.apehat.es4j.util.graph.Indicator;
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.Objects;
@@ -29,8 +28,6 @@ import java.util.Set;
 public abstract class AbstractClassItem extends AbstractItem<Class<?>> implements Serializable {
 
     private static final long serialVersionUID = 2523147870883695061L;
-    private static final Indicator<Item<Class<?>>> INDICATOR =
-        (o1, o2) -> o1.isEnable() == o2.isEnable() && o2.value().isAssignableFrom(o1.value());
 
     protected AbstractClassItem(Class<?> value) {
         this(value, Collections.emptySet());
@@ -43,10 +40,5 @@ public abstract class AbstractClassItem extends AbstractItem<Class<?>> implement
     @Override
     public final boolean isManageable(Class<?> value) {
         return value().isAssignableFrom(value);
-    }
-
-    @Override
-    protected Indicator<Item<Class<?>>> getIndicator() {
-        return INDICATOR;
     }
 }
