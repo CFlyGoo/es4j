@@ -17,6 +17,7 @@
 package com.apehat.es4j.bus.subscriber;
 
 import com.apehat.es4j.util.AbstractClassItem;
+import com.apehat.es4j.util.ClassItemReBuilder;
 import com.apehat.es4j.util.Item;
 import java.util.Arrays;
 import java.util.Collections;
@@ -31,7 +32,7 @@ import java.util.Set;
 public final class CompositeType implements Type {
 
     private static final long serialVersionUID = -467998764902780604L;
-    private static final ClassItemsRebuildHelper ITEMS_REBUILD_HELPER = new ClassItemsRebuildHelper();
+
     private final Set<Item<Class<?>>> items;
 
     public CompositeType(Class<?>... types) {
@@ -39,7 +40,7 @@ public final class CompositeType implements Type {
     }
 
     private CompositeType(Set<Item<Class<?>>> items) {
-        this.items = Collections.unmodifiableSet(ITEMS_REBUILD_HELPER.rebuildSlots(items));
+        this.items = Collections.unmodifiableSet(new ClassItemReBuilder(items).rebuild());
     }
 
     private static Set<Item<Class<?>>> items(Class<?>... types) {
@@ -130,12 +131,14 @@ public final class CompositeType implements Type {
 
     private static final class ExceptedType extends AbstractClassItem {
 
+        private static final long serialVersionUID = 1921985160179831733L;
+
         ExceptedType(Class<?> value) {
             super(value);
         }
 
         private ExceptedType(Class<?> value, Set<Item<Class<?>>> slots) {
-            super(value, slots);
+            super(value, new ClassItemReBuilder(slots).rebuild());
         }
 
         @Override
@@ -156,17 +159,19 @@ public final class CompositeType implements Type {
 
     private static final class IncludeType extends AbstractClassItem {
 
+        private static final long serialVersionUID = -1321655907319211783L;
+
         IncludeType(Class<?> value) {
             super(value);
         }
 
         private IncludeType(Class<?> value, Set<Item<Class<?>>> slots) {
-            super(value, slots);
+            super(value, new ClassItemReBuilder(slots).rebuild());
         }
 
         @Override
         public Item<Class<?>> newInstance(Class<?> value, Set<Item<Class<?>>> slots) {
-            return new IncludeType(value, rebuildSlots(slots));
+            return new IncludeType(value, slots);
         }
 
         @Override
@@ -177,33 +182,6 @@ public final class CompositeType implements Type {
         @Override
         public boolean isEnable() {
             return true;
-        }
-    }
-
-    private static class ClassItemsRebuildHelper extends AbstractClassItem {
-
-        private ClassItemsRebuildHelper() {
-            super(ClassItemsRebuildHelper.class);
-        }
-
-        @Override
-        public Item<Class<?>> newInstance(Class<?> value, Set<Item<Class<?>>> slots) {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override
-        public Item<Class<?>> newReverseInstance(Class<?> value) {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override
-        public boolean isEnable() {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override
-        public Set<Item<Class<?>>> rebuildSlots(Set<Item<Class<?>>> slots) {
-            return super.rebuildSlots(slots);
         }
     }
 }
