@@ -35,13 +35,18 @@ abstract class AbstractItem<T> implements Item<T> {
     private final T value;
     private final Set<Item<T>> slots;
 
+    protected AbstractItem() {
+        this(null);
+    }
+
     protected AbstractItem(T value) {
         this(value, Collections.emptySet());
     }
 
     protected AbstractItem(T value, Set<Item<T>> slots) {
-        this.value = Objects.requireNonNull(value, "value must not be null");
-        this.slots = Collections.unmodifiableSet(rebuildSlots(slots));
+        this.value = value;
+        this.slots = Collections.unmodifiableSet(rebuildSlots(
+            (slots == null) ? Collections.emptySet() : slots));
     }
 
     @Override

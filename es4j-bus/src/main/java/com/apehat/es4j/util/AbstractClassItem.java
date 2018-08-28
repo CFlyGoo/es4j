@@ -17,23 +17,27 @@
 package com.apehat.es4j.util;
 
 import com.apehat.es4j.util.graph.Indicator;
+import java.io.Serializable;
+import java.util.Collections;
+import java.util.Objects;
 import java.util.Set;
 
 /**
  * @author hanpengfei
  * @since 1.0
  */
-public abstract class AbstractClassItem extends AbstractItem<Class<?>> {
+public abstract class AbstractClassItem extends AbstractItem<Class<?>> implements Serializable {
 
+    private static final long serialVersionUID = 2523147870883695061L;
     private static final Indicator<Item<Class<?>>> INDICATOR =
         (o1, o2) -> o1.isEnable() == o2.isEnable() && o2.value().isAssignableFrom(o1.value());
 
     protected AbstractClassItem(Class<?> value) {
-        super(value);
+        this(value, Collections.emptySet());
     }
 
     protected AbstractClassItem(Class<?> value, Set<Item<Class<?>>> slots) {
-        super(value, slots);
+        super(Objects.requireNonNull(value, "Class must not be null"), slots);
     }
 
     @Override
