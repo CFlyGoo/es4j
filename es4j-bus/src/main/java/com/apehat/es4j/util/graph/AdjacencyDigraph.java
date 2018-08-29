@@ -102,12 +102,12 @@ public final class AdjacencyDigraph<E> implements Digraph<E> {
         private final Vertex<E> head;
         private final Vertex<E> tail;
 
-        Edge(Vertex<E> head, Vertex<E> tail) {
+        private Edge(Vertex<E> head, Vertex<E> tail) {
             this.head = Objects.requireNonNull(head, "head must not be null");
             this.tail = Objects.requireNonNull(tail, "tail most not be null");
         }
 
-        Vertex<E> adjacentVertexOf(Vertex<E> vertex) {
+        private Vertex<E> adjacentVertexOf(Vertex<E> vertex) {
             if (head().equals(vertex)) {
                 return tail();
             }
@@ -117,11 +117,11 @@ public final class AdjacencyDigraph<E> implements Digraph<E> {
             throw new IllegalArgumentException(this + " hadn't incident " + vertex);
         }
 
-        Vertex<E> head() {
+        private Vertex<E> head() {
             return head;
         }
 
-        Vertex<E> tail() {
+        private Vertex<E> tail() {
             return tail;
         }
 
@@ -156,7 +156,7 @@ public final class AdjacencyDigraph<E> implements Digraph<E> {
             this.outEdges = new HashSet<>();
         }
 
-        static <E> Set<E> values(Set<Vertex<E>> vertices) {
+        private static <E> Set<E> values(Set<Vertex<E>> vertices) {
             final Set<E> values = new LinkedHashSet<>();
             for (Vertex<E> vertex : vertices) {
                 values.add(vertex.value());
@@ -164,23 +164,23 @@ public final class AdjacencyDigraph<E> implements Digraph<E> {
             return values;
         }
 
-        void addOutEdge(Edge<E> edge) {
+        private void addOutEdge(Edge<E> edge) {
             this.outEdges.add(edge);
         }
 
-        void addInEdge(Edge<E> edge) {
+        private void addInEdge(Edge<E> edge) {
             this.inEdges.add(edge);
         }
 
-        E value() {
+        private E value() {
             return value;
         }
 
-        Set<Vertex<E>> adjacentInVertices() {
+        private Set<Vertex<E>> adjacentInVertices() {
             return adjacencies(inEdges);
         }
 
-        Set<Vertex<E>> adjacentOutVertices() {
+        private Set<Vertex<E>> adjacentOutVertices() {
             return adjacencies(outEdges);
         }
 
@@ -193,7 +193,7 @@ public final class AdjacencyDigraph<E> implements Digraph<E> {
             return adjacencies;
         }
 
-        Set<Vertex<E>> inVertices() {
+        private Set<Vertex<E>> inVertices() {
             final Set<Vertex<E>> adjacencies = adjacentInVertices();
             final Set<Vertex<E>> temp = new HashSet<>();
             for (Vertex<E> vertex : adjacencies) {
@@ -205,7 +205,7 @@ public final class AdjacencyDigraph<E> implements Digraph<E> {
             return adjacencies;
         }
 
-        Set<Vertex<E>> outVertices() {
+        private Set<Vertex<E>> outVertices() {
             final Set<Vertex<E>> adjacencies = adjacentOutVertices();
             final Set<Vertex<E>> temp = new HashSet<>();
             for (Vertex<E> vertex : adjacencies) {
