@@ -32,12 +32,12 @@ public class ReflectionArgumentExtractor implements ArgumentExtractor<Object> {
         new ConcurrentCache<>(100);
 
     @Override
-    public Value<?> extract(String name, Object prototype) {
-        Objects.requireNonNull(name, "Cannot extract with null");
+    public Value<?> extract(String alias, Object prototype) {
+        Objects.requireNonNull(alias, "Cannot extract with null");
         final Map<String, Value<?>> cache = CACHE.get(prototype);
-        return (cache != null && cache.containsKey(name)) ?
-            cache.get(name) :
-            cache(prototype, name, doExtract(prototype, name));
+        return (cache != null && cache.containsKey(alias)) ?
+            cache.get(alias) :
+            cache(prototype, alias, doExtract(prototype, alias));
     }
 
     private Value<?> cache(Object prototype, String name, Value<?> result) {
