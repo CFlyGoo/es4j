@@ -31,7 +31,7 @@ public final class DomainRegistry {
     private DomainRegistry() {
     }
 
-    public static ParameterAliasDiscoverer parameterNameDiscoverer() {
+    public static ParameterAliasDiscoverer parameterAliasDiscoverer() {
         return parameterAliasDiscoverer;
     }
 
