@@ -18,7 +18,6 @@ package com.apehat.es4j.util;
 
 import java.lang.reflect.Executable;
 import java.lang.reflect.Parameter;
-import java.util.ArrayList;
 
 /**
  * @author hanpengfei
@@ -38,32 +37,25 @@ public class DefaultArgumentsAssembler<T> implements ArgumentsAssembler<T> {
     @Override
     public Object[] assemble(Executable exec, T prototype) {
         final int count = exec.getParameterCount();
-        final ArrayList<Object> args = new ArrayList<>(count);
-        for (Parameter parameter : exec.getParameters()) {
-            final Object o = doAssemble(prototype, parameter);
-            if (o == null && !isNullable(parameter)) {
-                throw new IllegalArgumentException(
-                    "Argument of " + parameter + " must not be null");
+        final Object[] args = new Object[count];
+        final Parameter[] parameters = exec.getParameters();
+        for (int i = 0; i < count; i++) {
+            final Parameter parameter = parameters[i];
+            final String alias = parameterAliasDiscoverer.getParameterAlias(parameter);
+            final Value<?> value = argumentExtractor.extract(alias, prototype);
+            Object result;
+            if (value == null) {
+                if (alias.lastIndexOf(".") == -1 && parameter.getType()
+                    .isAssignableFrom(prototype.getClass())) {
+                    result = prototype;
+                } else {
+                    throw new IllegalStateException("Cannot find " + alias + " from " + prototype);
+                }
+            } else {
+                result = value.get();
             }
-            args.add(o);
+            args[i] = result;
         }
-        return args.toArray();
-    }
-
-    protected Object doAssemble(T prototype, Parameter parameter) {
-        final String name = parameterAliasDiscoverer.getParameterAlias(parameter);
-        final Value<?> value = argumentExtractor.extract(name, prototype);
-        if (value == null && isRequired(parameter)) {
-            throw new IllegalStateException("Cannot find " + name + " form " + prototype);
-        }
-        return value == null ? null : value.get();
-    }
-
-    private boolean isRequired(Parameter parameter) {
-        return false;
-    }
-
-    private boolean isNullable(Parameter parameter) {
-        return true;
+        return args;
     }
 }
