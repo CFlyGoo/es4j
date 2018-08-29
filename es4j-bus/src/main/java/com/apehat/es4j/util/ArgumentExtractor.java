@@ -22,5 +22,5 @@ package com.apehat.es4j.util;
  */
 public interface ArgumentExtractor<T> {
 
-    Value<?> extract(String name, T prototype);
+    Value<?> extract(String alias, T prototype);
 }
