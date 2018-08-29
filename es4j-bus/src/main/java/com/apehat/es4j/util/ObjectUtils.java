@@ -18,6 +18,8 @@ package com.apehat.es4j.util;
 
 import com.apehat.es4j.NestedCheckException;
 import com.apehat.es4j.NestedIOException;
+import com.apehat.es4j.util.serializer.DefaultDeserializer;
+import com.apehat.es4j.util.serializer.DefaultSerializer;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;

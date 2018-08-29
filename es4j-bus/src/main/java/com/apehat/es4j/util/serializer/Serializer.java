@@ -14,22 +14,16 @@
  * limitations under the License.
  */
 
-package com.apehat.es4j.util;
+package com.apehat.es4j.util.serializer;
 
 import java.io.IOException;
-import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 
 /**
  * @author hanpengfei
  * @since 1.0
  */
-public class DefaultSerializer implements Serializer<Object> {
+public interface Serializer<T> {
 
-    @Override
-    public void serialize(Object prototype, OutputStream outputStream) throws IOException {
-        ObjectOutputStream oos = new ObjectOutputStream(outputStream);
-        oos.writeObject(prototype);
-        oos.flush();
-    }
+    void serialize(T prototype, OutputStream outputStream) throws IOException;
 }

@@ -14,16 +14,27 @@
  * limitations under the License.
  */
 
-package com.apehat.es4j.util;
+package com.apehat.es4j.util.serializer;
 
+import com.apehat.es4j.NestedCheckException;
+import com.apehat.es4j.util.serializer.Deserializer;
 import java.io.IOException;
-import java.io.OutputStream;
+import java.io.InputStream;
+import java.io.ObjectInputStream;
 
 /**
  * @author hanpengfei
  * @since 1.0
  */
-public interface Serializer<T> {
+public class DefaultDeserializer implements Deserializer<Object> {
 
-    void serialize(T prototype, OutputStream outputStream) throws IOException;
+    @Override
+    public Object deserialize(InputStream inputStream) throws IOException {
+        ObjectInputStream ois = new ObjectInputStream(inputStream);
+        try {
+            return ois.readObject();
+        } catch (ClassNotFoundException e) {
+            throw new NestedCheckException(e);
+        }
+    }
 }
