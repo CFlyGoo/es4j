@@ -20,6 +20,9 @@ import com.apehat.es4j.bus.event.Event;
 import com.apehat.es4j.util.ArgumentExtractor;
 import com.apehat.es4j.util.ReflectionArgumentExtractor;
 import com.apehat.es4j.util.Value;
+import java.util.Collections;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 /**
  * @author hanpengfei
@@ -28,20 +31,60 @@ import com.apehat.es4j.util.Value;
 final class EventArgumentExtractor implements ArgumentExtractor<Event> {
 
     private static final String PREFIX = Event.EVENT + '.';
-    private static final ArgumentExtractor<Object> EXTRACTOR = new ReflectionArgumentExtractor();
+
+    private static final Set<ArgumentExtractor<Event>> EXTRACTORS;
+
+    private ArgumentExtractor<Object> prototypeExtractor = new ReflectionArgumentExtractor();
+
+    static {
+        Set<ArgumentExtractor<Event>> extractors = new LinkedHashSet<>();
+        extractors.add(new OccurredOnExtractor());
+        extractors.add(new TypeExtractor());
+        extractors.add(new SourceExtractor());
+        extractors.add(new PrototypeExtractor());
+        EXTRACTORS = Collections.unmodifiableSet(extractors);
+    }
 
     @Override
-    public Value<?> extract(String name, Event event) {
-        if (Event.OCCURRED_ON.equals(name)) {
-            return new Value<>(event.occurredOn());
-        } else if (Event.TYPE.equals(name)) {
-            return new Value<>(event.type());
-        } else if (Event.SOURCE.equals(name)) {
-            return new Value<>(event.source());
-        } else if (Event.EVENT.equals(name)) {
-            return new Value<>(event.prototype());
-        } else {
-            return EXTRACTOR.extract(clearName(name), event.prototype());
+    public Value<?> extract(String alias, Event event) {
+        for (ArgumentExtractor<Event> extractor : EXTRACTORS) {
+            Value<?> value = extractor.extract(alias, event);
+            if (value != null) {
+                return value;
+            }
+        }
+        return prototypeExtractor.extract(clearName(alias), event.prototype());
+    }
+
+    private static class OccurredOnExtractor implements ArgumentExtractor<Event> {
+
+        @Override
+        public Value<?> extract(String alias, Event prototype) {
+            return Event.OCCURRED_ON.equals(alias) ? new Value<>(prototype.occurredOn()) : null;
+        }
+    }
+
+    private static class TypeExtractor implements ArgumentExtractor<Event> {
+
+        @Override
+        public Value<?> extract(String alias, Event prototype) {
+            return Event.TYPE.equals(alias) ? new Value<>(prototype.type()) : null;
+        }
+    }
+
+    private static class SourceExtractor implements ArgumentExtractor<Event> {
+
+        @Override
+        public Value<?> extract(String alias, Event prototype) {
+            return Event.SOURCE.equals(alias) ? new Value<>(prototype.source()) : null;
+        }
+    }
+
+    private static class PrototypeExtractor implements ArgumentExtractor<Event> {
+
+        @Override
+        public Value<?> extract(String alias, Event prototype) {
+            return Event.EVENT.equals(alias) ? new Value<>(prototype.prototype()) : null;
         }
     }
 
