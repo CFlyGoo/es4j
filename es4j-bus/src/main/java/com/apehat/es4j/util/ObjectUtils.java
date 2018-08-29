@@ -16,7 +16,6 @@
 
 package com.apehat.es4j.util;
 
-import com.apehat.es4j.NestedCheckException;
 import com.apehat.es4j.NestedIOException;
 import com.apehat.es4j.util.serializer.DefaultDeserializer;
 import com.apehat.es4j.util.serializer.DefaultSerializer;
@@ -25,9 +24,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.Serializable;
 import java.lang.reflect.Array;
-import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
 import java.util.Arrays;
 import java.util.Collection;
@@ -100,7 +97,7 @@ public final class ObjectUtils {
 
     private static <T> T plainObjectDeepClone(T prototype) {
         final Class<T> prototypeClass = ClassUtils.getParameterizedClass(prototype);
-        final T clone = newInstance(prototypeClass);
+        final T clone = ReflectionUtils.newInstance(prototypeClass);
         final Field[] fields = prototypeClass.getDeclaredFields();
         for (Field field : fields) {
             if (!Modifier.isStatic(field.getModifiers())) {
@@ -117,7 +114,7 @@ public final class ObjectUtils {
     private static <T> T mapDeepClone(T prototype) {
         assert prototype instanceof Map;
         Class<T> prototypeClass = ClassUtils.getParameterizedClass(prototype);
-        final T newInstance = newInstance(prototypeClass);
+        final T newInstance = ReflectionUtils.newInstance(prototypeClass);
         Map container = (Map) newInstance;
         final Map<?, ?> map = (Map<?, ?>) prototype;
         map.forEach((BiConsumer<Object, Object>) (key, value) -> {
@@ -133,7 +130,7 @@ public final class ObjectUtils {
         assert prototype instanceof Collection;
         Class<T> prototypeClass = ClassUtils.getParameterizedClass(prototype);
         final Collection<?> collection = (Collection<?>) prototype;
-        final T newInstance = newInstance(prototypeClass);
+        final T newInstance = ReflectionUtils.newInstance(prototypeClass);
         Collection container = (Collection) newInstance;
         collection.forEach((Consumer<Object>) o -> {
             Object cloneValue = deepClone(o);
@@ -162,25 +159,6 @@ public final class ObjectUtils {
             }
         }
         return newInstance;
-    }
-
-    private static <T> T newInstance(Class<T> cls, Object... args) {
-        Class<?>[] paramTypes = new Class[args.length];
-        for (int i = 0; i < args.length; i++) {
-            paramTypes[i] = args[i].getClass();
-        }
-        try {
-            Constructor<T> constructor = cls.getDeclaredConstructor(paramTypes);
-            return ReflectionUtils.access(constructor, accessible -> {
-                try {
-                    return constructor.newInstance(args);
-                } catch (InstantiationException | InvocationTargetException e) {
-                    throw new NestedCheckException(e);
-                }
-            });
-        } catch (NoSuchMethodException e) {
-            throw new NestedCheckException(e);
-        }
     }
 
     private static boolean isValueObject(Object object) {

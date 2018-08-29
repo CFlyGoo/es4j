@@ -18,7 +18,9 @@ package com.apehat.es4j.util;
 
 import com.apehat.es4j.NestedCheckException;
 import java.lang.reflect.AccessibleObject;
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.Parameter;
 
@@ -77,5 +79,24 @@ public class ReflectionUtils {
             object.setAccessible(true);
         }
         return accessible;
+    }
+
+    public static <T> T newInstance(Class<T> cls, Object... args) {
+        Class<?>[] paramTypes = new Class[args.length];
+        for (int i = 0; i < args.length; i++) {
+            paramTypes[i] = args[i].getClass();
+        }
+        try {
+            Constructor<T> constructor = cls.getDeclaredConstructor(paramTypes);
+            return access(constructor, accessible -> {
+                try {
+                    return constructor.newInstance(args);
+                } catch (InstantiationException | InvocationTargetException e) {
+                    throw new NestedCheckException(e);
+                }
+            });
+        } catch (NoSuchMethodException e) {
+            throw new NestedCheckException(e);
+        }
     }
 }
