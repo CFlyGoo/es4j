@@ -35,6 +35,10 @@ import org.testng.annotations.Test;
  */
 public class EventArgumentExtractorTest {
 
+    private final Event event;
+    private final UserRegistered prototype;
+    private final EventArgumentExtractor extractor;
+
     @Test
     public void testExtract() {
         assertEquals(event.occurredOn(), extract(Event.OCCURRED_ON));
@@ -56,10 +60,6 @@ public class EventArgumentExtractorTest {
         assertEquals(prototype.getRegisterOn(),
             extract(Event.EVENT + "." + USER_REGISTERED_TIME));
     }
-
-    private final Event event;
-    private final UserRegistered prototype;
-    private final EventArgumentExtractor extractor;
 
     public EventArgumentExtractorTest() {
         this.prototype = TestDataProvider.userRegisteredFixture();
