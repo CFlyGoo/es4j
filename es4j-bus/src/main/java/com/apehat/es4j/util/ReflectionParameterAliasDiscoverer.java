@@ -33,7 +33,7 @@ public class ReflectionParameterAliasDiscoverer implements ParameterAliasDiscove
         }
         final Parameter[] parameters = exec.getParameters();
         if (!parameters[0].isNamePresent()) {
-            return null;
+            return new String[0];
         }
         String[] paramNames = new String[count];
         for (int i = 0; i < count; i++) {
