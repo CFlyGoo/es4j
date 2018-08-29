@@ -3,12 +3,6 @@ language: java
 jdk:
   - oraclejdk8
 
-before_install:
-  - sudo apt-get install jq
-  - wget -O ~/codacy-coverage-reporter-assembly-latest.jar $(curl https://github.com/codacy/codacy-coverage-reporter/releases/download/4.0.2/codacy-coverage-reporter-4.0.2-assembly.jar)
-
 after_success:
   - mvn -Pjacoco clean test jacoco:report
   - bash <(curl -s https://codecov.io/bash)
-  - java -jar ~/codacy-coverage-reporter-assembly-latest.jar report -l Java -r es4j-bus/target/site/jacoco/jacoco.xml --partial es4j-bus/src/main/java
-  - java -jar ~/codacy-coverage-reporter-assembly-latest.jar final
