@@ -45,9 +45,8 @@ public class AsmParameterAliasDiscoverer implements ParameterAliasDiscoverer {
 
     @Override
     public String getParameterAlias(Parameter param) {
-        return getParameterAlias(
-            param.getDeclaringExecutable(),
-            ReflectionUtils.getParameterIndex(param));
+        return getParameterAlias(param.getDeclaringExecutable())
+            [ReflectionUtils.getParameterIndex(param)];
     }
 
     @Override
