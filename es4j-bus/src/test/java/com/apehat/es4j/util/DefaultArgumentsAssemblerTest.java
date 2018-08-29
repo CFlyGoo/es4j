@@ -14,13 +14,14 @@
  * limitations under the License.
  */
 
-package com.apehat.es4j.bus.port.adapter;
+package com.apehat.es4j.util;
 
 import static org.testng.Assert.assertEquals;
 
 import com.apehat.es4j.bus.DomainRegistry;
 import com.apehat.es4j.bus.event.Event;
 import com.apehat.es4j.bus.event.EventFixtureProvider;
+import com.apehat.es4j.bus.port.adapter.EventArgumentExtractorFixtureProvider;
 import com.apehat.es4j.support.TestDataProvider;
 import com.apehat.es4j.support.UserId;
 import com.apehat.es4j.support.UserRegistered;
@@ -32,22 +33,23 @@ import org.testng.annotations.Test;
  * @author hanpengfei
  * @since 1.0
  */
-public class EventArgumentsAssemblerTest {
+public class DefaultArgumentsAssemblerTest {
 
     private final Event event;
     private final UserRegistered prototype;
-    private final EventArgumentsAssembler assembler;
+    private final ArgumentsAssembler<Event> assembler;
 
-    public EventArgumentsAssemblerTest() {
+    public DefaultArgumentsAssemblerTest() {
         this.prototype = TestDataProvider.userRegisteredFixture();
         this.event = EventFixtureProvider.newEventFixture(prototype);
-        this.assembler = new EventArgumentsAssembler(
-            DomainRegistry.parameterNameDiscoverer(), new EventArgumentExtractor());
+        this.assembler = new DefaultArgumentsAssembler<>(
+            DomainRegistry.parameterAliasDiscoverer(),
+            EventArgumentExtractorFixtureProvider.newEventArgumentExtractorFixture());
     }
 
     @Test
     public void testAssemble() throws Exception {
-        Method method = EventArgumentsAssemblerTest.class.getDeclaredMethod(
+        Method method = DefaultArgumentsAssemblerTest.class.getDeclaredMethod(
             "testGetSingleLayerArguments", long.class, Object.class, Class.class, String.class,
             UserId.class, String.class, Date.class);
         Object[] arguments = assembler.assemble(method, event);
