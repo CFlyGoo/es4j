@@ -17,6 +17,7 @@
 package com.apehat.es4j.util;
 
 import java.lang.reflect.Executable;
+import java.lang.reflect.Parameter;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -33,13 +34,27 @@ public class PrioritizedParameterAliasDiscoverer implements ParameterAliasDiscov
     }
 
     @Override
-    public String[] getParameterAlias(Executable exec) {
+    public String getParameterAlias(Parameter param) {
         for (ParameterAliasDiscoverer discoverer : parameterAliasDiscoverers) {
-            String[] result = discoverer.getParameterAlias(exec);
-            if (result != null) {
-                return result;
+            String alias = discoverer.getParameterAlias(param);
+            if (alias != null) {
+                return alias;
             }
         }
         return null;
+    }
+
+    @Override
+    public String[] getParameterAlias(Executable exec) {
+        final int count = exec.getParameterCount();
+        final String[] aliases = new String[count];
+        final Parameter[] parameters = exec.getParameters();
+        for (int i = 0; i < count; i++) {
+            aliases[i] = getParameterAlias(parameters[i]);
+            if (aliases[i] == null) {
+                throw new IllegalStateException("Cannot find parameter" + i + " alias of " + exec);
+            }
+        }
+        return aliases;
     }
 }
