@@ -16,7 +16,6 @@
 
 package com.apehat.es4j.util;
 
-import java.lang.reflect.Executable;
 import java.lang.reflect.Parameter;
 
 /**
@@ -26,19 +25,7 @@ import java.lang.reflect.Parameter;
 public class ReflectionParameterAliasDiscoverer implements ParameterAliasDiscoverer {
 
     @Override
-    public String[] getParameterAlias(Executable exec) {
-        final int count = exec.getParameterCount();
-        if (count == 0) {
-            return new String[0];
-        }
-        final Parameter[] parameters = exec.getParameters();
-        if (!parameters[0].isNamePresent()) {
-            return new String[0];
-        }
-        String[] paramNames = new String[count];
-        for (int i = 0; i < count; i++) {
-            paramNames[i] = parameters[i].getName();
-        }
-        return paramNames;
+    public String getParameterAlias(Parameter param) {
+        return param.isNamePresent() ? param.getName() : null;
     }
 }

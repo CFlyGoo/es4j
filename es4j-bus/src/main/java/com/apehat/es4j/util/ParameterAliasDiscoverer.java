@@ -25,14 +25,18 @@ import java.lang.reflect.Parameter;
  */
 public interface ParameterAliasDiscoverer {
 
-    default String getParameterAlias(Parameter param) {
-        return getParameterAlias(
-            param.getDeclaringExecutable(), ReflectionUtils.getParameterIndex(param));
-    }
+    String getParameterAlias(Parameter param);
 
     default String getParameterAlias(Executable exec, int index) {
-        return getParameterAlias(exec)[index];
+        return getParameterAlias(exec.getParameters()[index]);
     }
 
-    String[] getParameterAlias(Executable exec);
+    default String[] getParameterAlias(Executable exec) {
+        final int count = exec.getParameterCount();
+        final String[] aliases = new String[count];
+        for (int i = 0; i < count; i++) {
+            aliases[i] = getParameterAlias(exec, i);
+        }
+        return aliases;
+    }
 }

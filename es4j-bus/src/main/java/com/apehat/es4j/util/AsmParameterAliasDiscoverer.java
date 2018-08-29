@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Executable;
 import java.lang.reflect.Method;
+import java.lang.reflect.Parameter;
 import java.util.ArrayList;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassVisitor;
@@ -39,13 +40,32 @@ public class AsmParameterAliasDiscoverer implements ParameterAliasDiscoverer {
 
     private static final int ASM_API = Opcodes.ASM6;
 
+    private static final ConcurrentCache<Executable, ArrayList<String>> CACHE =
+        new ConcurrentCache<>(16);
+
+    @Override
+    public String getParameterAlias(Parameter param) {
+        return getParameterAlias(
+            param.getDeclaringExecutable(),
+            ReflectionUtils.getParameterIndex(param));
+    }
+
     @Override
     public String[] getParameterAlias(Executable exec) {
         final int count = exec.getParameterCount();
         if (count == 0) {
             return new String[0];
         }
-        ArrayList<String> paramNames = new ArrayList<>(count);
+        ArrayList<String> aliases = CACHE.get(exec);
+        if (aliases == null) {
+            aliases = resolve(exec);
+        }
+        return aliases.toArray(new String[0]);
+    }
+
+    private ArrayList<String> resolve(Executable exec) {
+        final int count = exec.getParameterCount();
+        final ArrayList<String> aliases = new ArrayList<>(count);
         final Class<?> declaringClass = exec.getDeclaringClass();
         final ClassReader cr;
         try {
@@ -56,9 +76,11 @@ public class AsmParameterAliasDiscoverer implements ParameterAliasDiscoverer {
         cr.accept(new ClassVisitor(ASM_API) {
             @Override
             public MethodVisitor visitMethod(
-                int access, String name, String descriptor, String signature, String[] exceptions) {
-                if (!getExecDescriptor(exec).equals(descriptor)) {
-                    return super.visitMethod(access, name, descriptor, signature, exceptions);
+                int access, String name, String descriptor, String signature,
+                String[] exceptions) {
+                if (!execDescriptor(exec).equals(descriptor)) {
+                    return super
+                        .visitMethod(access, name, descriptor, signature, exceptions);
                 }
                 return new MethodVisitor(ASM_API) {
                     @Override
@@ -67,17 +89,17 @@ public class AsmParameterAliasDiscoverer implements ParameterAliasDiscoverer {
                         if (THIS.equals(localVarName)) {
                             return;
                         }
-                        if (paramNames.size() < count) {
-                            paramNames.add(localVarName);
+                        if (aliases.size() < count) {
+                            aliases.add(localVarName);
                         }
                     }
                 };
             }
         }, 0);
-        return paramNames.toArray(new String[0]);
+        return aliases;
     }
 
-    private String getExecDescriptor(Executable exec) {
+    private String execDescriptor(Executable exec) {
         return (exec instanceof Method) ?
             Type.getMethodDescriptor((Method) exec) :
             Type.getConstructorDescriptor((Constructor<?>) exec);
