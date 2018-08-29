@@ -33,14 +33,14 @@ import org.objectweb.asm.Type;
  * @author hanpengfei
  * @since 1.0
  */
-public class AsmParameterNameDiscoverer implements ParameterNameDiscoverer {
+public class AsmParameterAliasDiscoverer implements ParameterAliasDiscoverer {
 
     private static final String THIS = "this";
 
     private static final int ASM_API = Opcodes.ASM6;
 
     @Override
-    public String[] getParameterNames(Executable exec) {
+    public String[] getParameterAlias(Executable exec) {
         final int count = exec.getParameterCount();
         if (count == 0) {
             return new String[0];

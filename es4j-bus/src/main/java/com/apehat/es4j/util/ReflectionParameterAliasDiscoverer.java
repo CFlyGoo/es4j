@@ -17,29 +17,28 @@
 package com.apehat.es4j.util;
 
 import java.lang.reflect.Executable;
-import java.util.LinkedList;
-import java.util.List;
+import java.lang.reflect.Parameter;
 
 /**
  * @author hanpengfei
  * @since 1.0
  */
-public class PrioritizedParameterNameDiscoverer implements ParameterNameDiscoverer {
-
-    private final List<ParameterNameDiscoverer> parameterNameDiscoverers = new LinkedList<>();
-
-    public void registerDiscoverer(ParameterNameDiscoverer discoverer) {
-        this.parameterNameDiscoverers.add(discoverer);
-    }
+public class ReflectionParameterAliasDiscoverer implements ParameterAliasDiscoverer {
 
     @Override
-    public String[] getParameterNames(Executable exec) {
-        for (ParameterNameDiscoverer discoverer : parameterNameDiscoverers) {
-            String[] result = discoverer.getParameterNames(exec);
-            if (result != null) {
-                return result;
-            }
+    public String[] getParameterAlias(Executable exec) {
+        final int count = exec.getParameterCount();
+        if (count == 0) {
+            return new String[0];
         }
-        return null;
+        final Parameter[] parameters = exec.getParameters();
+        if (!parameters[0].isNamePresent()) {
+            return null;
+        }
+        String[] paramNames = new String[count];
+        for (int i = 0; i < count; i++) {
+            paramNames[i] = parameters[i].getName();
+        }
+        return paramNames;
     }
 }

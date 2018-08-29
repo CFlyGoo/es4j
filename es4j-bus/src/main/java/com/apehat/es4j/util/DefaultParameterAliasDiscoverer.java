@@ -16,29 +16,14 @@
 
 package com.apehat.es4j.util;
 
-import java.lang.reflect.Executable;
-import java.lang.reflect.Parameter;
-
 /**
  * @author hanpengfei
  * @since 1.0
  */
-public class ReflectionParameterNameDiscoverer implements ParameterNameDiscoverer {
+public class DefaultParameterAliasDiscoverer extends PrioritizedParameterAliasDiscoverer {
 
-    @Override
-    public String[] getParameterNames(Executable exec) {
-        final int count = exec.getParameterCount();
-        if (count == 0) {
-            return new String[0];
-        }
-        final Parameter[] parameters = exec.getParameters();
-        if (!parameters[0].isNamePresent()) {
-            return null;
-        }
-        String[] paramNames = new String[count];
-        for (int i = 0; i < count; i++) {
-            paramNames[i] = parameters[i].getName();
-        }
-        return paramNames;
+    public DefaultParameterAliasDiscoverer() {
+        registerDiscoverer(new ReflectionParameterAliasDiscoverer());
+        registerDiscoverer(new AsmParameterAliasDiscoverer());
     }
 }

@@ -26,12 +26,12 @@ import java.util.ArrayList;
  */
 public class DefaultArgumentsAssembler<T> implements ArgumentsAssembler<T> {
 
-    private final ParameterNameDiscoverer parameterNameDiscoverer;
+    private final ParameterAliasDiscoverer parameterAliasDiscoverer;
     private final ArgumentExtractor<T> argumentExtractor;
 
     public DefaultArgumentsAssembler(
-        ParameterNameDiscoverer parameterNameDiscoverer, ArgumentExtractor<T> argumentExtractor) {
-        this.parameterNameDiscoverer = parameterNameDiscoverer;
+        ParameterAliasDiscoverer parameterAliasDiscoverer, ArgumentExtractor<T> argumentExtractor) {
+        this.parameterAliasDiscoverer = parameterAliasDiscoverer;
         this.argumentExtractor = argumentExtractor;
     }
 
@@ -51,7 +51,7 @@ public class DefaultArgumentsAssembler<T> implements ArgumentsAssembler<T> {
     }
 
     protected Object doAssemble(T prototype, Parameter parameter) {
-        final String name = parameterNameDiscoverer.getParameterName(parameter);
+        final String name = parameterAliasDiscoverer.getParameterAlias(parameter);
         final Value<?> value = argumentExtractor.extract(name, prototype);
         if (value == null && isRequired(parameter)) {
             throw new IllegalStateException("Cannot find " + name + " form " + prototype);

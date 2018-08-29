@@ -16,8 +16,8 @@
 
 package com.apehat.es4j.bus;
 
-import com.apehat.es4j.util.DefaultParameterNameDiscoverer;
-import com.apehat.es4j.util.ParameterNameDiscoverer;
+import com.apehat.es4j.util.DefaultParameterAliasDiscoverer;
+import com.apehat.es4j.util.ParameterAliasDiscoverer;
 
 /**
  * @author hanpengfei
@@ -25,17 +25,17 @@ import com.apehat.es4j.util.ParameterNameDiscoverer;
  */
 public final class DomainRegistry {
 
-    private static ParameterNameDiscoverer parameterNameDiscoverer =
-        new DefaultParameterNameDiscoverer();
+    private static ParameterAliasDiscoverer parameterAliasDiscoverer =
+        new DefaultParameterAliasDiscoverer();
 
     private DomainRegistry() {
     }
 
-    public static ParameterNameDiscoverer parameterNameDiscoverer() {
-        return parameterNameDiscoverer;
+    public static ParameterAliasDiscoverer parameterNameDiscoverer() {
+        return parameterAliasDiscoverer;
     }
 
-    public static void setParameterNameDiscoverer(ParameterNameDiscoverer discoverer) {
-        DomainRegistry.parameterNameDiscoverer = discoverer;
+    public static void setParameterAliasDiscoverer(ParameterAliasDiscoverer discoverer) {
+        DomainRegistry.parameterAliasDiscoverer = discoverer;
     }
 }

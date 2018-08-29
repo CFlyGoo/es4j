@@ -26,28 +26,28 @@ import org.testng.annotations.Test;
  * @author hanpengfei
  * @since 1.0
  */
-public class AsmParameterNameDiscovererTest {
+public class AsmParameterAliasDiscovererTest {
 
-    public AsmParameterNameDiscovererTest() {
+    public AsmParameterAliasDiscovererTest() {
     }
 
-    private AsmParameterNameDiscovererTest(String str, int i, Date date) {
+    private AsmParameterAliasDiscovererTest(String str, int i, Date date) {
 
     }
 
     @Test
     public void testGetParameterNames() {
         final String[] exceptedNames = EventHandleMethodProvider.getHandlerParameterNames();
-        String[] parameterNames = new AsmParameterNameDiscoverer()
-            .getParameterNames(new EventHandleMethodProvider().getHandleMethod());
+        String[] parameterNames = new AsmParameterAliasDiscoverer()
+            .getParameterAlias(new EventHandleMethodProvider().getHandleMethod());
         assertEquals(parameterNames, exceptedNames);
     }
 
     @Test
     public void testGetParameterNamesWithConstructor() throws Exception {
         final String[] exceptedNames = {"str", "i", "date"};
-        String[] parameterNames = new AsmParameterNameDiscoverer()
-            .getParameterNames(AsmParameterNameDiscovererTest.class
+        String[] parameterNames = new AsmParameterAliasDiscoverer()
+            .getParameterAlias(AsmParameterAliasDiscovererTest.class
                 .getDeclaredConstructor(String.class, int.class, Date.class));
         assertEquals(exceptedNames, parameterNames);
     }
