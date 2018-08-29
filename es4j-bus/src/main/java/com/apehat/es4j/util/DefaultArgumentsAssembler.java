@@ -40,7 +40,12 @@ public class DefaultArgumentsAssembler<T> implements ArgumentsAssembler<T> {
         final int count = exec.getParameterCount();
         final ArrayList<Object> args = new ArrayList<>(count);
         for (Parameter parameter : exec.getParameters()) {
-            args.add(doAssemble(prototype, parameter));
+            final Object o = doAssemble(prototype, parameter);
+            if (o == null && !isNullable(parameter)) {
+                throw new IllegalArgumentException(
+                    "Argument of " + parameter + " must not be null");
+            }
+            args.add(o);
         }
         return args.toArray();
     }
@@ -48,9 +53,17 @@ public class DefaultArgumentsAssembler<T> implements ArgumentsAssembler<T> {
     protected Object doAssemble(T prototype, Parameter parameter) {
         final String name = parameterNameDiscoverer.getParameterName(parameter);
         final Value<?> value = argumentExtractor.extract(name, prototype);
-        if (value == null) {
+        if (value == null && isRequired(parameter)) {
             throw new IllegalStateException("Cannot find " + name + " form " + prototype);
         }
-        return value.get();
+        return value == null ? null : value.get();
+    }
+
+    private boolean isRequired(Parameter parameter) {
+        return false;
+    }
+
+    private boolean isNullable(Parameter parameter) {
+        return true;
     }
 }
