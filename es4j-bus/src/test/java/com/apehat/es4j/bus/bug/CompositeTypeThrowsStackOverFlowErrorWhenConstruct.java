@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.apehat.es4j.bug;
+package com.apehat.es4j.bus.bug;
 
 import com.apehat.es4j.bus.subscriber.CompositeType;
 import com.apehat.es4j.support.sample.SampleClass4;
