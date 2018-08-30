@@ -21,6 +21,7 @@ import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Member;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.Parameter;
 
@@ -28,17 +29,60 @@ import java.lang.reflect.Parameter;
  * @author hanpengfei
  * @since 1.0
  */
-public class ReflectionUtils {
+@SuppressWarnings("WeakerAccess")
+public final class ReflectionUtils {
+
+    private ReflectionUtils() {
+    }
 
     public static <T extends AccessibleObject, R> R access(T object, AccessFunction<T, R> fn) {
         final boolean flag = toAccessible(object);
         try {
             return fn.access(object);
         } catch (IllegalAccessException e) {
-            e.printStackTrace();
             throw new NestedCheckException(e);
         } finally {
             object.setAccessible(flag);
+        }
+    }
+
+    public static boolean toAccessible(AccessibleObject object) {
+        boolean accessible = object.isAccessible();
+        if (!accessible) {
+            object.setAccessible(true);
+        }
+        return accessible;
+    }
+
+    public static boolean isStatic(Member member) {
+        return Modifier.isStatic(member.getModifiers());
+    }
+
+    public static boolean isFinal(Member member) {
+        return Modifier.isFinal(member.getModifiers());
+    }
+
+    public static void setFieldValue(Field field, Object instance, Object value) {
+        ReflectionUtils.access(field, (AccessFunction<Field, Void>) accessible -> {
+            makeNonFinal(field);
+            accessible.set(instance, value);
+            return null;
+        });
+    }
+
+    public static void makeNonFinal(Member member) {
+        if (isFinal(member)) {
+            try {
+                ReflectionUtils.access(
+                    member.getClass().getDeclaredField("modifiers"),
+                    (AccessFunction<Field, Void>) mf -> {
+                        mf.set(member, member.getModifiers() & ~Modifier.FINAL);
+                        return null;
+                    });
+            } catch (NoSuchFieldException e) {
+                // will not happen
+                throw new NestedCheckException(e);
+            }
         }
     }
 
@@ -51,34 +95,6 @@ public class ReflectionUtils {
         }
         // will not happen
         return -1;
-    }
-
-    public static void setFieldValue(Field field, Object instance, Object value) {
-        ReflectionUtils.access(field, (AccessFunction<Field, Void>) accessible -> {
-            try {
-                if (Modifier.isFinal(field.getModifiers())) {
-                    Field modField = Field.class.getDeclaredField("modifiers");
-                    ReflectionUtils.access(modField, (AccessFunction<Field, Void>) mf -> {
-                        mf.set(field, field.getModifiers() & ~Modifier.FINAL);
-                        return null;
-                    });
-                }
-                assert !Modifier.isFinal(field.getModifiers());
-                field.set(instance, value);
-            } catch (NoSuchFieldException e) {
-                // will not happen
-                throw new NestedCheckException(e);
-            }
-            return null;
-        });
-    }
-
-    public static boolean toAccessible(AccessibleObject object) {
-        boolean accessible = object.isAccessible();
-        if (!accessible) {
-            object.setAccessible(true);
-        }
-        return accessible;
     }
 
     public static <T> T newInstance(Class<T> cls, Object... args) {
