@@ -16,8 +16,8 @@
 
 package com.apehat.es4j.bus;
 
-import com.apehat.es4j.common.util.DefaultParameterAliasDiscoverer;
-import com.apehat.es4j.common.util.ParameterAliasDiscoverer;
+import com.apehat.es4j.common.alias.DefaultParameterAliasDiscoverer;
+import com.apehat.es4j.common.alias.ParameterAliasDiscoverer;
 
 /**
  * @author hanpengfei

@@ -14,29 +14,18 @@
  * limitations under the License.
  */
 
-package com.apehat.es4j.common.util;
+package com.apehat.es4j.common.alias;
 
-import java.lang.reflect.Executable;
 import java.lang.reflect.Parameter;
 
 /**
  * @author hanpengfei
  * @since 1.0
  */
-public interface ParameterAliasDiscoverer {
+public class ReflectionParameterAliasDiscoverer implements ParameterAliasDiscoverer {
 
-    String getParameterAlias(Parameter param);
-
-    default String getParameterAlias(Executable exec, int index) {
-        return getParameterAlias(exec.getParameters()[index]);
-    }
-
-    default String[] getParameterAlias(Executable exec) {
-        final int count = exec.getParameterCount();
-        final String[] aliases = new String[count];
-        for (int i = 0; i < count; i++) {
-            aliases[i] = getParameterAlias(exec, i);
-        }
-        return aliases;
+    @Override
+    public String getParameterAlias(Parameter param) {
+        return param.isNamePresent() ? param.getName() : null;
     }
 }

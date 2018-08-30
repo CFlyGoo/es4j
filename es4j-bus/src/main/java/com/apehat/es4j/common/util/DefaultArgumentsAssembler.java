@@ -16,6 +16,7 @@
 
 package com.apehat.es4j.common.util;
 
+import com.apehat.es4j.common.alias.ParameterAliasDiscoverer;
 import java.lang.reflect.Executable;
 import java.lang.reflect.Parameter;
 

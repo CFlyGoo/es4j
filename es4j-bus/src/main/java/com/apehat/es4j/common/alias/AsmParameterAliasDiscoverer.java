@@ -14,9 +14,11 @@
  * limitations under the License.
  */
 
-package com.apehat.es4j.common.util;
+package com.apehat.es4j.common.alias;
 
 import com.apehat.es4j.common.NestedIOException;
+import com.apehat.es4j.common.util.ConcurrentCache;
+import com.apehat.es4j.common.util.ReflectionUtils;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Executable;

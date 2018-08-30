@@ -14,18 +14,16 @@
  * limitations under the License.
  */
 
-package com.apehat.es4j.common.util;
-
-import java.lang.reflect.Parameter;
+package com.apehat.es4j.common.alias;
 
 /**
  * @author hanpengfei
  * @since 1.0
  */
-public class ReflectionParameterAliasDiscoverer implements ParameterAliasDiscoverer {
+public class DefaultParameterAliasDiscoverer extends PrioritizedParameterAliasDiscoverer {
 
-    @Override
-    public String getParameterAlias(Parameter param) {
-        return param.isNamePresent() ? param.getName() : null;
+    public DefaultParameterAliasDiscoverer() {
+        registerDiscoverer(new ReflectionParameterAliasDiscoverer());
+        registerDiscoverer(new AsmParameterAliasDiscoverer());
     }
 }

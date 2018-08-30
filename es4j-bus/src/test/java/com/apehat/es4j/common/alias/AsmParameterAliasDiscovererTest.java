@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.apehat.es4j.common.util;
+package com.apehat.es4j.common.alias;
 
 import static org.testng.Assert.assertEquals;
 

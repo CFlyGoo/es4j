@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.apehat.es4j.common.util;
+package com.apehat.es4j.common.alias;
 
 import java.lang.reflect.Executable;
 import java.lang.reflect.Parameter;
@@ -52,7 +52,7 @@ public class PrioritizedParameterAliasDiscoverer implements ParameterAliasDiscov
         for (int i = 0; i < count; i++) {
             aliases[i] = getParameterAlias(parameters[i]);
             if (aliases[i] == null) {
-                throw new IllegalStateException("Cannot find parameter" + i + " alias of " + exec);
+                throw new IllegalStateException("Cannot find parameter" + i + " alias in " + exec);
             }
         }
         return aliases;
