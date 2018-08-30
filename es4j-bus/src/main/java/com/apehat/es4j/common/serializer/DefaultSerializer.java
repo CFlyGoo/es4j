@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.apehat.es4j.common.util.serializer;
+package com.apehat.es4j.common.serializer;
 
 import java.io.IOException;
 import java.io.ObjectOutputStream;
