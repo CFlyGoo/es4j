@@ -14,28 +14,16 @@
  * limitations under the License.
  */
 
-package com.apehat.es4j.bus;
+package com.apehat.es4j.common.util;
 
-import com.apehat.es4j.common.util.DefaultParameterAliasDiscoverer;
-import com.apehat.es4j.common.util.ParameterAliasDiscoverer;
+import java.lang.reflect.AccessibleObject;
 
 /**
  * @author hanpengfei
  * @since 1.0
  */
-public final class DomainRegistry {
+@FunctionalInterface
+public interface AccessFunction<T extends AccessibleObject, R> {
 
-    private static ParameterAliasDiscoverer parameterAliasDiscoverer =
-        new DefaultParameterAliasDiscoverer();
-
-    private DomainRegistry() {
-    }
-
-    public static ParameterAliasDiscoverer parameterAliasDiscoverer() {
-        return parameterAliasDiscoverer;
-    }
-
-    public static void setParameterAliasDiscoverer(ParameterAliasDiscoverer discoverer) {
-        DomainRegistry.parameterAliasDiscoverer = discoverer;
-    }
+    R access(T accessible) throws IllegalAccessException;
 }

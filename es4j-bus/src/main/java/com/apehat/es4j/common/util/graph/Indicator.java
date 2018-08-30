@@ -14,28 +14,14 @@
  * limitations under the License.
  */
 
-package com.apehat.es4j.bus;
-
-import com.apehat.es4j.common.util.DefaultParameterAliasDiscoverer;
-import com.apehat.es4j.common.util.ParameterAliasDiscoverer;
+package com.apehat.es4j.common.util.graph;
 
 /**
  * @author hanpengfei
  * @since 1.0
  */
-public final class DomainRegistry {
+@FunctionalInterface
+public interface Indicator<T> {
 
-    private static ParameterAliasDiscoverer parameterAliasDiscoverer =
-        new DefaultParameterAliasDiscoverer();
-
-    private DomainRegistry() {
-    }
-
-    public static ParameterAliasDiscoverer parameterAliasDiscoverer() {
-        return parameterAliasDiscoverer;
-    }
-
-    public static void setParameterAliasDiscoverer(ParameterAliasDiscoverer discoverer) {
-        DomainRegistry.parameterAliasDiscoverer = discoverer;
-    }
+    boolean isDirection(T o1, T o2);
 }

@@ -14,28 +14,29 @@
  * limitations under the License.
  */
 
-package com.apehat.es4j.bus;
+package com.apehat.es4j.common.util;
 
-import com.apehat.es4j.common.util.DefaultParameterAliasDiscoverer;
-import com.apehat.es4j.common.util.ParameterAliasDiscoverer;
+import java.lang.reflect.Executable;
+import java.lang.reflect.Parameter;
 
 /**
  * @author hanpengfei
  * @since 1.0
  */
-public final class DomainRegistry {
+public interface ParameterAliasDiscoverer {
 
-    private static ParameterAliasDiscoverer parameterAliasDiscoverer =
-        new DefaultParameterAliasDiscoverer();
+    String getParameterAlias(Parameter param);
 
-    private DomainRegistry() {
+    default String getParameterAlias(Executable exec, int index) {
+        return getParameterAlias(exec.getParameters()[index]);
     }
 
-    public static ParameterAliasDiscoverer parameterAliasDiscoverer() {
-        return parameterAliasDiscoverer;
-    }
-
-    public static void setParameterAliasDiscoverer(ParameterAliasDiscoverer discoverer) {
-        DomainRegistry.parameterAliasDiscoverer = discoverer;
+    default String[] getParameterAlias(Executable exec) {
+        final int count = exec.getParameterCount();
+        final String[] aliases = new String[count];
+        for (int i = 0; i < count; i++) {
+            aliases[i] = getParameterAlias(exec, i);
+        }
+        return aliases;
     }
 }

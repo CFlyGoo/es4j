@@ -14,28 +14,30 @@
  * limitations under the License.
  */
 
-package com.apehat.es4j.bus;
-
-import com.apehat.es4j.common.util.DefaultParameterAliasDiscoverer;
-import com.apehat.es4j.common.util.ParameterAliasDiscoverer;
+package com.apehat.es4j.common.util;
 
 /**
  * @author hanpengfei
  * @since 1.0
  */
-public final class DomainRegistry {
+@SuppressWarnings("WeakerAccess")
+public final class MatrixUtils {
 
-    private static ParameterAliasDiscoverer parameterAliasDiscoverer =
-        new DefaultParameterAliasDiscoverer();
-
-    private DomainRegistry() {
+    private MatrixUtils() {
     }
 
-    public static ParameterAliasDiscoverer parameterAliasDiscoverer() {
-        return parameterAliasDiscoverer;
-    }
-
-    public static void setParameterAliasDiscoverer(ParameterAliasDiscoverer discoverer) {
-        DomainRegistry.parameterAliasDiscoverer = discoverer;
+    public static byte[][] mul(byte[][] a, byte[][] b) {
+        assert a[0].length == b.length;
+        final int rowCount = a.length;
+        final int columnCount = b[0].length;
+        byte[][] result = new byte[rowCount][columnCount];
+        for (int r = 0; r < rowCount; r++) {
+            for (int c = 0; c < columnCount; c++) {
+                for (int k = 0; k < b.length; k++) {
+                    result[r][c] += a[r][k] * b[k][c];
+                }
+            }
+        }
+        return result;
     }
 }

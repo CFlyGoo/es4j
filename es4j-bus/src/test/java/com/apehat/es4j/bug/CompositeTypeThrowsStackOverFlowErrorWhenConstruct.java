@@ -49,12 +49,12 @@ public class CompositeTypeThrowsStackOverFlowErrorWhenConstruct {
     //	at java.util.HashMap$KeyIterator.<init>(HashMap.java:1464)
     //	at java.util.HashMap$KeySet.iterator(HashMap.java:917)
     //	at java.util.HashSet.iterator(HashSet.java:173)
-    //	at com.apehat.es4j.util.graph.AdjacencyDigraph$Vertex.adjacencies(AdjacencyDigraph.java:189)
-    //	at com.apehat.es4j.util.graph.AdjacencyDigraph$Vertex.adjacentOutVertices(AdjacencyDigraph.java:184)
-    //	at com.apehat.es4j.util.graph.AdjacencyDigraph$Vertex.outVertices(AdjacencyDigraph.java:209)
-    //	at com.apehat.es4j.util.graph.AdjacencyDigraph$Vertex.outVertices(AdjacencyDigraph.java:213)
-    //	at com.apehat.es4j.util.graph.AdjacencyDigraph$Vertex.outVertices(AdjacencyDigraph.java:213)
-    //	at com.apehat.es4j.util.graph.AdjacencyDigraph$Vertex.outVertices(AdjacencyDigraph.java:213)
+    //	at com.apehat.es4j.common.util.graph.AdjacencyDigraph$Vertex.adjacencies(AdjacencyDigraph.java:189)
+    //	at com.apehat.es4j.common.util.graph.AdjacencyDigraph$Vertex.adjacentOutVertices(AdjacencyDigraph.java:184)
+    //	at com.apehat.es4j.common.util.graph.AdjacencyDigraph$Vertex.outVertices(AdjacencyDigraph.java:209)
+    //	at com.apehat.es4j.common.util.graph.AdjacencyDigraph$Vertex.outVertices(AdjacencyDigraph.java:213)
+    //	at com.apehat.es4j.common.util.graph.AdjacencyDigraph$Vertex.outVertices(AdjacencyDigraph.java:213)
+    //	at com.apehat.es4j.common.util.graph.AdjacencyDigraph$Vertex.outVertices(AdjacencyDigraph.java:213)
 
     // Cause:
     // Surface

@@ -14,28 +14,31 @@
  * limitations under the License.
  */
 
-package com.apehat.es4j.bus;
+package com.apehat.es4j.common.util;
 
-import com.apehat.es4j.common.util.DefaultParameterAliasDiscoverer;
-import com.apehat.es4j.common.util.ParameterAliasDiscoverer;
+import java.util.Set;
 
 /**
  * @author hanpengfei
  * @since 1.0
  */
-public final class DomainRegistry {
+public interface Item<T> {
 
-    private static ParameterAliasDiscoverer parameterAliasDiscoverer =
-        new DefaultParameterAliasDiscoverer();
+    Item<T> add(T value);
 
-    private DomainRegistry() {
-    }
+    Item<T> remove(T value);
 
-    public static ParameterAliasDiscoverer parameterAliasDiscoverer() {
-        return parameterAliasDiscoverer;
-    }
+    T value();
 
-    public static void setParameterAliasDiscoverer(ParameterAliasDiscoverer discoverer) {
-        DomainRegistry.parameterAliasDiscoverer = discoverer;
-    }
+    Set<Item<T>> slots();
+
+    Item<T> newInstance(T value, Set<Item<T>> slots);
+
+    Item<T> newReverseInstance(T value);
+
+    boolean isManageable(T value);
+
+    boolean isEnable();
+
+    boolean contains(T value);
 }

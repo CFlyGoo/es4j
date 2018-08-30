@@ -14,28 +14,13 @@
  * limitations under the License.
  */
 
-package com.apehat.es4j.bus;
-
-import com.apehat.es4j.common.util.DefaultParameterAliasDiscoverer;
-import com.apehat.es4j.common.util.ParameterAliasDiscoverer;
+package com.apehat.es4j.common;
 
 /**
  * @author hanpengfei
  * @since 1.0
  */
-public final class DomainRegistry {
+public class NotImplementedException extends RuntimeException {
 
-    private static ParameterAliasDiscoverer parameterAliasDiscoverer =
-        new DefaultParameterAliasDiscoverer();
-
-    private DomainRegistry() {
-    }
-
-    public static ParameterAliasDiscoverer parameterAliasDiscoverer() {
-        return parameterAliasDiscoverer;
-    }
-
-    public static void setParameterAliasDiscoverer(ParameterAliasDiscoverer discoverer) {
-        DomainRegistry.parameterAliasDiscoverer = discoverer;
-    }
+    private static final long serialVersionUID = -6339810162899511642L;
 }

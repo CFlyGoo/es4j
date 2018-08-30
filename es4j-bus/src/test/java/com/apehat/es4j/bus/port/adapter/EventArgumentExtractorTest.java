@@ -26,7 +26,7 @@ import com.apehat.es4j.bus.event.Event;
 import com.apehat.es4j.bus.event.EventFixtureProvider;
 import com.apehat.es4j.support.TestDataProvider;
 import com.apehat.es4j.support.UserRegistered;
-import com.apehat.es4j.util.Value;
+import com.apehat.es4j.common.util.Value;
 import org.testng.annotations.Test;
 
 /**

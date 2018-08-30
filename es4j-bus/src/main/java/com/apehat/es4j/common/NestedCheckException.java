@@ -14,28 +14,26 @@
  * limitations under the License.
  */
 
-package com.apehat.es4j.bus;
-
-import com.apehat.es4j.common.util.DefaultParameterAliasDiscoverer;
-import com.apehat.es4j.common.util.ParameterAliasDiscoverer;
+package com.apehat.es4j.common;
 
 /**
  * @author hanpengfei
  * @since 1.0
  */
-public final class DomainRegistry {
+public class NestedCheckException extends RuntimeException {
 
-    private static ParameterAliasDiscoverer parameterAliasDiscoverer =
-        new DefaultParameterAliasDiscoverer();
+    private static final long serialVersionUID = -5161686782587142286L;
 
-    private DomainRegistry() {
+    public NestedCheckException(String message, Throwable cause) {
+        super(message, cause);
     }
 
-    public static ParameterAliasDiscoverer parameterAliasDiscoverer() {
-        return parameterAliasDiscoverer;
+    public NestedCheckException(Throwable cause) {
+        super(cause);
     }
 
-    public static void setParameterAliasDiscoverer(ParameterAliasDiscoverer discoverer) {
-        DomainRegistry.parameterAliasDiscoverer = discoverer;
+    public NestedCheckException(String message, Throwable cause, boolean enableSuppression,
+        boolean writableStackTrace) {
+        super(message, cause, enableSuppression, writableStackTrace);
     }
 }

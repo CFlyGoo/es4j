@@ -17,9 +17,9 @@
 package com.apehat.es4j.bus.port.adapter;
 
 import com.apehat.es4j.bus.event.Event;
-import com.apehat.es4j.util.ArgumentExtractor;
-import com.apehat.es4j.util.ReflectionArgumentExtractor;
-import com.apehat.es4j.util.Value;
+import com.apehat.es4j.common.util.ArgumentExtractor;
+import com.apehat.es4j.common.util.ReflectionArgumentExtractor;
+import com.apehat.es4j.common.util.Value;
 import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.Set;

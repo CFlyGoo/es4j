@@ -14,28 +14,31 @@
  * limitations under the License.
  */
 
-package com.apehat.es4j.bus;
+package com.apehat.es4j.common.util;
 
-import com.apehat.es4j.common.util.DefaultParameterAliasDiscoverer;
-import com.apehat.es4j.common.util.ParameterAliasDiscoverer;
+import java.io.Serializable;
+import java.util.Collections;
+import java.util.Objects;
+import java.util.Set;
 
 /**
  * @author hanpengfei
  * @since 1.0
  */
-public final class DomainRegistry {
+public abstract class AbstractClassItem extends AbstractItem<Class<?>> implements Serializable {
 
-    private static ParameterAliasDiscoverer parameterAliasDiscoverer =
-        new DefaultParameterAliasDiscoverer();
+    private static final long serialVersionUID = 2523147870883695061L;
 
-    private DomainRegistry() {
+    protected AbstractClassItem(Class<?> value) {
+        this(value, Collections.emptySet());
     }
 
-    public static ParameterAliasDiscoverer parameterAliasDiscoverer() {
-        return parameterAliasDiscoverer;
+    protected AbstractClassItem(Class<?> value, Set<Item<Class<?>>> slots) {
+        super(Objects.requireNonNull(value, "Class must not be null"), slots);
     }
 
-    public static void setParameterAliasDiscoverer(ParameterAliasDiscoverer discoverer) {
-        DomainRegistry.parameterAliasDiscoverer = discoverer;
+    @Override
+    public final boolean isManageable(Class<?> value) {
+        return value().isAssignableFrom(value);
     }
 }

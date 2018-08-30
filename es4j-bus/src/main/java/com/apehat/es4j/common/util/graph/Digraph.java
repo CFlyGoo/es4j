@@ -14,28 +14,33 @@
  * limitations under the License.
  */
 
-package com.apehat.es4j.bus;
+package com.apehat.es4j.common.util.graph;
 
-import com.apehat.es4j.common.util.DefaultParameterAliasDiscoverer;
-import com.apehat.es4j.common.util.ParameterAliasDiscoverer;
+import java.util.Set;
 
 /**
  * @author hanpengfei
  * @since 1.0
  */
-public final class DomainRegistry {
+public interface Digraph<E> {
 
-    private static ParameterAliasDiscoverer parameterAliasDiscoverer =
-        new DefaultParameterAliasDiscoverer();
+    Set<E> getAdjacentFirstVertices(E node);
 
-    private DomainRegistry() {
+    Set<E> getAdjacentReachableVertices(E vertex);
+
+    Set<E> getReachableVertices(E item);
+
+    Set<E> getFirstVertices(E item);
+
+    Set<E> vertices();
+
+    boolean isDirected(E head, E tail);
+
+    default boolean isReachable(E from, E to) {
+        return getReachableVertices(from).contains(to);
     }
 
-    public static ParameterAliasDiscoverer parameterAliasDiscoverer() {
-        return parameterAliasDiscoverer;
-    }
-
-    public static void setParameterAliasDiscoverer(ParameterAliasDiscoverer discoverer) {
-        DomainRegistry.parameterAliasDiscoverer = discoverer;
+    default boolean isAdjacent(E head, E tail) {
+        return isDirected(head, tail) || isDirected(tail, head);
     }
 }

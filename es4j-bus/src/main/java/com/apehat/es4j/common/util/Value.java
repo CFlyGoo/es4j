@@ -14,28 +14,21 @@
  * limitations under the License.
  */
 
-package com.apehat.es4j.bus;
-
-import com.apehat.es4j.common.util.DefaultParameterAliasDiscoverer;
-import com.apehat.es4j.common.util.ParameterAliasDiscoverer;
+package com.apehat.es4j.common.util;
 
 /**
  * @author hanpengfei
  * @since 1.0
  */
-public final class DomainRegistry {
+public final class Value<T> {
 
-    private static ParameterAliasDiscoverer parameterAliasDiscoverer =
-        new DefaultParameterAliasDiscoverer();
+    private final T prototype;
 
-    private DomainRegistry() {
+    public Value(T prototype) {
+        this.prototype = prototype;
     }
 
-    public static ParameterAliasDiscoverer parameterAliasDiscoverer() {
-        return parameterAliasDiscoverer;
-    }
-
-    public static void setParameterAliasDiscoverer(ParameterAliasDiscoverer discoverer) {
-        DomainRegistry.parameterAliasDiscoverer = discoverer;
+    public T get() {
+        return prototype;
     }
 }
