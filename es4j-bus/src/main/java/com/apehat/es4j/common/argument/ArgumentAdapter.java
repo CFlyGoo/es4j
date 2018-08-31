@@ -14,13 +14,17 @@
  * limitations under the License.
  */
 
-package com.apehat.es4j.common.util;
+package com.apehat.es4j.common.argument;
+
+import com.apehat.es4j.common.Value;
 
 /**
  * @author hanpengfei
  * @since 1.0
  */
-public interface ArgumentExtractor<T> {
+public interface ArgumentAdapter {
 
-    Value<?> extract(String alias, T prototype);
+    char SEPARATOR = '.';
+
+    Value<?> adapt(String alias, Object prototype);
 }
