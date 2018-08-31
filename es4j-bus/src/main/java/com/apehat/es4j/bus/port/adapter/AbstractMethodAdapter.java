@@ -20,8 +20,8 @@ import com.apehat.es4j.bus.DomainRegistry;
 import com.apehat.es4j.bus.EventHandler;
 import com.apehat.es4j.bus.EventHandlingException;
 import com.apehat.es4j.bus.event.Event;
-import com.apehat.es4j.common.util.ArgumentsAssembler;
-import com.apehat.es4j.common.util.DefaultArgumentsAssembler;
+import com.apehat.es4j.common.argument.ArgumentsAssembler;
+import com.apehat.es4j.common.argument.DefaultArgumentsAssembler;
 import com.apehat.es4j.common.util.ReflectionUtils;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -36,7 +36,7 @@ public abstract class AbstractMethodAdapter implements EventHandler {
 
     private static final ArgumentsAssembler<Event> ARGUMENTS_ASSEMBLER =
         new DefaultArgumentsAssembler<>(DomainRegistry.parameterAliasDiscoverer(),
-            new EventArgumentExtractor());
+            new EventArgumentAdapter());
 
     protected final Method handler;
 
