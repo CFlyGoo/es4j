@@ -14,9 +14,10 @@
  * limitations under the License.
  */
 
-package com.apehat.es4j.common.util;
+package com.apehat.es4j.common.argument;
 
 import com.apehat.es4j.common.alias.ParameterAliasDiscoverer;
+import com.apehat.es4j.common.Value;
 import java.lang.reflect.Executable;
 import java.lang.reflect.Parameter;
 
@@ -27,12 +28,12 @@ import java.lang.reflect.Parameter;
 public class DefaultArgumentsAssembler<T> implements ArgumentsAssembler<T> {
 
     private final ParameterAliasDiscoverer parameterAliasDiscoverer;
-    private final ArgumentExtractor<T> argumentExtractor;
+    private final ArgumentAdapter argumentAdapter;
 
     public DefaultArgumentsAssembler(
-        ParameterAliasDiscoverer parameterAliasDiscoverer, ArgumentExtractor<T> argumentExtractor) {
+        ParameterAliasDiscoverer parameterAliasDiscoverer, ArgumentAdapter argumentAdapter) {
         this.parameterAliasDiscoverer = parameterAliasDiscoverer;
-        this.argumentExtractor = argumentExtractor;
+        this.argumentAdapter = argumentAdapter;
     }
 
     @Override
@@ -43,7 +44,7 @@ public class DefaultArgumentsAssembler<T> implements ArgumentsAssembler<T> {
         for (int i = 0; i < count; i++) {
             final Parameter parameter = parameters[i];
             final String alias = parameterAliasDiscoverer.getParameterAlias(parameter);
-            final Value<?> value = argumentExtractor.extract(alias, prototype);
+            final Value<?> value = argumentAdapter.adapt(alias, prototype);
             Object result;
             if (value == null) {
                 if (alias.lastIndexOf(".") == -1 && parameter.getType()
