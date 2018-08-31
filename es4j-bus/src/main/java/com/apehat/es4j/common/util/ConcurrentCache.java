@@ -16,6 +16,7 @@
 
 package com.apehat.es4j.common.util;
 
+import com.apehat.es4j.common.Value;
 import java.util.Map;
 import java.util.WeakHashMap;
 import java.util.concurrent.ConcurrentHashMap;
