@@ -28,6 +28,9 @@ import static com.apehat.es4j.support.TestDataProvider.THIRD_PART_USER_REGISTERE
 import static com.apehat.es4j.support.TestDataProvider.userRegisteredWithThirdPartyAccountFixture;
 import static org.testng.Assert.assertEquals;
 
+import com.apehat.es4j.common.Value;
+import com.apehat.es4j.common.argument.ArgumentAdapter;
+import com.apehat.es4j.common.argument.support.DefaultArgumentAdapter;
 import com.apehat.es4j.support.UserRegisteredWithThirdPartyAccount;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -36,12 +39,12 @@ import org.testng.annotations.Test;
  * @author hanpengfei
  * @since 1.0
  */
-public class ReflectionArgumentExtractorTest {
+public class DefaultArgumentAdapterTest {
 
     private UserRegisteredWithThirdPartyAccount obj;
     private Object[] exceptedData;
 
-    private ArgumentExtractor<Object> extractor;
+    private ArgumentAdapter extractor;
 
     @BeforeMethod
     public void setUp() {
@@ -59,7 +62,7 @@ public class ReflectionArgumentExtractorTest {
             obj.getRegisteredEvent().getUserId().getId()
         };
 
-        extractor = new ReflectionArgumentExtractor();
+        extractor = new DefaultArgumentAdapter();
     }
 
     @Test
@@ -104,7 +107,7 @@ public class ReflectionArgumentExtractorTest {
     }
 
     private Object extract(String name) {
-        Value<?> value = extractor.extract(name, obj);
+        Value<?> value = extractor.adapt(name, obj);
         return value == null ? null : value.get();
     }
 }
