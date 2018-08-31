@@ -16,8 +16,7 @@
 
 package com.apehat.es4j.bus.port.adapter;
 
-import com.apehat.es4j.bus.event.Event;
-import com.apehat.es4j.common.util.ArgumentExtractor;
+import com.apehat.es4j.common.argument.ArgumentAdapter;
 
 /**
  * @author hanpengfei
@@ -25,7 +24,7 @@ import com.apehat.es4j.common.util.ArgumentExtractor;
  */
 public interface EventArgumentExtractorFixtureProvider {
 
-    static ArgumentExtractor<Event> newEventArgumentExtractorFixture() {
-        return new EventArgumentExtractor();
+    static ArgumentAdapter newEventArgumentExtractorFixture() {
+        return new EventArgumentAdapter();
     }
 }

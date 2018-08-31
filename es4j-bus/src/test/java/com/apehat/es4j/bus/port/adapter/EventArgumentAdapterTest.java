@@ -26,49 +26,49 @@ import com.apehat.es4j.bus.event.Event;
 import com.apehat.es4j.bus.event.EventFixtureProvider;
 import com.apehat.es4j.support.TestDataProvider;
 import com.apehat.es4j.support.UserRegistered;
-import com.apehat.es4j.common.util.Value;
+import com.apehat.es4j.common.Value;
 import org.testng.annotations.Test;
 
 /**
  * @author hanpengfei
  * @since 1.0
  */
-public class EventArgumentExtractorTest {
+public class EventArgumentAdapterTest {
 
     private final Event event;
     private final UserRegistered prototype;
-    private final EventArgumentExtractor extractor;
+    private final EventArgumentAdapter extractor;
 
-    @Test
-    public void testExtract() {
-        assertEquals(event.occurredOn(), extract(Event.OCCURRED_ON));
-        assertEquals(event.prototype(), extract(Event.EVENT));
-        assertEquals(event.type(), extract(Event.TYPE));
-        assertEquals(event.source(), extract(Event.SOURCE));
-
-        assertEquals(prototype.getUserId(), extract(USER_REGISTERED_ID));
-        assertEquals(prototype.getUserId().getId(), extract(USER_REGISTERED_ID_ID));
-        assertEquals(prototype.getUsername(), extract(USER_REGISTERED_NAME));
-        assertEquals(prototype.getRegisterOn(), extract(USER_REGISTERED_TIME));
-
-        assertEquals(prototype.getUserId(),
-            extract(Event.EVENT + "." + USER_REGISTERED_ID));
-        assertEquals(prototype.getUserId().getId(),
-            extract(Event.EVENT + "." + USER_REGISTERED_ID_ID));
-        assertEquals(prototype.getUsername(),
-            extract(Event.EVENT + "." + USER_REGISTERED_NAME));
-        assertEquals(prototype.getRegisterOn(),
-            extract(Event.EVENT + "." + USER_REGISTERED_TIME));
-    }
-
-    public EventArgumentExtractorTest() {
+    public EventArgumentAdapterTest() {
         this.prototype = TestDataProvider.userRegisteredFixture();
         this.event = EventFixtureProvider.newEventFixture(prototype);
-        this.extractor = new EventArgumentExtractor();
+        this.extractor = new EventArgumentAdapter();
     }
 
-    private Object extract(String name) {
-        Value<?> value = extractor.extract(name, event);
+    @Test
+    public void testAdapt() {
+        assertEquals(event.occurredOn(), adapt(Event.OCCURRED_ON));
+        assertEquals(event.prototype(), adapt(Event.EVENT));
+        assertEquals(event.type(), adapt(Event.TYPE));
+        assertEquals(event.source(), adapt(Event.SOURCE));
+
+        assertEquals(prototype.getUserId(), adapt(USER_REGISTERED_ID));
+        assertEquals(prototype.getUserId().getId(), adapt(USER_REGISTERED_ID_ID));
+        assertEquals(prototype.getUsername(), adapt(USER_REGISTERED_NAME));
+        assertEquals(prototype.getRegisterOn(), adapt(USER_REGISTERED_TIME));
+
+        assertEquals(prototype.getUserId(),
+            adapt(Event.EVENT + "." + USER_REGISTERED_ID));
+        assertEquals(prototype.getUserId().getId(),
+            adapt(Event.EVENT + "." + USER_REGISTERED_ID_ID));
+        assertEquals(prototype.getUsername(),
+            adapt(Event.EVENT + "." + USER_REGISTERED_NAME));
+        assertEquals(prototype.getRegisterOn(),
+            adapt(Event.EVENT + "." + USER_REGISTERED_TIME));
+    }
+
+    private Object adapt(String name) {
+        Value<?> value = extractor.adapt(name, event);
         if (value == null) {
             return null;
         }
