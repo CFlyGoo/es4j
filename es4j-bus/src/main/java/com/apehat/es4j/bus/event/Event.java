@@ -16,6 +16,7 @@
 
 package com.apehat.es4j.bus.event;
 
+import com.apehat.es4j.common.alias.Alias;
 import com.apehat.es4j.common.util.ObjectUtils;
 import java.util.Objects;
 
@@ -79,6 +80,7 @@ public final class Event {
         return occurredOn;
     }
 
+    @Alias("event")
     public Object prototype() {
         return ObjectUtils.deepClone(prototype);
     }
