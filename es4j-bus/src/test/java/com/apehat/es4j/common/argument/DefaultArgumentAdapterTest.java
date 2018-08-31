@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.apehat.es4j.common.util;
+package com.apehat.es4j.common.argument;
 
 import static com.apehat.es4j.support.TestDataProvider.THIRD_PARTY_ACCOUNT;
 import static com.apehat.es4j.support.TestDataProvider.THIRD_PARTY_PLATFORM_NAME;
