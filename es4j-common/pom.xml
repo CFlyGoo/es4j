@@ -13,4 +13,12 @@
   <modelVersion>4.0.0</modelVersion>
   <artifactId>es4j-common</artifactId>
   <name>es4j-common</name>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.ow2.asm</groupId>
+      <artifactId>asm</artifactId>
+      <version>6.2.1</version>
+    </dependency>
+  </dependencies>
 </project>
