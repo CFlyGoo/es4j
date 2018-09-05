@@ -14,19 +14,11 @@
  * limitations under the License.
  */
 
-package com.apehat.es4j.common.argument.support;
-
-import com.apehat.es4j.common.alias.Alias;
-import java.lang.reflect.Field;
+package com.apehat.es4j.support.sample;
 
 /**
  * @author hanpengfei
  * @since 1.0
  */
-public class AnnotateFieldAdapter extends AbstractArgumentFieldAdapter {
-
-    protected boolean isAdaptable(String alias, Field field) {
-        Alias aliasAnnotation = field.getDeclaredAnnotation(Alias.class);
-        return aliasAnnotation != null && alias.equals(aliasAnnotation.value());
-    }
+public interface SampleSuperInterface1 {
 }

@@ -14,19 +14,11 @@
  * limitations under the License.
  */
 
-package com.apehat.es4j.common.argument.support;
-
-import com.apehat.es4j.common.alias.Alias;
-import java.lang.reflect.Method;
+package com.apehat.es4j.support.sample;
 
 /**
  * @author hanpengfei
  * @since 1.0
  */
-public class AnnotatedMethodAdapter extends AbstractArgumentMethodAdapter {
-
-    protected boolean isAdaptable(String alias, Method method) {
-        Alias aliasAnnotation = method.getAnnotation(Alias.class);
-        return aliasAnnotation != null && alias.equals(aliasAnnotation.value());
-    }
+public interface SampleMiddleInterface3 extends SampleSuperInterface1, SampleSuperInterface2 {
 }

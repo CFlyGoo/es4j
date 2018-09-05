@@ -16,7 +16,6 @@
 
 package com.apehat.es4j.bus.event;
 
-import com.apehat.es4j.common.alias.Alias;
 import com.apehat.es4j.common.util.ObjectUtils;
 import java.util.Objects;
 
@@ -33,12 +32,12 @@ public final class Event {
     public static final String EVENT = "event";
 
     private final long occurredOn;
-    private final Object prototype;
+    private final Object event;
     private final String source;
 
-    Event(long occurredOn, Object prototype, String source) {
-        this.prototype = ObjectUtils.deepClone(
-            Objects.requireNonNull(prototype, "Event prototype must not be null"));
+    Event(long occurredOn, Object event, String source) {
+        this.event = ObjectUtils.deepClone(
+            Objects.requireNonNull(event, "Event event must not be null"));
         this.occurredOn = occurredOn;
         this.source = source;
     }
@@ -53,7 +52,7 @@ public final class Event {
         }
         Event that = (Event) o;
         return occurredOn == that.occurredOn &&
-            Objects.equals(prototype, that.prototype) &&
+            Objects.equals(event, that.event) &&
             Objects.equals(source, that.source);
     }
 
@@ -61,7 +60,7 @@ public final class Event {
     public int hashCode() {
         int result = 253;
         result = 31 * result + Objects.hash(occurredOn);
-        result = 31 * result + Objects.hash(prototype);
+        result = 31 * result + Objects.hash(event);
         result = 31 * result + Objects.hash(source);
         return result;
     }
@@ -71,7 +70,7 @@ public final class Event {
         return "Event{" +
             "type=" + type() +
             ", occurredOn=" + occurredOn +
-            ", prototype=" + prototype +
+            ", event=" + event +
             ", source='" + source + '\'' +
             '}';
     }
@@ -80,9 +79,8 @@ public final class Event {
         return occurredOn;
     }
 
-    @Alias("event")
     public Object prototype() {
-        return ObjectUtils.deepClone(prototype);
+        return ObjectUtils.deepClone(event);
     }
 
     public String source() {
@@ -90,6 +88,6 @@ public final class Event {
     }
 
     public Class<?> type() {
-        return prototype.getClass();
+        return event.getClass();
     }
 }

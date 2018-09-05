@@ -14,24 +14,12 @@
  * limitations under the License.
  */
 
-package com.apehat.es4j.common.alias;
-
-import java.lang.annotation.Documented;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Inherited;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+package com.apehat.es4j.support.sample;
 
 /**
  * @author hanpengfei
  * @since 1.0
  */
-@Documented
-@Inherited
-@Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.PARAMETER, ElementType.FIELD, ElementType.METHOD})
-public @interface Alias {
-
-    String value();
+public class SampleClass6
+    extends SampleMiddleClass1 implements SampleMiddleInterface1, SampleMiddleInterface2 {
 }

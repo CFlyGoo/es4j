@@ -11,6 +11,7 @@
   <modules>
     <module>es4j-bus</module>
     <module>es4j-common</module>
+    <module>es4j-bus-annotation</module>
   </modules>
   <name>es4j</name>
   <url>https://www.github.com/CFlyGoo/es4j</url>

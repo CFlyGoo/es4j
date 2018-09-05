@@ -24,9 +24,9 @@ import static org.testng.Assert.assertEquals;
 
 import com.apehat.es4j.bus.event.Event;
 import com.apehat.es4j.bus.event.EventFixtureProvider;
+import com.apehat.es4j.common.Value;
 import com.apehat.es4j.support.TestDataProvider;
 import com.apehat.es4j.support.UserRegistered;
-import com.apehat.es4j.common.Value;
 import org.testng.annotations.Test;
 
 /**

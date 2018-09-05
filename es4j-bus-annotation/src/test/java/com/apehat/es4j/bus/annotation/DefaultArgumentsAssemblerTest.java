@@ -14,15 +14,14 @@
  * limitations under the License.
  */
 
-package com.apehat.es4j.common.argument;
+package com.apehat.es4j.bus.annotation;
 
 import static org.testng.Assert.assertEquals;
 
 import com.apehat.es4j.common.Value;
-import com.apehat.es4j.common.alias.Alias;
 import com.apehat.es4j.common.alias.DefaultParameterAliasDiscoverer;
-import com.apehat.es4j.common.argument.support.AnnotateFieldAdapter;
-import com.apehat.es4j.common.argument.support.AnnotatedMethodAdapter;
+import com.apehat.es4j.common.argument.ArgumentsAssembler;
+import com.apehat.es4j.common.argument.DefaultArgumentsAssembler;
 import com.apehat.es4j.common.argument.support.DefaultArgumentAdapter;
 import com.apehat.es4j.common.argument.support.PrioritizedArgumentAdapter;
 import com.apehat.es4j.common.util.ObjectUtils;
