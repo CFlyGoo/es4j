@@ -23,7 +23,6 @@ import java.util.Objects;
  * @author hanpengfei
  * @since 1.0
  */
-@SuppressWarnings("WeakerAccess")
 public final class Event {
 
     public static final String OCCURRED_ON = "occurredOn";
