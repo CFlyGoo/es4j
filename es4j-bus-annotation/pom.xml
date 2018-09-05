@@ -18,5 +18,10 @@
       <artifactId>es4j-bus</artifactId>
       <version>0.0.12-SNAPSHOT</version>
     </dependency>
+    <dependency>
+      <groupId>com.apehat</groupId>
+      <artifactId>es4j-common</artifactId>
+      <version>0.0.12-SNAPSHOT</version>
+    </dependency>
   </dependencies>
 </project>
