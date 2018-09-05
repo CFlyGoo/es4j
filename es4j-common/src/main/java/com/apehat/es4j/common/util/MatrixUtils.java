@@ -20,7 +20,6 @@ package com.apehat.es4j.common.util;
  * @author hanpengfei
  * @since 1.0
  */
-@SuppressWarnings("WeakerAccess")
 public final class MatrixUtils {
 
     private MatrixUtils() {
