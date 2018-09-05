@@ -10,6 +10,7 @@
   <version>0.0.12-SNAPSHOT</version>
   <modules>
     <module>es4j-bus</module>
+    <module>es4j-common</module>
   </modules>
   <name>es4j</name>
   <url>https://www.github.com/CFlyGoo/es4j</url>

@@ -18,7 +18,7 @@ package com.apehat.es4j.common.alias;
 
 import static org.testng.Assert.assertEquals;
 
-import com.apehat.es4j.bus.support.EventHandleMethodProvider;
+import com.apehat.es4j.common.support.TestMethodProvider;
 import java.util.Date;
 import org.testng.annotations.Test;
 
@@ -37,9 +37,9 @@ public class AsmParameterAliasDiscovererTest {
 
     @Test
     public void testGetParameterNames() {
-        final String[] exceptedNames = EventHandleMethodProvider.getHandlerParameterNames();
+        final String[] exceptedNames = TestMethodProvider.getHandlerParameterNames();
         String[] parameterNames = new AsmParameterAliasDiscoverer()
-            .getParameterAlias(new EventHandleMethodProvider().getHandleMethod());
+            .getParameterAlias(new TestMethodProvider().getHandleMethod());
         assertEquals(parameterNames, exceptedNames);
     }
 

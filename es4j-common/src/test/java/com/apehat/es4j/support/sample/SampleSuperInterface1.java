@@ -14,17 +14,11 @@
  * limitations under the License.
  */
 
-package com.apehat.es4j.bus.port.adapter;
-
-import com.apehat.es4j.common.argument.ArgumentAdapter;
+package com.apehat.es4j.support.sample;
 
 /**
  * @author hanpengfei
  * @since 1.0
  */
-public interface EventArgumentExtractorFixtureProvider {
-
-    static ArgumentAdapter newEventArgumentExtractorFixture() {
-        return new EventArgumentAdapter();
-    }
+public interface SampleSuperInterface1 {
 }

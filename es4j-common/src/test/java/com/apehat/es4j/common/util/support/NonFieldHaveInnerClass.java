@@ -42,7 +42,6 @@ public class NonFieldHaveInnerClass {
     public String getInnerClassName() {
         InnerClass innerClass = CONTAINER.get(this);
         return innerClass.name;
-//        System.out.println(innerClass.name);
     }
 
     private class InnerClass {

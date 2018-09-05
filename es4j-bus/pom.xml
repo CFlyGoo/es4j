@@ -12,4 +12,12 @@
   <modelVersion>4.0.0</modelVersion>
   <artifactId>es4j-bus</artifactId>
   <name>es4j-bus</name>
+
+  <dependencies>
+    <dependency>
+      <groupId>com.apehat</groupId>
+      <artifactId>es4j-common</artifactId>
+      <version>0.0.12-SNAPSHOT</version>
+    </dependency>
+  </dependencies>
 </project>

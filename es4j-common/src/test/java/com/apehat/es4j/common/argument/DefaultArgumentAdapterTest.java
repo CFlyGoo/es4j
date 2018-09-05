@@ -29,7 +29,6 @@ import static com.apehat.es4j.support.TestDataProvider.userRegisteredWithThirdPa
 import static org.testng.Assert.assertEquals;
 
 import com.apehat.es4j.common.Value;
-import com.apehat.es4j.common.argument.ArgumentAdapter;
 import com.apehat.es4j.common.argument.support.DefaultArgumentAdapter;
 import com.apehat.es4j.support.UserRegisteredWithThirdPartyAccount;
 import org.testng.annotations.BeforeMethod;
@@ -44,7 +43,7 @@ public class DefaultArgumentAdapterTest {
     private UserRegisteredWithThirdPartyAccount obj;
     private Object[] exceptedData;
 
-    private ArgumentAdapter extractor;
+    private ArgumentAdapter adapter;
 
     @BeforeMethod
     public void setUp() {
@@ -62,7 +61,7 @@ public class DefaultArgumentAdapterTest {
             obj.getRegisteredEvent().getUserId().getId()
         };
 
-        extractor = new DefaultArgumentAdapter();
+        adapter = new DefaultArgumentAdapter();
     }
 
     @Test
@@ -107,7 +106,7 @@ public class DefaultArgumentAdapterTest {
     }
 
     private Object extract(String name) {
-        Value<?> value = extractor.adapt(name, obj);
+        Value<?> value = adapter.adapt(name, obj);
         return value == null ? null : value.get();
     }
 }
