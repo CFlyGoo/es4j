@@ -25,7 +25,7 @@ import java.lang.reflect.Field;
 public class ReflectionFieldAliasDiscoverer implements FieldAliasDiscoverer {
 
     @Override
-    public String getFieldAlias(Field field) {
+    public String getAlias(Field field) {
         return field.getName();
     }
 }

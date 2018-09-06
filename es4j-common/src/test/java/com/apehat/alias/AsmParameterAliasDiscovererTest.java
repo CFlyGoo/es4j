@@ -39,7 +39,7 @@ public class AsmParameterAliasDiscovererTest {
     public void testGetParameterNames() {
         final String[] exceptedNames = TestMethodProvider.getHandlerParameterNames();
         String[] parameterNames = new AsmParameterAliasDiscoverer()
-            .getParameterAlias(new TestMethodProvider().getHandleMethod());
+            .getAlias(new TestMethodProvider().getHandleMethod());
         assertEquals(parameterNames, exceptedNames);
     }
 
@@ -47,7 +47,7 @@ public class AsmParameterAliasDiscovererTest {
     public void testGetParameterNamesWithConstructor() throws Exception {
         final String[] exceptedNames = {"str", "i", "date"};
         String[] parameterNames = new AsmParameterAliasDiscoverer()
-            .getParameterAlias(AsmParameterAliasDiscovererTest.class
+            .getAlias(AsmParameterAliasDiscovererTest.class
                 .getDeclaredConstructor(String.class, int.class, Date.class));
         assertEquals(exceptedNames, parameterNames);
     }

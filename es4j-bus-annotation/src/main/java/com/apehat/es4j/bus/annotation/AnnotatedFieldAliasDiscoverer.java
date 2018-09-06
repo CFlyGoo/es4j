@@ -17,29 +17,17 @@
 package com.apehat.es4j.bus.annotation;
 
 import com.apehat.alias.FieldAliasDiscoverer;
-import com.apehat.alias.ParameterAliasDiscoverer;
-import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Field;
-import java.lang.reflect.Parameter;
 
 /**
  * @author hanpengfei
  * @since 1.0
  */
-public class AnnotatedAliasDiscoverer implements ParameterAliasDiscoverer, FieldAliasDiscoverer {
+public class AnnotatedFieldAliasDiscoverer implements FieldAliasDiscoverer {
 
     @Override
-    public String getFieldAlias(Field field) {
-        return getAlias(field);
-    }
-
-    @Override
-    public String getParameterAlias(Parameter param) {
-        return getAlias(param);
-    }
-
-    private String getAlias(AnnotatedElement element) {
-        Alias annotation = element.getDeclaredAnnotation(Alias.class);
+    public String getAlias(Field field) {
+        Alias annotation = field.getDeclaredAnnotation(Alias.class);
         return annotation == null || annotation.value().isEmpty() ? null : annotation.value();
     }
 }

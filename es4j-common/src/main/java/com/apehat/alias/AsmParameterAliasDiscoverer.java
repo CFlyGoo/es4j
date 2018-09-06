@@ -46,13 +46,13 @@ public class AsmParameterAliasDiscoverer implements ParameterAliasDiscoverer {
         new ConcurrentCache<>(16);
 
     @Override
-    public String getParameterAlias(Parameter param) {
-        return getParameterAlias(param.getDeclaringExecutable())
+    public String getAlias(Parameter param) {
+        return getAlias(param.getDeclaringExecutable())
             [ReflectionUtils.getParameterIndex(param)];
     }
 
     @Override
-    public String[] getParameterAlias(Executable exec) {
+    public String[] getAlias(Executable exec) {
         final int count = exec.getParameterCount();
         if (count == 0) {
             return new String[0];

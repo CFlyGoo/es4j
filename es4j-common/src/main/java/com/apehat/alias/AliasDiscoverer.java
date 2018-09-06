@@ -16,16 +16,13 @@
 
 package com.apehat.alias;
 
-import java.lang.reflect.Parameter;
-
 /**
  * @author hanpengfei
  * @since 1.0
  */
-public class ReflectionParameterAliasDiscoverer implements ParameterAliasDiscoverer {
+public interface AliasDiscoverer<T> {
 
-    @Override
-    public String getAlias(Parameter param) {
-        return param.isNamePresent() ? param.getName() : null;
-    }
+    char SEPARATOR = '.';
+
+    String getAlias(T obj);
 }

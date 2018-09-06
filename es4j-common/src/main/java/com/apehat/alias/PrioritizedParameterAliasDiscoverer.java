@@ -34,9 +34,9 @@ public class PrioritizedParameterAliasDiscoverer implements ParameterAliasDiscov
     }
 
     @Override
-    public String getParameterAlias(Parameter param) {
+    public String getAlias(Parameter param) {
         for (ParameterAliasDiscoverer discoverer : parameterAliasDiscoverers) {
-            String alias = discoverer.getParameterAlias(param);
+            String alias = discoverer.getAlias(param);
             if (alias != null) {
                 return alias;
             }
@@ -45,12 +45,12 @@ public class PrioritizedParameterAliasDiscoverer implements ParameterAliasDiscov
     }
 
     @Override
-    public String[] getParameterAlias(Executable exec) {
+    public String[] getAlias(Executable exec) {
         final int count = exec.getParameterCount();
         final String[] aliases = new String[count];
         final Parameter[] parameters = exec.getParameters();
         for (int i = 0; i < count; i++) {
-            aliases[i] = getParameterAlias(parameters[i]);
+            aliases[i] = getAlias(parameters[i]);
             if (aliases[i] == null) {
                 throw new IllegalStateException("Cannot find parameter" + i + " alias in " + exec);
             }

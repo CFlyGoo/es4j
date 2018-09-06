@@ -23,19 +23,24 @@ import java.lang.reflect.Parameter;
  * @author hanpengfei
  * @since 1.0
  */
-public interface ParameterAliasDiscoverer {
+public interface ParameterAliasDiscoverer extends AliasDiscoverer<Parameter> {
 
-    String getParameterAlias(Parameter param);
+//    @Override
+//    default String getAlias(Parameter obj) {
+//        return this.getAlias(obj);
+//    }
 
-    default String getParameterAlias(Executable exec, int index) {
-        return getParameterAlias(exec.getParameters()[index]);
+    String getAlias(Parameter param);
+
+    default String getAlias(Executable exec, int index) {
+        return getAlias(exec.getParameters()[index]);
     }
 
-    default String[] getParameterAlias(Executable exec) {
+    default String[] getAlias(Executable exec) {
         final int count = exec.getParameterCount();
         final String[] aliases = new String[count];
         for (int i = 0; i < count; i++) {
-            aliases[i] = getParameterAlias(exec, i);
+            aliases[i] = getAlias(exec, i);
         }
         return aliases;
     }

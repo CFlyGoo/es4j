@@ -14,18 +14,20 @@
  * limitations under the License.
  */
 
-package com.apehat.alias;
+package com.apehat.es4j.bus.annotation;
 
+import com.apehat.alias.ParameterAliasDiscoverer;
 import java.lang.reflect.Parameter;
 
 /**
  * @author hanpengfei
  * @since 1.0
  */
-public class ReflectionParameterAliasDiscoverer implements ParameterAliasDiscoverer {
+public class AnnotatedParameterAliasDiscvoerer implements ParameterAliasDiscoverer {
 
     @Override
     public String getAlias(Parameter param) {
-        return param.isNamePresent() ? param.getName() : null;
+        Alias annotation = param.getDeclaredAnnotation(Alias.class);
+        return annotation == null || annotation.value().isEmpty() ? null : annotation.value();
     }
 }

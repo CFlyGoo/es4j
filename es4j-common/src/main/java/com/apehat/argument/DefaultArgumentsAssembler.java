@@ -43,7 +43,7 @@ public class DefaultArgumentsAssembler<T> implements ArgumentsAssembler<T> {
         final Parameter[] parameters = exec.getParameters();
         for (int i = 0; i < count; i++) {
             final Parameter parameter = parameters[i];
-            final String alias = parameterAliasDiscoverer.getParameterAlias(parameter);
+            final String alias = parameterAliasDiscoverer.getAlias(parameter);
             final Value<?> value = argumentAdapter.adapt(alias, prototype);
             Object result;
             if (value == null) {

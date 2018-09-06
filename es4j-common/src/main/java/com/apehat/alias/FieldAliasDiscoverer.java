@@ -24,21 +24,24 @@ import java.util.Map;
  * @author hanpengfei
  * @since 1.0
  */
-public interface FieldAliasDiscoverer {
+public interface FieldAliasDiscoverer extends AliasDiscoverer<Field> {
 
-    char SEPARATOR = '.';
+//    @Override
+//    default String getAlias(Field obj) {
+//        return this.getAlias(obj);
+//    }
 
-    String getFieldAlias(Field field);
+    String getAlias(Field field);
 
-    default String getFieldAlias(Field field, String prefix) {
-        final String alias = getFieldAlias(field);
+    default String getAlias(Field field, String prefix) {
+        final String alias = getAlias(field);
         return alias == null ? null : prefix + SEPARATOR + alias;
     }
 
     default Map<Field, String> getFieldAliases(Class<?> cls) {
         final Map<Field, String> aliases = new HashMap<>();
         for (Field field : cls.getDeclaredFields()) {
-            aliases.put(field, getFieldAlias(field));
+            aliases.put(field, getAlias(field));
         }
         return aliases;
     }
@@ -46,7 +49,7 @@ public interface FieldAliasDiscoverer {
     default Map<Field, String> getFieldAliases(Class<?> cls, String prefix) {
         final Map<Field, String> aliases = new HashMap<>();
         for (Field field : cls.getDeclaredFields()) {
-            aliases.put(field, getFieldAlias(field, prefix));
+            aliases.put(field, getAlias(field, prefix));
         }
         return aliases;
     }

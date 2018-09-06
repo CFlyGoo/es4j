@@ -33,9 +33,9 @@ public class PrioritizedFieldAliasDiscoverer implements FieldAliasDiscoverer {
     }
 
     @Override
-    public String getFieldAlias(Field field) {
+    public String getAlias(Field field) {
         for (FieldAliasDiscoverer discoverer : fieldAliasDiscoverers) {
-            String alias = discoverer.getFieldAlias(field);
+            String alias = discoverer.getAlias(field);
             if (alias != null) {
                 return alias;
             }
