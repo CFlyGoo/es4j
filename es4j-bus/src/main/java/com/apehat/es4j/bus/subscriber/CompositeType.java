@@ -17,7 +17,7 @@
 package com.apehat.es4j.bus.subscriber;
 
 import com.apehat.es4j.common.util.AbstractClassItem;
-import com.apehat.es4j.common.util.ClassItemReBuilder;
+import com.apehat.es4j.common.util.ClassItemCombiner;
 import com.apehat.es4j.common.util.Item;
 import java.util.Arrays;
 import java.util.Collections;
@@ -40,7 +40,7 @@ public final class CompositeType implements Type {
     }
 
     private CompositeType(Set<Item<Class<?>>> items) {
-        this.items = Collections.unmodifiableSet(new ClassItemReBuilder(items).rebuild());
+        this.items = Collections.unmodifiableSet(new ClassItemCombiner(items).rebuild());
     }
 
     private static Set<Item<Class<?>>> items(Class<?>... types) {
@@ -138,7 +138,7 @@ public final class CompositeType implements Type {
         }
 
         private ExceptedType(Class<?> value, Set<Item<Class<?>>> slots) {
-            super(value, new ClassItemReBuilder(slots).rebuild());
+            super(value, new ClassItemCombiner(slots).rebuild());
         }
 
         @Override
@@ -166,7 +166,7 @@ public final class CompositeType implements Type {
         }
 
         private IncludeType(Class<?> value, Set<Item<Class<?>>> slots) {
-            super(value, new ClassItemReBuilder(slots).rebuild());
+            super(value, new ClassItemCombiner(slots).rebuild());
         }
 
         @Override

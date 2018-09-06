@@ -27,15 +27,15 @@ import java.util.Set;
  * @author hanpengfei
  * @since 1.0
  */
-public class ItemReBuilder<T> {
+public class ItemCombiner<T> {
 
     private final Digraph<Item<T>> graph;
 
-    public ItemReBuilder(Digraph<Item<T>> graph) {
+    public ItemCombiner(Digraph<Item<T>> graph) {
         this.graph = Objects.requireNonNull(graph, "Digraph must not be null");
     }
 
-    public Set<Item<T>> rebuild() {
+    public Set<Item<T>> combine() {
         final Set<Item<T>> mergeable = graph.vertices();
         final Set<Item<T>> top = layer(graph).top().currentLayerItems();
         if (top.size() == mergeable.size()) {

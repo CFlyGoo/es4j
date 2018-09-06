@@ -25,17 +25,17 @@ import java.util.Set;
  * @author hanpengfei
  * @since 1.0
  */
-public final class ClassItemReBuilder {
+public final class ClassItemCombiner {
 
     private final Set<Item<Class<?>>> items;
 
-    public ClassItemReBuilder(Set<Item<Class<?>>> items) {
+    public ClassItemCombiner(Set<Item<Class<?>>> items) {
         this.items = items;
     }
 
     public Set<Item<Class<?>>> rebuild() {
         return (items == null || items.isEmpty()) ? items :
-            new ItemReBuilder<>(createNewDirectedGraph()).rebuild();
+            new ItemCombiner<>(createNewDirectedGraph()).combine();
     }
 
     private Indicator<Item<Class<?>>> indicator() {
