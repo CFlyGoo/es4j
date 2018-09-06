@@ -17,6 +17,7 @@
 package com.apehat.util;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
@@ -27,7 +28,28 @@ import java.util.Set;
  */
 public final class ClassUtils {
 
+    private static final Set<Class<?>> VALUE_CLASSES;
+
+    static {
+        Class<?>[] nonStatusClasses = {
+            int.class, short.class, boolean.class, byte.class,
+            long.class, char.class, float.class, double.class,
+            Integer.class, Short.class, Boolean.class, Byte.class,
+            Long.class, Character.class, Float.class, Double.class,
+            String.class, Object.class
+        };
+        VALUE_CLASSES = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(nonStatusClasses)));
+    }
+
     private ClassUtils() {
+    }
+
+    public static boolean isValueClass(Class<?> cls) {
+        return VALUE_CLASSES.contains(cls);
+    }
+
+    public static boolean isValueObject(Object object) {
+        return object == null || VALUE_CLASSES.contains(object.getClass());
     }
 
     public static <T> Class<T> getParameterizedClass(T object) {
