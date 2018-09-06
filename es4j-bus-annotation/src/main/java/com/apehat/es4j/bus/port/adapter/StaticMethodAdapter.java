@@ -16,8 +16,8 @@
 
 package com.apehat.es4j.bus.port.adapter;
 
+import com.apehat.Validation;
 import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
 import java.util.Objects;
 
 /**
@@ -27,7 +27,7 @@ import java.util.Objects;
 final class StaticMethodAdapter extends AbstractMethodAdapter {
 
     StaticMethodAdapter(Method method) {
-        super(method);
+        super(Validation.requiredStatic(method));
     }
 
     @Override
@@ -45,13 +45,6 @@ final class StaticMethodAdapter extends AbstractMethodAdapter {
         }
         StaticMethodAdapter that = (StaticMethodAdapter) o;
         return Objects.equals(getHandler(), that.getHandler());
-    }
-
-    @Override
-    protected void verify() {
-        if (!Modifier.isStatic(getHandler().getModifiers())) {
-            throw new IllegalArgumentException(getHandler() + " isn't static method");
-        }
     }
 
     @Override

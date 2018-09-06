@@ -16,12 +16,12 @@
 
 package com.apehat.es4j.bus.port.adapter;
 
+import com.apehat.argument.ArgumentsAssembler;
+import com.apehat.argument.DefaultArgumentsAssembler;
 import com.apehat.es4j.bus.DomainRegistry;
 import com.apehat.es4j.bus.EventHandler;
 import com.apehat.es4j.bus.EventHandlingException;
 import com.apehat.es4j.bus.event.Event;
-import com.apehat.argument.ArgumentsAssembler;
-import com.apehat.argument.DefaultArgumentsAssembler;
 import com.apehat.util.ReflectionUtils;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -31,18 +31,16 @@ import java.util.Objects;
  * @author hanpengfei
  * @since 1.0
  */
-@SuppressWarnings("WeakerAccess")
 public abstract class AbstractMethodAdapter implements EventHandler {
 
     private static final ArgumentsAssembler<Event> ARGUMENTS_ASSEMBLER =
         new DefaultArgumentsAssembler<>(DomainRegistry.parameterAliasDiscoverer(),
             new EventArgumentAdapter());
 
-    protected final Method handler;
+    private final Method handler;
 
     protected AbstractMethodAdapter(Method handler) {
         this.handler = Objects.requireNonNull(handler, "handle method must not be null");
-        verify();
     }
 
     @Override
@@ -59,9 +57,6 @@ public abstract class AbstractMethodAdapter implements EventHandler {
 
     public final Method getHandler() {
         return handler;
-    }
-
-    protected void verify() {
     }
 
     protected abstract Object getInvoker();
