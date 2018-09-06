@@ -14,8 +14,9 @@
  * limitations under the License.
  */
 
-package com.apehat.util;
+package com.apehat;
 
+import com.apehat.Item;
 import com.apehat.util.graph.Digraph;
 import com.apehat.util.layer.DigraphLayerAnalyzer;
 import com.apehat.util.layer.Layer;

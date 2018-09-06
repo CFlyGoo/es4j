@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.apehat.util;
+package com.apehat;
 
 import com.apehat.util.graph.AdjacencyDigraph;
 import com.apehat.util.graph.Digraph;

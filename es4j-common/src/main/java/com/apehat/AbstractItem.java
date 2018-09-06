@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.apehat.util;
+package com.apehat;
 
 import java.util.Collections;
 import java.util.HashSet;

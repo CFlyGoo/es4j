@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.apehat.util;
+package com.apehat;
 
 import com.apehat.Value;
 import java.util.Map;
