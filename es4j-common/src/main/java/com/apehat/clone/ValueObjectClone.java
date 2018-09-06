@@ -17,32 +17,19 @@
 package com.apehat.clone;
 
 import com.apehat.Value;
-import java.util.LinkedHashSet;
-import java.util.Set;
+import com.apehat.util.ClassUtils;
 
 /**
  * @author hanpengfei
  * @since 1.0
  */
-public class CloningContext {
+public class ValueObjectClone implements Clone {
 
-    private Set<Clone> clones = new LinkedHashSet<>();
-
-    public void registerClone(Clone clone) {
-        this.clones.add(clone);
-    }
-
-    public <T> T deepClone(T prototype) {
-        for (Clone clone : clones) {
-            try {
-                Value<T> value = clone.deepClone(prototype, this);
-                if (value != null) {
-                    return value.get();
-                }
-            } catch (Exception e) {
-                // ignore
-            }
+    @Override
+    public <T> Value<T> deepClone(T prototype, CloningContext context) {
+        if (ClassUtils.isValueObject(prototype)) {
+            return new Value<>(prototype);
         }
-        throw new IllegalStateException(prototype + " is not be supported to clone");
+        return null;
     }
 }
