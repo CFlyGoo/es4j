@@ -17,7 +17,7 @@
 package com.apehat.argument.support;
 
 import com.apehat.Value;
-import com.apehat.util.ConcurrentCache;
+import com.apehat.ConcurrentCache;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;

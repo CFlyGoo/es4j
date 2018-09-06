@@ -17,7 +17,7 @@
 package com.apehat.alias;
 
 import com.apehat.NestedIOException;
-import com.apehat.util.ConcurrentCache;
+import com.apehat.ConcurrentCache;
 import com.apehat.util.ReflectionUtils;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
