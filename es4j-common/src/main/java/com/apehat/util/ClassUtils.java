@@ -25,7 +25,6 @@ import java.util.Set;
  * @author hanpengfei
  * @since 1.0
  */
-@SuppressWarnings("WeakerAccess")
 public final class ClassUtils {
 
     private ClassUtils() {
