@@ -33,7 +33,7 @@ public abstract class AbstractArgumentMethodAdapter implements ArgumentAdapter {
         if (prototype == null) {
             return null;
         }
-        assert !alias.isEmpty() && alias.lastIndexOf('.') == -1;
+        assert !alias.isEmpty() && alias.lastIndexOf(SEPARATOR) == -1;
 
         final Class<?> prototypeClass = prototype.getClass();
         Method candidateMethod = null;
