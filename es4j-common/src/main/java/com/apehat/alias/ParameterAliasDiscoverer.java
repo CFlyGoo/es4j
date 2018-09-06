@@ -25,11 +25,6 @@ import java.lang.reflect.Parameter;
  */
 public interface ParameterAliasDiscoverer extends AliasDiscoverer<Parameter> {
 
-//    @Override
-//    default String getAlias(Parameter obj) {
-//        return this.getAlias(obj);
-//    }
-
     String getAlias(Parameter param);
 
     default String getAlias(Executable exec, int index) {

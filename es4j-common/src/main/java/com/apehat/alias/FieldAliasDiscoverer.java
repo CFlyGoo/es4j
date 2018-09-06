@@ -26,11 +26,6 @@ import java.util.Map;
  */
 public interface FieldAliasDiscoverer extends AliasDiscoverer<Field> {
 
-//    @Override
-//    default String getAlias(Field obj) {
-//        return this.getAlias(obj);
-//    }
-
     String getAlias(Field field);
 
     default String getAlias(Field field, String prefix) {
