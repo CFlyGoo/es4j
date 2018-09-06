@@ -16,18 +16,20 @@
 
 package com.apehat.es4j.bus.annotation;
 
-import com.apehat.alias.ParameterAliasDiscoverer;
-import java.lang.reflect.Parameter;
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
  * @author hanpengfei
  * @since 1.0
  */
-public class AnnotatedParameterAliasDiscvoerer implements ParameterAliasDiscoverer {
+@Target(ElementType.PARAMETER)
+@Retention(RetentionPolicy.RUNTIME)
+@Documented
+public @interface EventParam {
 
-    @Override
-    public String getAlias(Parameter param) {
-        EventParam annotation = param.getDeclaredAnnotation(EventParam.class);
-        return annotation == null || annotation.alias().isEmpty() ? null : annotation.alias();
-    }
+    String alias();
 }
