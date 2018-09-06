@@ -19,11 +19,12 @@ package com.apehat.clone;
 import com.apehat.Value;
 import com.apehat.serializer.DefaultDeserializer;
 import com.apehat.serializer.DefaultSerializer;
+import com.apehat.serializer.Deserializer;
+import com.apehat.serializer.Serializer;
 import com.apehat.util.ClassUtils;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.Serializable;
 
 /**
  * @author hanpengfei
@@ -31,17 +32,29 @@ import java.io.Serializable;
  */
 public class SerializationClone implements Clone {
 
+    private static final Serializer<Object> DEFAULT_SERIALIZER = new DefaultSerializer();
+    private static final Deserializer<Object> DEFAULT_DESERIALIZER = new DefaultDeserializer();
+
+    private final Serializer<Object> serializer;
+    private final Deserializer<Object> deserializer;
+
+    public SerializationClone() {
+        this(DEFAULT_SERIALIZER, DEFAULT_DESERIALIZER);
+    }
+
+    public SerializationClone(Serializer<Object> serializer, Deserializer<Object> deserializer) {
+        this.serializer = serializer;
+        this.deserializer = deserializer;
+    }
+
     @Override
     public <T> Value<T> deepClone(T prototype, CloningContext context) {
-        if (!(prototype instanceof Serializable)) {
-            return null;
-        }
         try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
-            new DefaultSerializer().serialize(prototype, baos);
+            serializer.serialize(prototype, baos);
             byte[] bytes = baos.toByteArray();
             try (ByteArrayInputStream bais = new ByteArrayInputStream(bytes)) {
                 return new Value<>(ClassUtils.getParameterizedClass(prototype)
-                    .cast(new DefaultDeserializer().deserialize(bais)));
+                    .cast(deserializer.deserialize(bais)));
             }
         } catch (IOException e) {
             return null;
