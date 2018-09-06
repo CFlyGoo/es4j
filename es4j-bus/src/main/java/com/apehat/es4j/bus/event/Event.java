@@ -16,7 +16,7 @@
 
 package com.apehat.es4j.bus.event;
 
-import com.apehat.util.ObjectUtils;
+import com.apehat.es4j.bus.DomainRegistry;
 import java.util.Objects;
 
 /**
@@ -35,7 +35,7 @@ public final class Event {
     private final String source;
 
     Event(long occurredOn, Object event, String source) {
-        this.event = ObjectUtils.deepClone(
+        this.event = DomainRegistry.cloningContext().deepClone(
             Objects.requireNonNull(event, "Event event must not be null"));
         this.occurredOn = occurredOn;
         this.source = source;
@@ -79,7 +79,7 @@ public final class Event {
     }
 
     public Object prototype() {
-        return ObjectUtils.deepClone(event);
+        return DomainRegistry.cloningContext().deepClone(event);
     }
 
     public String source() {

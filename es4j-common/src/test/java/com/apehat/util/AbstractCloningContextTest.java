@@ -23,11 +23,13 @@ import static org.testng.Assert.assertNotEqualsDeep;
 import static org.testng.Assert.assertNotSame;
 import static org.testng.Assert.assertNull;
 
+import com.apehat.clone.CloningContext;
 import com.apehat.util.support.NonFieldHaveInnerClass;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import org.testng.annotations.Test;
 
@@ -35,18 +37,25 @@ import org.testng.annotations.Test;
  * @author hanpengfei
  * @since 1.0
  */
-public class ObjectUtilsTest {
+public abstract class AbstractCloningContextTest {
+
+    private final CloningContext context;
+
+    @SuppressWarnings("WeakerAccess")
+    protected AbstractCloningContextTest(CloningContext context) {
+        this.context = Objects.requireNonNull(context);
+    }
 
     @Test(groups = "deepClone")
     public void testDeepCloneWithNull() {
-        Object clone = ObjectUtils.deepClone(null);
+        Object clone = context.deepClone(null);
         assertNull(clone);
     }
 
     @Test(groups = "deepClone")
     public void testDeepCloneArray() {
         int[] prototype = {1, 2, 3, 4, 5};
-        int[] clone = ObjectUtils.deepClone(prototype);
+        int[] clone = context.deepClone(prototype);
         assertEquals(prototype, clone);
         assertNotSame(prototype, clone);
     }
@@ -57,7 +66,7 @@ public class ObjectUtilsTest {
             {'a', 'b', 'c'},
             {'d', 'e', 'f'}
         };
-        char[][] clone = ObjectUtils.deepClone(prototype);
+        char[][] clone = context.deepClone(prototype);
         assert Arrays.deepEquals(prototype, clone);
         assertNotSame(prototype, clone);
         prototype[0][1] = 'g';
@@ -70,7 +79,7 @@ public class ObjectUtilsTest {
         set.add(1);
         set.add(new Object());
         set.add(true);
-        Set<Object> clone = ObjectUtils.deepClone(set);
+        Set<Object> clone = context.deepClone(set);
         assertEquals(set, clone);
         assertNotSame(set, clone);
     }
@@ -100,7 +109,7 @@ public class ObjectUtilsTest {
         prototype.put(firstKey, firstValue);
         prototype.put(secondKey, secondValue);
 
-        Map<Set<String>, Set<Integer>> clone = ObjectUtils.deepClone(prototype);
+        Map<Set<String>, Set<Integer>> clone = context.deepClone(prototype);
 
         assertEqualsDeep(prototype, clone);
         assertNotSame(prototype, clone);
@@ -126,9 +135,9 @@ public class ObjectUtilsTest {
         prototype.add(first);
         prototype.add(second);
 
-        Set<Set<Integer>> clone = ObjectUtils.deepClone(prototype);
+        Set<Set<Integer>> clone = context.deepClone(prototype);
 
-        assertEqualsDeep(prototype, clone, "Prototype and clone is not equals");
+        assertEqualsDeep(prototype, clone, "Prototype and deepClone is not equals");
         assertNotSame(prototype, clone);
 
         first.add(7);
@@ -140,7 +149,7 @@ public class ObjectUtilsTest {
     public void testDeepCloneNonFieldsStatedClass() {
         NonFieldHaveInnerClass prototype = new NonFieldHaveInnerClass();
         final String primitiveName = prototype.getInnerClassName();
-        NonFieldHaveInnerClass newInstance = ObjectUtils.deepClone(prototype);
+        NonFieldHaveInnerClass newInstance = context.deepClone(prototype);
         assertEquals(primitiveName, newInstance.getInnerClassName());
 
         prototype.changeInnerClassName();

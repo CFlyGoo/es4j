@@ -18,6 +18,8 @@ package com.apehat.es4j.bus;
 
 import com.apehat.alias.DefaultParameterAliasDiscoverer;
 import com.apehat.alias.ParameterAliasDiscoverer;
+import com.apehat.clone.CloningContext;
+import com.apehat.clone.DefaultCloningContext;
 
 /**
  * @author hanpengfei
@@ -28,7 +30,17 @@ public final class DomainRegistry {
     private static ParameterAliasDiscoverer parameterAliasDiscoverer =
         new DefaultParameterAliasDiscoverer();
 
+    private static CloningContext cloningContext = new DefaultCloningContext();
+
     private DomainRegistry() {
+    }
+
+    public static CloningContext cloningContext() {
+        return cloningContext;
+    }
+
+    public static void setCloningContext(CloningContext cloningContext) {
+        DomainRegistry.cloningContext = cloningContext;
     }
 
     public static ParameterAliasDiscoverer parameterAliasDiscoverer() {

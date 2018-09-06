@@ -24,10 +24,10 @@ import com.apehat.argument.ArgumentsAssembler;
 import com.apehat.argument.DefaultArgumentsAssembler;
 import com.apehat.argument.support.DefaultArgumentAdapter;
 import com.apehat.argument.support.PrioritizedArgumentAdapter;
-import com.apehat.util.ObjectUtils;
 import com.apehat.support.TestDataProvider;
 import com.apehat.support.UserId;
 import com.apehat.support.UserRegistered;
+import com.apehat.clone.DefaultCloningContext;
 import java.lang.reflect.Method;
 import java.util.Date;
 import java.util.Objects;
@@ -103,7 +103,7 @@ public class DefaultArgumentsAssemblerTest {
         private final String source;
 
         Event(long occurredOn, Object prototype, String source) {
-            this.prototype = ObjectUtils.deepClone(
+            this.prototype = new DefaultCloningContext().deepClone(
                 Objects.requireNonNull(prototype, "Event prototype must not be null"));
             this.occurredOn = occurredOn;
             this.source = source;
@@ -148,7 +148,7 @@ public class DefaultArgumentsAssemblerTest {
 
         @Alias("event")
         Object prototype() {
-            return ObjectUtils.deepClone(prototype);
+            return new DefaultCloningContext().deepClone(prototype);
         }
 
         String source() {
