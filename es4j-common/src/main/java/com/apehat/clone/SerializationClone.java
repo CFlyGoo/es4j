@@ -49,6 +49,11 @@ public class SerializationClone implements Clone {
 
     @Override
     public <T> Value<T> deepClone(T prototype, CloningContext context) {
+        if (prototype == null) {
+            //noinspection unchecked
+            return Value.empty();
+        }
+
         try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
             serializer.serialize(prototype, baos);
             byte[] bytes = baos.toByteArray();

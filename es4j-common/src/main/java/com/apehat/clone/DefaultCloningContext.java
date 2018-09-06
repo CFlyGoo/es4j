@@ -23,6 +23,7 @@ package com.apehat.clone;
 public class DefaultCloningContext extends CloningContext {
 
     public DefaultCloningContext() {
+        registerClone(new ValueObjectClone());
         registerClone(new MapClone());
         registerClone(new CollectionClone());
         registerClone(new ArrayClone());

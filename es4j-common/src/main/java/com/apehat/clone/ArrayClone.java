@@ -28,6 +28,11 @@ public class ArrayClone implements Clone {
 
     @Override
     public <T> Value<T> deepClone(T prototype, CloningContext context) {
+        if (prototype == null) {
+            //noinspection unchecked - safe
+            return Value.empty();
+        }
+
         final Class<T> prototypeClass = ClassUtils.getParameterizedClass(prototype);
         if (!prototypeClass.isArray()) {
             return null;
@@ -35,7 +40,7 @@ public class ArrayClone implements Clone {
         final int length = Array.getLength(prototype);
         final Class<?> componentType = prototypeClass.getComponentType();
         final T newInstance = prototypeClass.cast(Array.newInstance(componentType, length));
-        if (CloningContext.isValueClass(componentType)) {
+        if (ClassUtils.isValueClass(componentType)) {
             //noinspection SuspiciousSystemArraycopy - safe by check isArray
             System.arraycopy(prototype, 0, newInstance, 0, length);
         } else {

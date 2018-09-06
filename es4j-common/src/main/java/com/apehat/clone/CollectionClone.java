@@ -30,6 +30,11 @@ public class CollectionClone implements Clone {
 
     @Override
     public <T> Value<T> deepClone(T prototype, CloningContext context) {
+        if (prototype == null) {
+            //noinspection unchecked
+            return Value.empty();
+        }
+
         if (!(prototype instanceof Collection)) {
             return null;
         }

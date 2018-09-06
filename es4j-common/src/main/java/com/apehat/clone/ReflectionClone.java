@@ -30,6 +30,11 @@ public class ReflectionClone implements Clone {
 
     @Override
     public <T> Value<T> deepClone(T prototype, CloningContext context) {
+        if (prototype == null) {
+            //noinspection unchecked
+            return Value.empty();
+        }
+
         final Class<T> prototypeClass = ClassUtils.getParameterizedClass(prototype);
         final T clone = ReflectionUtils.newInstance(prototypeClass);
         final Field[] fields = prototypeClass.getDeclaredFields();
