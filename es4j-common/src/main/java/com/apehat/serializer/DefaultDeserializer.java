@@ -29,8 +29,7 @@ public class DefaultDeserializer implements Deserializer<Object> {
 
     @Override
     public Object deserialize(InputStream inputStream) throws IOException {
-        ObjectInputStream ois = new ObjectInputStream(inputStream);
-        try {
+        try (ObjectInputStream ois = new ObjectInputStream(inputStream)) {
             return ois.readObject();
         } catch (ClassNotFoundException e) {
             throw new NestedCheckException(e);
