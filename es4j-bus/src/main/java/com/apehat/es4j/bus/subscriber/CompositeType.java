@@ -16,9 +16,9 @@
 
 package com.apehat.es4j.bus.subscriber;
 
-import com.apehat.util.AbstractClassItem;
-import com.apehat.util.ClassItemCombiner;
-import com.apehat.util.Item;
+import com.apehat.AbstractClassItem;
+import com.apehat.ClassItemCombiner;
+import com.apehat.Item;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
