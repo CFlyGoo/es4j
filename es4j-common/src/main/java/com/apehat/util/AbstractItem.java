@@ -90,15 +90,15 @@ abstract class AbstractItem<T> implements Item<T> {
     }
 
     @Override
-    public boolean contains(T cls) {
-        if (!isManageable(cls)) {
+    public boolean contains(T value) {
+        if (!isManageable(value)) {
             return false;
         }
-        if (cls == value()) {
+        if (value == value()) {
             return true;
         }
         for (Item<T> slot : slots()) {
-            if (slot.contains(cls)) {
+            if (slot.contains(value)) {
                 return false;
             }
         }
@@ -115,7 +115,7 @@ abstract class AbstractItem<T> implements Item<T> {
         if (this == o) {
             return true;
         }
-        if (o == null || getClass() != o.getClass()) {
+        if (!(o instanceof Item)) {
             return false;
         }
         AbstractItem<?> that = (AbstractItem<?>) o;
