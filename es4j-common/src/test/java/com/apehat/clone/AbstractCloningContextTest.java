@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.apehat.util;
+package com.apehat.clone;
 
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertEqualsDeep;

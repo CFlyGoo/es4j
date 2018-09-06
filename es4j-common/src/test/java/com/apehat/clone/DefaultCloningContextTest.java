@@ -14,9 +14,7 @@
  * limitations under the License.
  */
 
-package com.apehat.util;
-
-import com.apehat.clone.DefaultCloningContext;
+package com.apehat.clone;
 
 /**
  * @author hanpengfei
