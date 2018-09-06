@@ -30,10 +30,6 @@ abstract class AbstractItem<T> implements Item<T> {
     private final T value;
     private final Set<Item<T>> slots;
 
-    protected AbstractItem() {
-        this(null, null);
-    }
-
     protected AbstractItem(T value, Set<Item<T>> slots) {
         this.value = value;
         this.slots = (slots == null) ? Collections.emptySet() : Collections.unmodifiableSet(slots);
