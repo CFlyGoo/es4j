@@ -36,11 +36,10 @@ public class CollectionClone implements Clone {
         Class<T> prototypeClass = ClassUtils.getParameterizedClass(prototype);
         final Collection<?> collection = (Collection<?>) prototype;
         final T newInstance = ReflectionUtils.newInstance(prototypeClass);
-        Collection container = (Collection) newInstance;
+        final Collection container = (Collection) newInstance;
         collection.forEach((Consumer<Object>) o -> {
-            Object cloneValue = context.deepClone(o);
             //noinspection unchecked - safe
-            container.add(cloneValue);
+            container.add(context.deepClone(o));
         });
         return new Value<>(newInstance);
     }

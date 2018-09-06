@@ -17,8 +17,6 @@
 package com.apehat.clone;
 
 import com.apehat.Value;
-import com.apehat.clone.Clone;
-import com.apehat.clone.CloningContext;
 import com.apehat.util.ClassUtils;
 import com.apehat.util.ReflectionUtils;
 import java.lang.reflect.Field;
@@ -28,7 +26,7 @@ import java.lang.reflect.Modifier;
  * @author hanpengfei
  * @since 1.0
  */
-public final class ReflectionClone implements Clone {
+public class ReflectionClone implements Clone {
 
     @Override
     public <T> Value<T> deepClone(T prototype, CloningContext context) {

@@ -17,8 +17,6 @@
 package com.apehat.clone;
 
 import com.apehat.Value;
-import com.apehat.clone.Clone;
-import com.apehat.clone.CloningContext;
 import com.apehat.serializer.DefaultDeserializer;
 import com.apehat.serializer.DefaultSerializer;
 import com.apehat.util.ClassUtils;
@@ -38,15 +36,15 @@ public class SerializationClone implements Clone {
         if (!(prototype instanceof Serializable)) {
             return null;
         }
-            try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
-                new DefaultSerializer().serialize(prototype, baos);
-                byte[] bytes = baos.toByteArray();
-                try (ByteArrayInputStream bais = new ByteArrayInputStream(bytes)) {
-                    Class<T> cls = ClassUtils.getParameterizedClass(prototype);
-                    return new Value<>(cls.cast(new DefaultDeserializer().deserialize(bais)));
-                }
-            } catch (IOException e) {
-                return null;
+        try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
+            new DefaultSerializer().serialize(prototype, baos);
+            byte[] bytes = baos.toByteArray();
+            try (ByteArrayInputStream bais = new ByteArrayInputStream(bytes)) {
+                return new Value<>(ClassUtils.getParameterizedClass(prototype)
+                    .cast(new DefaultDeserializer().deserialize(bais)));
             }
+        } catch (IOException e) {
+            return null;
+        }
     }
 }

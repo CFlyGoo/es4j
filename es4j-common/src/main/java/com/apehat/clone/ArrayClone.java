@@ -36,14 +36,11 @@ public class ArrayClone implements Clone {
         final Class<?> componentType = prototypeClass.getComponentType();
         final T newInstance = prototypeClass.cast(Array.newInstance(componentType, length));
         if (CloningContext.isValueClass(componentType)) {
-            // all component is immutable
             //noinspection SuspiciousSystemArraycopy - safe by check isArray
             System.arraycopy(prototype, 0, newInstance, 0, length);
         } else {
             for (int index = 0; index < length; index++) {
-                final Object indexComponent = Array.get(prototype, index);
-                final Object cloneComponent = context.deepClone(indexComponent);
-                Array.set(newInstance, index, cloneComponent);
+                Array.set(newInstance, index, context.deepClone(Array.get(prototype, index)));
             }
         }
         return new Value<>(newInstance);

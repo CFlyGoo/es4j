@@ -17,8 +17,6 @@
 package com.apehat.clone;
 
 import com.apehat.Value;
-import com.apehat.clone.Clone;
-import com.apehat.clone.CloningContext;
 import com.apehat.util.ClassUtils;
 import com.apehat.util.ReflectionUtils;
 import java.util.Map;
@@ -40,10 +38,8 @@ public class MapClone implements Clone {
         Map container = (Map) newInstance;
         final Map<?, ?> map = (Map<?, ?>) prototype;
         map.forEach((BiConsumer<Object, Object>) (key, value) -> {
-            Object cloneKey = context.deepClone(key);
-            Object cloneValue = context.deepClone(value);
             //noinspection unchecked - safe
-            container.put(cloneKey, cloneValue);
+            container.put(context.deepClone(key), context.deepClone(value));
         });
         return new Value<>(newInstance);
     }
