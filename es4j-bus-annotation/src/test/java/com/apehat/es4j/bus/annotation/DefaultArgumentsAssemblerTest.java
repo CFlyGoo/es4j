@@ -18,16 +18,16 @@ package com.apehat.es4j.bus.annotation;
 
 import static org.testng.Assert.assertEquals;
 
-import com.apehat.es4j.common.Value;
-import com.apehat.es4j.common.alias.DefaultParameterAliasDiscoverer;
-import com.apehat.es4j.common.argument.ArgumentsAssembler;
-import com.apehat.es4j.common.argument.DefaultArgumentsAssembler;
-import com.apehat.es4j.common.argument.support.DefaultArgumentAdapter;
-import com.apehat.es4j.common.argument.support.PrioritizedArgumentAdapter;
-import com.apehat.es4j.common.util.ObjectUtils;
-import com.apehat.es4j.support.TestDataProvider;
-import com.apehat.es4j.support.UserId;
-import com.apehat.es4j.support.UserRegistered;
+import com.apehat.Value;
+import com.apehat.alias.DefaultParameterAliasDiscoverer;
+import com.apehat.argument.ArgumentsAssembler;
+import com.apehat.argument.DefaultArgumentsAssembler;
+import com.apehat.argument.support.DefaultArgumentAdapter;
+import com.apehat.argument.support.PrioritizedArgumentAdapter;
+import com.apehat.util.ObjectUtils;
+import com.apehat.support.TestDataProvider;
+import com.apehat.support.UserId;
+import com.apehat.support.UserRegistered;
 import java.lang.reflect.Method;
 import java.util.Date;
 import java.util.Objects;

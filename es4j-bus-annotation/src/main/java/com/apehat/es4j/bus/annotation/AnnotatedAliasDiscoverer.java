@@ -16,8 +16,8 @@
 
 package com.apehat.es4j.bus.annotation;
 
-import com.apehat.es4j.common.alias.FieldAliasDiscoverer;
-import com.apehat.es4j.common.alias.ParameterAliasDiscoverer;
+import com.apehat.alias.FieldAliasDiscoverer;
+import com.apehat.alias.ParameterAliasDiscoverer;
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Field;
 import java.lang.reflect.Parameter;

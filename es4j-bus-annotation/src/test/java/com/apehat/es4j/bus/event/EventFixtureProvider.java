@@ -16,7 +16,7 @@
 
 package com.apehat.es4j.bus.event;
 
-import com.apehat.es4j.support.TestDataProvider;
+import com.apehat.support.TestDataProvider;
 import java.util.UUID;
 
 /**

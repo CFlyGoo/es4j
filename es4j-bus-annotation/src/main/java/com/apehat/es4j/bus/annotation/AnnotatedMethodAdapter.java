@@ -16,7 +16,7 @@
 
 package com.apehat.es4j.bus.annotation;
 
-import com.apehat.es4j.common.argument.support.AbstractArgumentMethodAdapter;
+import com.apehat.argument.support.AbstractArgumentMethodAdapter;
 import java.lang.reflect.Method;
 
 /**

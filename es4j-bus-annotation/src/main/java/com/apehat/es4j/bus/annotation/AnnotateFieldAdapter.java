@@ -16,7 +16,7 @@
 
 package com.apehat.es4j.bus.annotation;
 
-import com.apehat.es4j.common.argument.support.AbstractArgumentFieldAdapter;
+import com.apehat.argument.support.AbstractArgumentFieldAdapter;
 import java.lang.reflect.Field;
 
 /**

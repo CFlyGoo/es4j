@@ -17,7 +17,7 @@
 package com.apehat.es4j.bus;
 
 import com.apehat.es4j.bus.event.EventFixtureProvider;
-import com.apehat.es4j.support.TestDataProvider;
+import com.apehat.support.TestDataProvider;
 import org.testng.annotations.DataProvider;
 
 /**

@@ -17,9 +17,9 @@
 package com.apehat.es4j.bus.port.adapter;
 
 import com.apehat.es4j.bus.event.Event;
-import com.apehat.es4j.common.Value;
-import com.apehat.es4j.common.argument.support.DefaultArgumentAdapter;
-import com.apehat.es4j.common.argument.support.PrioritizedArgumentAdapter;
+import com.apehat.Value;
+import com.apehat.argument.support.DefaultArgumentAdapter;
+import com.apehat.argument.support.PrioritizedArgumentAdapter;
 import com.apehat.es4j.bus.annotation.AnnotateFieldAdapter;
 import com.apehat.es4j.bus.annotation.AnnotatedMethodAdapter;
 

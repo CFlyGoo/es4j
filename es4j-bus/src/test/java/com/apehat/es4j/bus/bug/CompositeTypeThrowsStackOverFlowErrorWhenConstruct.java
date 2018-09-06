@@ -17,12 +17,12 @@
 package com.apehat.es4j.bus.bug;
 
 import com.apehat.es4j.bus.subscriber.CompositeType;
-import com.apehat.es4j.support.sample.SampleClass4;
-import com.apehat.es4j.support.sample.SampleClass6;
-import com.apehat.es4j.support.sample.SampleMiddleClass1;
-import com.apehat.es4j.support.sample.SampleMiddleClass2;
-import com.apehat.es4j.support.sample.SampleMiddleClass4;
-import com.apehat.es4j.support.sample.SampleSuperInterface2;
+import com.apehat.support.sample.SampleClass4;
+import com.apehat.support.sample.SampleClass6;
+import com.apehat.support.sample.SampleMiddleClass1;
+import com.apehat.support.sample.SampleMiddleClass2;
+import com.apehat.support.sample.SampleMiddleClass4;
+import com.apehat.support.sample.SampleSuperInterface2;
 import org.testng.annotations.Test;
 
 /**
@@ -32,16 +32,16 @@ import org.testng.annotations.Test;
 public class CompositeTypeThrowsStackOverFlowErrorWhenConstruct {
 
     // Sample
-    // [main] DEBUG com.apehat.es4j.bus.subscriber.CompositeTypeTest -
+    // [main] DEBUG CompositeTypeTest -
     // Construct CompositeType with [
-    // class com.apehat.es4j.support.sample.SampleMiddleClass2,
-    // class com.apehat.es4j.support.sample.SampleMiddleClass2,
-    // interface com.apehat.es4j.support.sample.SampleSuperInterface2,
-    // class com.apehat.es4j.support.sample.SampleClass4,
-    // class com.apehat.es4j.support.sample.SampleMiddleClass1,
-    // class com.apehat.es4j.support.sample.SampleMiddleClass4,
-    // class com.apehat.es4j.support.sample.SampleMiddleClass1,
-    // class com.apehat.es4j.support.sample.SampleClass6
+    // class SampleMiddleClass2,
+    // class SampleMiddleClass2,
+    // interface SampleSuperInterface2,
+    // class SampleClass4,
+    // class SampleMiddleClass1,
+    // class SampleMiddleClass4,
+    // class SampleMiddleClass1,
+    // class SampleClass6
     // ]
 
     // Error
@@ -49,12 +49,12 @@ public class CompositeTypeThrowsStackOverFlowErrorWhenConstruct {
     //	at java.util.HashMap$KeyIterator.<init>(HashMap.java:1464)
     //	at java.util.HashMap$KeySet.iterator(HashMap.java:917)
     //	at java.util.HashSet.iterator(HashSet.java:173)
-    //	at com.apehat.es4j.common.util.graph.AdjacencyDigraph$Vertex.adjacencies(AdjacencyDigraph.java:189)
-    //	at com.apehat.es4j.common.util.graph.AdjacencyDigraph$Vertex.adjacentOutVertices(AdjacencyDigraph.java:184)
-    //	at com.apehat.es4j.common.util.graph.AdjacencyDigraph$Vertex.outVertices(AdjacencyDigraph.java:209)
-    //	at com.apehat.es4j.common.util.graph.AdjacencyDigraph$Vertex.outVertices(AdjacencyDigraph.java:213)
-    //	at com.apehat.es4j.common.util.graph.AdjacencyDigraph$Vertex.outVertices(AdjacencyDigraph.java:213)
-    //	at com.apehat.es4j.common.util.graph.AdjacencyDigraph$Vertex.outVertices(AdjacencyDigraph.java:213)
+    //	at AdjacencyDigraph$Vertex.adjacencies(AdjacencyDigraph.java:189)
+    //	at AdjacencyDigraph$Vertex.adjacentOutVertices(AdjacencyDigraph.java:184)
+    //	at AdjacencyDigraph$Vertex.outVertices(AdjacencyDigraph.java:209)
+    //	at AdjacencyDigraph$Vertex.outVertices(AdjacencyDigraph.java:213)
+    //	at AdjacencyDigraph$Vertex.outVertices(AdjacencyDigraph.java:213)
+    //	at AdjacencyDigraph$Vertex.outVertices(AdjacencyDigraph.java:213)
 
     // Cause:
     // Surface

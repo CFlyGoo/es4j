@@ -16,7 +16,7 @@
 
 package com.apehat.es4j.bus.event;
 
-import com.apehat.es4j.common.util.ObjectUtils;
+import com.apehat.util.ObjectUtils;
 import java.util.Objects;
 
 /**
