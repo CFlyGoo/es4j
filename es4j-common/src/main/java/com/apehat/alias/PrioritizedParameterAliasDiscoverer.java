@@ -43,18 +43,4 @@ public class PrioritizedParameterAliasDiscoverer implements ParameterAliasDiscov
         }
         return null;
     }
-
-    @Override
-    public String[] getAlias(Executable exec) {
-        final int count = exec.getParameterCount();
-        final String[] aliases = new String[count];
-        final Parameter[] parameters = exec.getParameters();
-        for (int i = 0; i < count; i++) {
-            aliases[i] = getAlias(parameters[i]);
-            if (aliases[i] == null) {
-                throw new IllegalStateException("Cannot find parameter" + i + " alias in " + exec);
-            }
-        }
-        return aliases;
-    }
 }

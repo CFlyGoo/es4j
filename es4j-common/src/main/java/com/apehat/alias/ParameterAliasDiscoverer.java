@@ -30,13 +30,4 @@ public interface ParameterAliasDiscoverer extends AliasDiscoverer<Parameter> {
     default String getAlias(Executable exec, int index) {
         return getAlias(exec.getParameters()[index]);
     }
-
-    default String[] getAlias(Executable exec) {
-        final int count = exec.getParameterCount();
-        final String[] aliases = new String[count];
-        for (int i = 0; i < count; i++) {
-            aliases[i] = getAlias(exec, i);
-        }
-        return aliases;
-    }
 }
