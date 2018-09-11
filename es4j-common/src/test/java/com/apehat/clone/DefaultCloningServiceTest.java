@@ -16,13 +16,23 @@
 
 package com.apehat.clone;
 
+import org.testng.annotations.Test;
+
 /**
  * @author hanpengfei
  * @since 1.0
  */
-public class DefaultCloningContextTest extends AbstractCloningContextTest {
+public class DefaultCloningServiceTest {
 
-    public DefaultCloningContextTest() {
-        super(new DefaultCloningContext());
+    @Test(expectedExceptions = IllegalStateException.class)
+    public void testCloneWithNonNonParamConstructor() {
+        new DefaultCloningService().deepClone(new NonNonParam(getClass()));
     }
+
+    private static class NonNonParam {
+
+        NonNonParam(Class<?> cls) {
+        }
+    }
+
 }

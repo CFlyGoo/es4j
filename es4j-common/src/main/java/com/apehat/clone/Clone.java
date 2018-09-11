@@ -24,5 +24,5 @@ import com.apehat.Value;
  */
 public interface Clone {
 
-    <T> Value<T> deepClone(T prototype, CloningContext context);
+    <T> Value<T> deepClone(T prototype, CloningService service);
 }

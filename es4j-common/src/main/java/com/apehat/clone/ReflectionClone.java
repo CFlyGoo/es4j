@@ -21,6 +21,7 @@ import com.apehat.util.ClassUtils;
 import com.apehat.util.ReflectionUtils;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
+import java.util.Objects;
 
 /**
  * @author hanpengfei
@@ -29,24 +30,29 @@ import java.lang.reflect.Modifier;
 public class ReflectionClone implements Clone {
 
     @Override
-    public <T> Value<T> deepClone(T prototype, CloningContext context) {
+    public <T> Value<T> deepClone(T prototype, CloningService service) {
+        Objects.requireNonNull(service, "Must specify a CloningService");
         if (prototype == null) {
             //noinspection unchecked
             return Value.empty();
         }
 
-        final Class<T> prototypeClass = ClassUtils.getParameterizedClass(prototype);
-        final T clone = ReflectionUtils.newInstance(prototypeClass);
-        final Field[] fields = prototypeClass.getDeclaredFields();
-        for (Field field : fields) {
-            if (!Modifier.isStatic(field.getModifiers())) {
-                Object cloneValue = ReflectionUtils.access(field, f -> {
-                    final Object prototypeValue = f.get(prototype);
-                    return context.deepClone(prototypeValue);
-                });
-                ReflectionUtils.setFieldValue(field, clone, cloneValue);
+        try {
+            final Class<T> prototypeClass = ClassUtils.getParameterizedClass(prototype);
+            final T clone = ReflectionUtils.newInstance(prototypeClass);
+            final Field[] fields = prototypeClass.getDeclaredFields();
+            for (Field field : fields) {
+                if (!Modifier.isStatic(field.getModifiers())) {
+                    Object cloneValue = ReflectionUtils.access(field, f -> {
+                        final Object prototypeValue = f.get(prototype);
+                        return service.deepClone(prototypeValue);
+                    });
+                    ReflectionUtils.setFieldValue(field, clone, cloneValue);
+                }
             }
+            return new Value<>(clone);
+        } catch (Exception e) {
+            return null;
         }
-        return new Value<>(clone);
     }
 }

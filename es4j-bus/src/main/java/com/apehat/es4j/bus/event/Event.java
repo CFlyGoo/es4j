@@ -35,8 +35,8 @@ public final class Event {
     private final String source;
 
     Event(long occurredOn, Object event, String source) {
-        this.event = DomainRegistry.cloningContext().deepClone(
-            Objects.requireNonNull(event, "Event event must not be null"));
+        this.event = DomainRegistry.cloningService().deepClone(
+            Objects.requireNonNull(event, "Event prototype must not be null"));
         this.occurredOn = occurredOn;
         this.source = source;
     }
@@ -79,7 +79,7 @@ public final class Event {
     }
 
     public Object prototype() {
-        return DomainRegistry.cloningContext().deepClone(event);
+        return DomainRegistry.cloningService().deepClone(event);
     }
 
     public String source() {

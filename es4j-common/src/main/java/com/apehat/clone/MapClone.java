@@ -20,6 +20,7 @@ import com.apehat.Value;
 import com.apehat.util.ClassUtils;
 import com.apehat.util.ReflectionUtils;
 import java.util.Map;
+import java.util.Objects;
 import java.util.function.BiConsumer;
 
 /**
@@ -29,7 +30,8 @@ import java.util.function.BiConsumer;
 public class MapClone implements Clone {
 
     @Override
-    public <T> Value<T> deepClone(T prototype, CloningContext context) {
+    public <T> Value<T> deepClone(T prototype, CloningService service) {
+        Objects.requireNonNull(service, "Must specify a CloningService");
         if (prototype == null) {
             //noinspection unchecked
             return Value.empty();
@@ -37,14 +39,18 @@ public class MapClone implements Clone {
         if (!(prototype instanceof Map)) {
             return null;
         }
-        Class<T> prototypeClass = ClassUtils.getParameterizedClass(prototype);
-        final T newInstance = ReflectionUtils.newInstance(prototypeClass);
-        Map container = (Map) newInstance;
-        final Map<?, ?> map = (Map<?, ?>) prototype;
-        map.forEach((BiConsumer<Object, Object>) (key, value) -> {
-            //noinspection unchecked - safe
-            container.put(context.deepClone(key), context.deepClone(value));
-        });
-        return new Value<>(newInstance);
+        try {
+            T newInstance = ReflectionUtils
+                .newInstance(ClassUtils.getParameterizedClass(prototype));
+            Map container = (Map) newInstance;
+            final Map<?, ?> map = (Map<?, ?>) prototype;
+            map.forEach((BiConsumer<Object, Object>) (key, value) -> {
+                //noinspection unchecked - safe
+                container.put(service.deepClone(key), service.deepClone(value));
+            });
+            return new Value<>(newInstance);
+        } catch (Exception e) {
+            return null;
+        }
     }
 }

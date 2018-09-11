@@ -26,7 +26,7 @@ import com.apehat.util.ClassUtils;
 public class ValueObjectClone implements Clone {
 
     @Override
-    public <T> Value<T> deepClone(T prototype, CloningContext context) {
+    public <T> Value<T> deepClone(T prototype, CloningService service) {
         if (ClassUtils.isValueObject(prototype)) {
             return new Value<>(prototype);
         }

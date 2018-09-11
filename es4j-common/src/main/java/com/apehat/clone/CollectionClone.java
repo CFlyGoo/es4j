@@ -20,6 +20,7 @@ import com.apehat.Value;
 import com.apehat.util.ClassUtils;
 import com.apehat.util.ReflectionUtils;
 import java.util.Collection;
+import java.util.Objects;
 import java.util.function.Consumer;
 
 /**
@@ -29,23 +30,27 @@ import java.util.function.Consumer;
 public class CollectionClone implements Clone {
 
     @Override
-    public <T> Value<T> deepClone(T prototype, CloningContext context) {
+    public <T> Value<T> deepClone(T prototype, CloningService service) {
+        Objects.requireNonNull(service, "Must specify a CloningService");
         if (prototype == null) {
             //noinspection unchecked
             return Value.empty();
         }
 
-        if (!(prototype instanceof Collection)) {
-            return null;
+        if (prototype instanceof Collection) {
+            try {
+                T newInstance = ReflectionUtils
+                    .newInstance(ClassUtils.getParameterizedClass(prototype));
+                final Collection container = (Collection) newInstance;
+                ((Collection<?>) prototype).forEach((Consumer<Object>) o -> {
+                    //noinspection unchecked - safe
+                    container.add(service.deepClone(o));
+                });
+                return new Value<>(newInstance);
+            } catch (Exception e) {
+                return null;
+            }
         }
-        Class<T> prototypeClass = ClassUtils.getParameterizedClass(prototype);
-        final Collection<?> collection = (Collection<?>) prototype;
-        final T newInstance = ReflectionUtils.newInstance(prototypeClass);
-        final Collection container = (Collection) newInstance;
-        collection.forEach((Consumer<Object>) o -> {
-            //noinspection unchecked - safe
-            container.add(context.deepClone(o));
-        });
-        return new Value<>(newInstance);
+        return null;
     }
 }

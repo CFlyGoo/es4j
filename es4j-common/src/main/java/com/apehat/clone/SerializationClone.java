@@ -48,7 +48,7 @@ public class SerializationClone implements Clone {
     }
 
     @Override
-    public <T> Value<T> deepClone(T prototype, CloningContext context) {
+    public <T> Value<T> deepClone(T prototype, CloningService service) {
         if (prototype == null) {
             //noinspection unchecked
             return Value.empty();
@@ -61,7 +61,7 @@ public class SerializationClone implements Clone {
                 return new Value<>(ClassUtils.getParameterizedClass(prototype)
                     .cast(deserializer.deserialize(bais)));
             }
-        } catch (IOException e) {
+        } catch (Exception e) {
             return null;
         }
     }

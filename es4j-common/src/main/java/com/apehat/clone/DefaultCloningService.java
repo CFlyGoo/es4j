@@ -20,9 +20,9 @@ package com.apehat.clone;
  * @author hanpengfei
  * @since 1.0
  */
-public class DefaultCloningContext extends CloningContext {
+public class DefaultCloningService extends CloningService {
 
-    public DefaultCloningContext() {
+    public DefaultCloningService() {
         registerClone(new ValueObjectClone());
         registerClone(new MapClone());
         registerClone(new CollectionClone());

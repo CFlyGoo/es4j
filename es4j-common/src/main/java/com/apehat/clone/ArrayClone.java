@@ -19,6 +19,7 @@ package com.apehat.clone;
 import com.apehat.Value;
 import com.apehat.util.ClassUtils;
 import java.lang.reflect.Array;
+import java.util.Objects;
 
 /**
  * @author hanpengfei
@@ -27,7 +28,8 @@ import java.lang.reflect.Array;
 public class ArrayClone implements Clone {
 
     @Override
-    public <T> Value<T> deepClone(T prototype, CloningContext context) {
+    public <T> Value<T> deepClone(T prototype, CloningService service) {
+        Objects.requireNonNull(service, "Must specify a CloningService");
         if (prototype == null) {
             //noinspection unchecked - safe
             return Value.empty();
@@ -37,17 +39,17 @@ public class ArrayClone implements Clone {
         if (!prototypeClass.isArray()) {
             return null;
         }
-        final int length = Array.getLength(prototype);
-        final Class<?> componentType = prototypeClass.getComponentType();
-        final T newInstance = prototypeClass.cast(Array.newInstance(componentType, length));
-        if (ClassUtils.isValueClass(componentType)) {
-            //noinspection SuspiciousSystemArraycopy - safe by check isArray
-            System.arraycopy(prototype, 0, newInstance, 0, length);
-        } else {
+
+        try {
+            final int length = Array.getLength(prototype);
+            final T newInstance = prototypeClass.cast(
+                Array.newInstance(prototypeClass.getComponentType(), length));
             for (int index = 0; index < length; index++) {
-                Array.set(newInstance, index, context.deepClone(Array.get(prototype, index)));
+                Array.set(newInstance, index, service.deepClone(Array.get(prototype, index)));
             }
+            return new Value<>(newInstance);
+        } catch (Exception e) {
+            return null;
         }
-        return new Value<>(newInstance);
     }
 }

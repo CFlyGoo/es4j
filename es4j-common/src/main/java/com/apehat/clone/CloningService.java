@@ -24,7 +24,7 @@ import java.util.Set;
  * @author hanpengfei
  * @since 1.0
  */
-public class CloningContext {
+public class CloningService {
 
     private Set<Clone> clones = new LinkedHashSet<>();
 
@@ -34,13 +34,9 @@ public class CloningContext {
 
     public <T> T deepClone(T prototype) {
         for (Clone clone : clones) {
-            try {
-                Value<T> value = clone.deepClone(prototype, this);
-                if (value != null) {
-                    return value.get();
-                }
-            } catch (Exception e) {
-                // ignore
+            Value<T> value = clone.deepClone(prototype, this);
+            if (value != null) {
+                return value.get();
             }
         }
         throw new IllegalStateException(prototype + " is not be supported to clone");
