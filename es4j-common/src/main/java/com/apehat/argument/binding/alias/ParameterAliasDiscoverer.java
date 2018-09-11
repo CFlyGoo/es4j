@@ -14,19 +14,20 @@
  * limitations under the License.
  */
 
-package com.apehat.es4j.bus.annotation;
+package com.apehat.argument.binding.alias;
 
-import com.apehat.argument.binding.support.AbstractArgumentMethodAdapter;
-import java.lang.reflect.Method;
+import java.lang.reflect.Executable;
+import java.lang.reflect.Parameter;
 
 /**
  * @author hanpengfei
  * @since 1.0
  */
-public class AnnotatedMethodAdapter extends AbstractArgumentMethodAdapter {
+public interface ParameterAliasDiscoverer extends AliasDiscoverer<Parameter> {
 
-    protected boolean isAdaptable(String alias, Method method) {
-        Alias aliasAnnotation = method.getAnnotation(Alias.class);
-        return aliasAnnotation != null && alias.equals(aliasAnnotation.value());
+    String getAlias(Parameter param);
+
+    default String getAlias(Executable exec, int index) {
+        return getAlias(exec.getParameters()[index]);
     }
 }

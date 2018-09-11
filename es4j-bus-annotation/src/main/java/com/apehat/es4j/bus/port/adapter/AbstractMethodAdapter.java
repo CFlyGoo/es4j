@@ -16,11 +16,14 @@
 
 package com.apehat.es4j.bus.port.adapter;
 
-import com.apehat.argument.ArgumentsAssembler;
-import com.apehat.argument.DefaultArgumentsAssembler;
-import com.apehat.es4j.bus.DomainRegistry;
+import com.apehat.argument.binding.alias.AsmParameterAliasDiscoverer;
+import com.apehat.argument.binding.alias.PrioritizedParameterAliasDiscoverer;
+import com.apehat.argument.binding.alias.ReflectionParameterAliasDiscoverer;
+import com.apehat.argument.binding.ArgumentsAssembler;
+import com.apehat.argument.binding.DefaultArgumentsAssembler;
 import com.apehat.es4j.bus.EventHandler;
 import com.apehat.es4j.bus.EventHandlingException;
+import com.apehat.es4j.bus.annotation.AnnotatedParameterAliasDiscoverer;
 import com.apehat.es4j.bus.event.Event;
 import com.apehat.util.ReflectionUtils;
 import java.lang.reflect.InvocationTargetException;
@@ -33,9 +36,15 @@ import java.util.Objects;
  */
 public abstract class AbstractMethodAdapter implements EventHandler {
 
-    private static final ArgumentsAssembler<Event> ARGUMENTS_ASSEMBLER =
-        new DefaultArgumentsAssembler<>(DomainRegistry.parameterAliasDiscoverer(),
-            new EventArgumentAdapter());
+    private static final ArgumentsAssembler<Event> ASSEMBLER;
+
+    static {
+        PrioritizedParameterAliasDiscoverer discoverer = new PrioritizedParameterAliasDiscoverer();
+        discoverer.registerDiscoverer(new AnnotatedParameterAliasDiscoverer());
+        discoverer.registerDiscoverer(new ReflectionParameterAliasDiscoverer());
+        discoverer.registerDiscoverer(new AsmParameterAliasDiscoverer());
+        ASSEMBLER = new DefaultArgumentsAssembler<>(discoverer, new EventArgumentAdapter());
+    }
 
     private final Method handler;
 
@@ -48,7 +57,7 @@ public abstract class AbstractMethodAdapter implements EventHandler {
         ReflectionUtils.access(handler, accessible -> {
             try {
                 return accessible.invoke(
-                    getInvoker(), ARGUMENTS_ASSEMBLER.assemble(handler, event));
+                    getInvoker(), ASSEMBLER.assemble(handler, event));
             } catch (InvocationTargetException e) {
                 throw new EventHandlingException(e);
             }

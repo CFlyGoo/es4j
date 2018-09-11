@@ -16,7 +16,7 @@
 
 package com.apehat.es4j.bus.annotation;
 
-import com.apehat.alias.FieldAliasDiscoverer;
+import com.apehat.argument.binding.alias.FieldAliasDiscoverer;
 import java.lang.reflect.Field;
 
 /**

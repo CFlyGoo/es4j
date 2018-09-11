@@ -16,10 +16,9 @@
 
 package com.apehat;
 
-import com.apehat.Item;
-import com.apehat.util.graph.Digraph;
-import com.apehat.util.layer.DigraphLayerAnalyzer;
-import com.apehat.util.layer.Layer;
+import com.apehat.graph.Digraph;
+import com.apehat.layer.DigraphLayerAnalyzer;
+import com.apehat.layer.Layer;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;

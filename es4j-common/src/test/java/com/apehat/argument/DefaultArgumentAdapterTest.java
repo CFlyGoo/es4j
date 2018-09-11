@@ -29,7 +29,8 @@ import static com.apehat.support.TestDataProvider.userRegisteredWithThirdPartyAc
 import static org.testng.Assert.assertEquals;
 
 import com.apehat.Value;
-import com.apehat.argument.support.DefaultArgumentAdapter;
+import com.apehat.argument.binding.ArgumentAdapter;
+import com.apehat.argument.binding.support.DefaultArgumentAdapter;
 import com.apehat.support.UserRegisteredWithThirdPartyAccount;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;

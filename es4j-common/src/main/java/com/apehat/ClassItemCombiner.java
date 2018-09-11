@@ -16,9 +16,9 @@
 
 package com.apehat;
 
-import com.apehat.util.graph.AdjacencyDigraph;
-import com.apehat.util.graph.Digraph;
-import com.apehat.util.graph.Indicator;
+import com.apehat.graph.AdjacencyDigraph;
+import com.apehat.graph.Digraph;
+import com.apehat.graph.Indicator;
 import java.util.Set;
 
 /**

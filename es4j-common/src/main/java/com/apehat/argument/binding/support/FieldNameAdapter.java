@@ -14,19 +14,17 @@
  * limitations under the License.
  */
 
-package com.apehat.es4j.bus.annotation;
+package com.apehat.argument.binding.support;
 
-import com.apehat.argument.binding.support.AbstractArgumentMethodAdapter;
-import java.lang.reflect.Method;
+import java.lang.reflect.Field;
 
 /**
  * @author hanpengfei
  * @since 1.0
  */
-public class AnnotatedMethodAdapter extends AbstractArgumentMethodAdapter {
+public class FieldNameAdapter extends AbstractArgumentFieldAdapter {
 
-    protected boolean isAdaptable(String alias, Method method) {
-        Alias aliasAnnotation = method.getAnnotation(Alias.class);
-        return aliasAnnotation != null && alias.equals(aliasAnnotation.value());
+    protected boolean isAdaptable(String alias, Field field) {
+        return alias.equals(field.getName());
     }
 }

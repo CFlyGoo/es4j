@@ -19,15 +19,15 @@ package com.apehat.es4j.bus.annotation;
 import static org.testng.Assert.assertEquals;
 
 import com.apehat.Value;
-import com.apehat.alias.DefaultParameterAliasDiscoverer;
-import com.apehat.argument.ArgumentsAssembler;
-import com.apehat.argument.DefaultArgumentsAssembler;
-import com.apehat.argument.support.DefaultArgumentAdapter;
-import com.apehat.argument.support.PrioritizedArgumentAdapter;
+import com.apehat.argument.binding.alias.DefaultParameterAliasDiscoverer;
+import com.apehat.argument.binding.ArgumentsAssembler;
+import com.apehat.argument.binding.DefaultArgumentsAssembler;
+import com.apehat.argument.binding.support.DefaultArgumentAdapter;
+import com.apehat.argument.binding.support.PrioritizedArgumentAdapter;
+import com.apehat.clone.DefaultCloningService;
 import com.apehat.support.TestDataProvider;
 import com.apehat.support.UserId;
 import com.apehat.support.UserRegistered;
-import com.apehat.clone.DefaultCloningContext;
 import java.lang.reflect.Method;
 import java.util.Date;
 import java.util.Objects;
@@ -103,7 +103,7 @@ public class DefaultArgumentsAssemblerTest {
         private final String source;
 
         Event(long occurredOn, Object prototype, String source) {
-            this.prototype = new DefaultCloningContext().deepClone(
+            this.prototype = new DefaultCloningService().deepClone(
                 Objects.requireNonNull(prototype, "Event prototype must not be null"));
             this.occurredOn = occurredOn;
             this.source = source;
@@ -148,7 +148,7 @@ public class DefaultArgumentsAssemblerTest {
 
         @Alias("event")
         Object prototype() {
-            return new DefaultCloningContext().deepClone(prototype);
+            return new DefaultCloningService().deepClone(prototype);
         }
 
         String source() {

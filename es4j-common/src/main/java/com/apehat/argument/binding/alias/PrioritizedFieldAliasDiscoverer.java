@@ -14,19 +14,32 @@
  * limitations under the License.
  */
 
-package com.apehat.es4j.bus.annotation;
+package com.apehat.argument.binding.alias;
 
-import com.apehat.argument.binding.support.AbstractArgumentFieldAdapter;
 import java.lang.reflect.Field;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * @author hanpengfei
  * @since 1.0
  */
-public class AnnotateFieldAdapter extends AbstractArgumentFieldAdapter {
+public class PrioritizedFieldAliasDiscoverer implements FieldAliasDiscoverer {
 
-    protected boolean isAdaptable(String alias, Field field) {
-        Alias aliasAnnotation = field.getDeclaredAnnotation(Alias.class);
-        return aliasAnnotation != null && alias.equals(aliasAnnotation.value());
+    private final List<FieldAliasDiscoverer> fieldAliasDiscoverers = new LinkedList<>();
+
+    public void registerDiscoverer(FieldAliasDiscoverer discoverer) {
+        this.fieldAliasDiscoverers.add(discoverer);
+    }
+
+    @Override
+    public String getAlias(Field field) {
+        for (FieldAliasDiscoverer discoverer : fieldAliasDiscoverers) {
+            String alias = discoverer.getAlias(field);
+            if (alias != null) {
+                return alias;
+            }
+        }
+        return null;
     }
 }

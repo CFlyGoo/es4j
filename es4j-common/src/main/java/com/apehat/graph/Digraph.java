@@ -14,19 +14,33 @@
  * limitations under the License.
  */
 
-package com.apehat.es4j.bus.annotation;
+package com.apehat.graph;
 
-import com.apehat.argument.binding.support.AbstractArgumentMethodAdapter;
-import java.lang.reflect.Method;
+import java.util.Set;
 
 /**
  * @author hanpengfei
  * @since 1.0
  */
-public class AnnotatedMethodAdapter extends AbstractArgumentMethodAdapter {
+public interface Digraph<E> {
 
-    protected boolean isAdaptable(String alias, Method method) {
-        Alias aliasAnnotation = method.getAnnotation(Alias.class);
-        return aliasAnnotation != null && alias.equals(aliasAnnotation.value());
+    Set<E> getAdjacentFirstVertices(E node);
+
+    Set<E> getAdjacentReachableVertices(E vertex);
+
+    Set<E> getReachableVertices(E item);
+
+    Set<E> getFirstVertices(E item);
+
+    Set<E> vertices();
+
+    boolean isDirected(E head, E tail);
+
+    default boolean isReachable(E from, E to) {
+        return getReachableVertices(from).contains(to);
+    }
+
+    default boolean isAdjacent(E head, E tail) {
+        return isDirected(head, tail) || isDirected(tail, head);
     }
 }
