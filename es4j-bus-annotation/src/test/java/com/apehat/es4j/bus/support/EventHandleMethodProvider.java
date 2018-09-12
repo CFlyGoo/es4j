@@ -61,10 +61,6 @@ public class EventHandleMethodProvider {
         return STATIC_HANDLE_METHOD;
     }
 
-    public static String[] getHandlerParameterNames() {
-        return new String[]{"occurredOn", "info", "source", "event"};
-    }
-
     private static void staticEventHandler(
         long occurredOn, Event info, String source, Object event) {
         LOGGER.info("Start handler event with {}, {}", occurredOn, info);
