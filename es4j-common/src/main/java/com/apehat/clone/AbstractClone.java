@@ -16,21 +16,29 @@
 
 package com.apehat.clone;
 
-import com.apehat.util.ClassUtils;
-
 /**
  * @author hanpengfei
  * @since 1.0
  */
-public class ValueObjectClone extends AbstractClone {
+public abstract class AbstractClone implements Clone {
 
     @Override
-    protected <T> T doDeepClone(T prototype, CloningService service) {
-        return prototype;
+    public final <T> T deepClone(T prototype, CloningService service) {
+        if (prototype == null) {
+            return null;
+        }
+        final Class<?> prototypeClass = prototype.getClass();
+        if (!isCloneable(prototypeClass)) {
+            throw new NotSupportedCloneException(prototypeClass);
+        }
+        try {
+            return doDeepClone(prototype, service);
+        } catch (Exception e) {
+            throw new NotSupportedCloneException(prototypeClass, e);
+        }
     }
 
-    @Override
-    protected boolean isCloneable(Class<?> cls) {
-        return ClassUtils.isValueClass(cls);
-    }
+    protected abstract <T> T doDeepClone(T prototype, CloningService service) throws Exception;
+
+    protected abstract boolean isCloneable(Class<?> cls);
 }

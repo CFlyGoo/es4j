@@ -16,29 +16,26 @@
 
 package com.apehat.clone;
 
-import java.util.LinkedHashSet;
-import java.util.Set;
-
 /**
  * @author hanpengfei
  * @since 1.0
  */
-public class CloningService {
+public class NotSupportedCloneException extends IllegalStateException {
 
-    private final Set<Clone> clones = new LinkedHashSet<>();
+    private static final long serialVersionUID = 3603339636420487324L;
 
-    public void registerClone(Clone clone) {
-        this.clones.add(clone);
+    private final Class<?> prototypeClass;
+
+    public NotSupportedCloneException(Class<?> prototypeClass) {
+        this.prototypeClass = prototypeClass;
     }
 
-    public <T> T deepClone(T prototype) {
-        for (Clone clone : clones) {
-            try {
-                return clone.deepClone(prototype, this);
-            } catch (NotSupportedCloneException e) {
-                // ignore
-            }
-        }
-        throw new NotSupportedCloneException(prototype.getClass());
+    public NotSupportedCloneException(Class<?> prototypeClass, Throwable cause) {
+        super(cause);
+        this.prototypeClass = prototypeClass;
+    }
+
+    public Class<?> getPrototypeClass() {
+        return prototypeClass;
     }
 }

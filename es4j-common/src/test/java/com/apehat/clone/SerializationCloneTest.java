@@ -21,7 +21,6 @@ import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertNotSame;
 import static org.testng.AssertJUnit.assertNull;
 
-import com.apehat.Value;
 import java.io.Serializable;
 import java.util.Objects;
 import org.testng.annotations.Test;
@@ -38,21 +37,19 @@ public class SerializationCloneTest {
 
     @Test
     public void testDeepCloneWithNull() {
-        Value<Object> value = clone.deepClone(null, service);
-        assertNotNull(value);
-        assertNull(value.get());
+        assertNull(clone.deepClone(null, service));
     }
 
     @Test
     public void testDeepClone() {
         SerializableClass cls = new SerializableClass();
-        Value<SerializableClass> cloneValue = clone.deepClone(cls, service);
+        SerializableClass cloneValue = clone.deepClone(cls, service);
         assertNotNull(cloneValue);
-        assertNotSame(cls, cloneValue.get());
-        assertEquals(cloneValue.get(), cls);
+        assertNotSame(cls, cloneValue);
+        assertEquals(cloneValue, cls);
     }
 
-    @Test
+    @Test(expectedExceptions = NotSupportedCloneException.class)
     public void testDeepCloneWithNonSerializable() {
         assertNull(clone.deepClone(new NonSerializable(), service));
     }

@@ -17,11 +17,9 @@
 package com.apehat.clone;
 
 import static org.testng.Assert.assertNotEquals;
-import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertNotSame;
 import static org.testng.AssertJUnit.assertNull;
 
-import com.apehat.Value;
 import java.util.Arrays;
 import org.testng.Assert;
 import org.testng.annotations.Test;
@@ -35,30 +33,28 @@ public class ArrayCloneTest {
     private Clone clone = new ArrayClone();
     private CloningService service = new DefaultCloningService();
 
-    @Test(expectedExceptions = NullPointerException.class)
+    @Test(expectedExceptions = NotSupportedCloneException.class)
     public void testDeepCloneWithNullService() {
         int[] prototype = {1, 2, 3, 4, 5};
         clone.deepClone(prototype, null);
     }
 
-    @Test
-    public void testDeepCloneWithNull() {
-        Value<Object> value = clone.deepClone(null, service);
-        assertNotNull(value);
-        assertNull(value.get());
+    @Test(expectedExceptions = NotSupportedCloneException.class)
+    public void testDeepCloneWithNonArray() {
+        clone.deepClone(new Object(), service);
     }
 
     @Test
-    public void testDeepCloneWithNonArray() {
-        assertNull(clone.deepClone(new Object(), service));
+    public void testDeepCloneWithNull() {
+        assertNull(clone.deepClone(null, service));
     }
 
     @Test
     public void testDeepCloneArray() {
         int[] prototype = {1, 2, 3, 4, 5};
-        Value<int[]> cloneValue = clone.deepClone(prototype, service);
-        Assert.assertEquals(prototype, cloneValue.get());
-        assertNotSame(prototype, cloneValue.get());
+        int[] cloneValue = clone.deepClone(prototype, service);
+        Assert.assertEquals(prototype, cloneValue);
+        assertNotSame(prototype, cloneValue);
     }
 
     @Test
@@ -67,10 +63,10 @@ public class ArrayCloneTest {
             {'a', 'b', 'c'},
             {'d', 'e', 'f'}
         };
-        Value<char[][]> cloneValue = clone.deepClone(prototype, service);
-        assert Arrays.deepEquals(prototype, cloneValue.get());
-        assertNotSame(prototype, cloneValue.get());
+        char[][] cloneValue = clone.deepClone(prototype, service);
+        assert Arrays.deepEquals(prototype, cloneValue);
+        assertNotSame(prototype, cloneValue);
         prototype[0][1] = 'g';
-        assertNotEquals(prototype, cloneValue.get());
+        assertNotEquals(prototype, cloneValue);
     }
 }

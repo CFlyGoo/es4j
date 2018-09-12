@@ -16,7 +16,6 @@
 
 package com.apehat.clone;
 
-import com.apehat.Value;
 import com.apehat.util.ClassUtils;
 import java.lang.reflect.Array;
 import java.util.Objects;
@@ -25,30 +24,23 @@ import java.util.Objects;
  * @author hanpengfei
  * @since 1.0
  */
-public class ArrayClone implements Clone {
+public class ArrayClone extends AbstractClone {
 
     @Override
-    public <T> Value<T> deepClone(T prototype, CloningService service) {
+    protected <T> T doDeepClone(T prototype, CloningService service) {
         Objects.requireNonNull(service, "Must specify a CloningService");
-        if (prototype == null) {
-            return Value.empty();
-        }
-
         final Class<T> prototypeClass = ClassUtils.getParameterizedClass(prototype);
-        if (!prototypeClass.isArray()) {
-            return null;
+        final int length = Array.getLength(prototype);
+        final T newInstance = prototypeClass.cast(
+            Array.newInstance(prototypeClass.getComponentType(), length));
+        for (int index = 0; index < length; index++) {
+            Array.set(newInstance, index, service.deepClone(Array.get(prototype, index)));
         }
+        return newInstance;
+    }
 
-        try {
-            final int length = Array.getLength(prototype);
-            final T newInstance = prototypeClass.cast(
-                Array.newInstance(prototypeClass.getComponentType(), length));
-            for (int index = 0; index < length; index++) {
-                Array.set(newInstance, index, service.deepClone(Array.get(prototype, index)));
-            }
-            return new Value<>(newInstance);
-        } catch (Exception e) {
-            return null;
-        }
+    @Override
+    protected boolean isCloneable(Class<?> cls) {
+        return cls.isArray();
     }
 }

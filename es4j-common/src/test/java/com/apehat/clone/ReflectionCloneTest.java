@@ -18,24 +18,14 @@ package com.apehat.clone;
 
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertEqualsDeep;
-import static org.testng.Assert.assertNotEquals;
 import static org.testng.Assert.assertNotEqualsDeep;
 import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertNotSame;
-import static org.testng.Assert.assertSame;
 import static org.testng.AssertJUnit.assertNull;
 
-import com.apehat.Value;
 import com.apehat.clone.SerializationCloneTest.SerializableClass;
-import java.io.Serializable;
-import java.util.Arrays;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
-import java.util.Objects;
 import java.util.Set;
-import org.testng.Assert;
-import org.testng.AssertJUnit;
 import org.testng.annotations.Test;
 
 /**
@@ -48,16 +38,14 @@ public class ReflectionCloneTest {
     private Clone clone = new ReflectionClone();
     private CloningService service = new DefaultCloningService();
 
-    @Test(expectedExceptions = NullPointerException.class)
+    @Test(expectedExceptions = NotSupportedCloneException.class)
     public void testDeepCloneWithNullService() {
         clone.deepClone(new Object(), null);
     }
 
     @Test
     public void testDeepCloneWithNull() {
-        Value<Object> value = clone.deepClone(null, service);
-        assertNotNull(value);
-        assertNull(value.get());
+        assertNull(clone.deepClone(null, service));
     }
 
     @Test
@@ -66,9 +54,9 @@ public class ReflectionCloneTest {
         set.add(1);
         set.add(new Object());
         set.add(true);
-        Value<Set<Object>> cloneValue = clone.deepClone(set, service);
-        assertEquals(set, cloneValue.get());
-        assertNotSame(set, cloneValue.get());
+        Set<Object> cloneValue = clone.deepClone(set, service);
+        assertEquals(set, cloneValue);
+        assertNotSame(set, cloneValue);
     }
 
     @Test
@@ -87,22 +75,22 @@ public class ReflectionCloneTest {
         prototype.add(first);
         prototype.add(second);
 
-        Value<Set<Set<Integer>>> cloneValue = clone.deepClone(prototype, service);
+        Set<Set<Integer>> cloneValue = clone.deepClone(prototype, service);
 
-        assertEqualsDeep(prototype, cloneValue.get(), "Prototype and deepClone is not equals");
-        assertNotSame(prototype, cloneValue.get());
+        assertEqualsDeep(prototype, cloneValue, "Prototype and deepClone is not equals");
+        assertNotSame(prototype, cloneValue);
 
         first.add(7);
         second.add(8);
-        assertNotEqualsDeep(prototype, cloneValue.get());
+        assertNotEqualsDeep(prototype, cloneValue);
     }
 
     @Test
     public void testDeepClonePlainObject() {
         SerializableClass cls = new SerializableClass();
-        Value<SerializableClass> cloneValue = clone.deepClone(cls, service);
+        SerializableClass cloneValue = clone.deepClone(cls, service);
         assertNotNull(cloneValue);
-        assertNotSame(cls, cloneValue.get());
-        assertEquals(cloneValue.get(), cls);
+        assertNotSame(cls, cloneValue);
+        assertEquals(cloneValue, cls);
     }
 }

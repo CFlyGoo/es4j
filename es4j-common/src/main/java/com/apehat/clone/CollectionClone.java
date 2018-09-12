@@ -16,7 +16,6 @@
 
 package com.apehat.clone;
 
-import com.apehat.Value;
 import com.apehat.util.ClassUtils;
 import com.apehat.util.ReflectionUtils;
 import java.util.Collection;
@@ -27,29 +26,22 @@ import java.util.function.Consumer;
  * @author hanpengfei
  * @since 1.0
  */
-public class CollectionClone implements Clone {
+public class CollectionClone extends AbstractClone {
 
     @Override
-    public <T> Value<T> deepClone(T prototype, CloningService service) {
+    protected <T> T doDeepClone(T prototype, CloningService service) {
         Objects.requireNonNull(service, "Must specify a CloningService");
-        if (prototype == null) {
-            return Value.empty();
-        }
+        T newInstance = ReflectionUtils.newInstance(ClassUtils.getParameterizedClass(prototype));
+        final Collection container = (Collection) newInstance;
+        ((Collection<?>) prototype).forEach((Consumer<Object>) o -> {
+            //noinspection unchecked - safe
+            container.add(service.deepClone(o));
+        });
+        return newInstance;
+    }
 
-        if (prototype instanceof Collection) {
-            try {
-                T newInstance = ReflectionUtils
-                    .newInstance(ClassUtils.getParameterizedClass(prototype));
-                final Collection container = (Collection) newInstance;
-                ((Collection<?>) prototype).forEach((Consumer<Object>) o -> {
-                    //noinspection unchecked - safe
-                    container.add(service.deepClone(o));
-                });
-                return new Value<>(newInstance);
-            } catch (Exception e) {
-                return null;
-            }
-        }
-        return null;
+    @Override
+    protected boolean isCloneable(Class<?> cls) {
+        return Collection.class.isAssignableFrom(cls);
     }
 }

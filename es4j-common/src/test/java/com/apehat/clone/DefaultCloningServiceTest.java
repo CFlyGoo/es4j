@@ -24,7 +24,7 @@ import org.testng.annotations.Test;
  */
 public class DefaultCloningServiceTest {
 
-    @Test(expectedExceptions = IllegalStateException.class)
+    @Test(expectedExceptions = NotSupportedCloneException.class)
     public void testCloneWithNonNonParamConstructor() {
         new DefaultCloningService().deepClone(new NonNonParam(getClass()));
     }

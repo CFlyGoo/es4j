@@ -16,13 +16,11 @@
 
 package com.apehat.clone;
 
-import com.apehat.Value;
-
 /**
  * @author hanpengfei
  * @since 1.0
  */
 public interface Clone {
 
-    <T> Value<T> deepClone(T prototype, CloningService service);
+    <T> T deepClone(T prototype, CloningService service) throws NotSupportedCloneException;
 }

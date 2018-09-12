@@ -20,7 +20,6 @@ import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertSame;
 import static org.testng.AssertJUnit.assertNull;
 
-import com.apehat.Value;
 import org.testng.annotations.Test;
 
 /**
@@ -35,12 +34,10 @@ public class ValueObjectCloneTest {
 
     @Test
     public void testDeepCloneWithNull() {
-        Value<Object> value = clone.deepClone(null, service);
-        assertNotNull(value);
-        assertNull(value.get());
+        assertNull(clone.deepClone(null, service));
     }
 
-    @Test
+    @Test(expectedExceptions = NotSupportedCloneException.class)
     public void testDeepCloneWithNonValueObject() {
         assertNull(clone.deepClone(new NonValueObject(), service));
     }
@@ -48,9 +45,9 @@ public class ValueObjectCloneTest {
     @Test
     public void testDeepCloneWithValueObject() {
         String s = "ValueObject";
-        Value<String> cloneValue = clone.deepClone(s, service);
+        String cloneValue = clone.deepClone(s, service);
         assertNotNull(cloneValue);
-        assertSame(s, cloneValue.get());
+        assertSame(s, cloneValue);
     }
 
     private static class NonValueObject {

@@ -19,11 +19,9 @@ package com.apehat.clone;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertEqualsDeep;
 import static org.testng.Assert.assertNotEqualsDeep;
-import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertNotSame;
 import static org.testng.AssertJUnit.assertNull;
 
-import com.apehat.Value;
 import java.util.HashSet;
 import java.util.Set;
 import org.testng.annotations.Test;
@@ -37,19 +35,17 @@ public class CollectionCloneTest {
     private Clone clone = new CollectionClone();
     private CloningService service = new DefaultCloningService();
 
-    @Test(expectedExceptions = NullPointerException.class)
+    @Test(expectedExceptions = NotSupportedCloneException.class)
     public void testDeepCloneWithNullService() {
         clone.deepClone(new HashSet<>(), null);
     }
 
     @Test
     public void testDeepCloneWithNull() {
-        Value<Object> value = clone.deepClone(null, service);
-        assertNotNull(value);
-        assertNull(value.get());
+        assertNull(clone.deepClone(null, service));
     }
 
-    @Test
+    @Test(expectedExceptions = NotSupportedCloneException.class)
     public void testDeepCloneWithNonCollection() {
         assertNull(clone.deepClone(new Object(), service));
     }
@@ -60,9 +56,9 @@ public class CollectionCloneTest {
         set.add(1);
         set.add(new Object());
         set.add(true);
-        Value<Set<Object>> cloneValue = clone.deepClone(set, service);
-        assertEquals(set, cloneValue.get());
-        assertNotSame(set, cloneValue.get());
+        Set<Object> cloneValue = clone.deepClone(set, service);
+        assertEquals(set, cloneValue);
+        assertNotSame(set, cloneValue);
     }
 
     @Test
@@ -81,13 +77,13 @@ public class CollectionCloneTest {
         prototype.add(first);
         prototype.add(second);
 
-        Value<Set<Set<Integer>>> cloneValue = clone.deepClone(prototype, service);
+        Set<Set<Integer>> cloneValue = clone.deepClone(prototype, service);
 
-        assertEqualsDeep(prototype, cloneValue.get(), "Prototype and deepClone is not equals");
-        assertNotSame(prototype, cloneValue.get());
+        assertEqualsDeep(prototype, cloneValue, "Prototype and deepClone is not equals");
+        assertNotSame(prototype, cloneValue);
 
         first.add(7);
         second.add(8);
-        assertNotEqualsDeep(prototype, cloneValue.get());
+        assertNotEqualsDeep(prototype, cloneValue);
     }
 }

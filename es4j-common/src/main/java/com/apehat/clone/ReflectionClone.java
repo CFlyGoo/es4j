@@ -16,7 +16,6 @@
 
 package com.apehat.clone;
 
-import com.apehat.Value;
 import com.apehat.util.ClassUtils;
 import com.apehat.util.ReflectionUtils;
 import java.lang.reflect.Field;
@@ -27,31 +26,28 @@ import java.util.Objects;
  * @author hanpengfei
  * @since 1.0
  */
-public class ReflectionClone implements Clone {
+public class ReflectionClone extends AbstractClone {
 
     @Override
-    public <T> Value<T> deepClone(T prototype, CloningService service) {
+    protected <T> T doDeepClone(T prototype, CloningService service) {
         Objects.requireNonNull(service, "Must specify a CloningService");
-        if (prototype == null) {
-            return Value.empty();
-        }
-
-        try {
-            final Class<T> prototypeClass = ClassUtils.getParameterizedClass(prototype);
-            final T clone = ReflectionUtils.newInstance(prototypeClass);
-            final Field[] fields = prototypeClass.getDeclaredFields();
-            for (Field field : fields) {
-                if (!Modifier.isStatic(field.getModifiers())) {
-                    Object cloneValue = ReflectionUtils.access(field, f -> {
-                        final Object prototypeValue = f.get(prototype);
-                        return service.deepClone(prototypeValue);
-                    });
-                    ReflectionUtils.setFieldValue(field, clone, cloneValue);
-                }
+        final Class<T> prototypeClass = ClassUtils.getParameterizedClass(prototype);
+        final T clone = ReflectionUtils.newInstance(prototypeClass);
+        final Field[] fields = prototypeClass.getDeclaredFields();
+        for (Field field : fields) {
+            if (!Modifier.isStatic(field.getModifiers())) {
+                Object cloneValue = ReflectionUtils.access(field, f -> {
+                    final Object prototypeValue = f.get(prototype);
+                    return service.deepClone(prototypeValue);
+                });
+                ReflectionUtils.setFieldValue(field, clone, cloneValue);
             }
-            return new Value<>(clone);
-        } catch (Exception e) {
-            return null;
         }
+        return clone;
+    }
+
+    @Override
+    protected boolean isCloneable(Class<?> cls) {
+        return true;
     }
 }

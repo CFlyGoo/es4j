@@ -18,11 +18,9 @@ package com.apehat.clone;
 
 import static org.testng.Assert.assertEqualsDeep;
 import static org.testng.Assert.assertNotEqualsDeep;
-import static org.testng.Assert.assertNotNull;
 import static org.testng.AssertJUnit.assertNotSame;
 import static org.testng.AssertJUnit.assertNull;
 
-import com.apehat.Value;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -38,19 +36,17 @@ public class MapCloneTest {
     private Clone clone = new MapClone();
     private CloningService service = new DefaultCloningService();
 
-    @Test(expectedExceptions = NullPointerException.class)
+    @Test(expectedExceptions = NotSupportedCloneException.class)
     public void testDeepCloneWithNullService() {
         clone.deepClone(new HashMap<>(), null);
     }
 
     @Test
     public void testDeepCloneWithNull() {
-        Value<Object> value = clone.deepClone(null, service);
-        assertNotNull(value);
-        assertNull(value.get());
+        assertNull(clone.deepClone(null, service));
     }
 
-    @Test
+    @Test(expectedExceptions = NotSupportedCloneException.class)
     public void testDeepCloneWithNonMap() {
         assertNull(clone.deepClone(new Object(), service));
     }
@@ -80,13 +76,13 @@ public class MapCloneTest {
         prototype.put(firstKey, firstValue);
         prototype.put(secondKey, secondValue);
 
-        Value<Map<Set<String>, Set<Integer>>> cloneValue = clone.deepClone(prototype, service);
+        Map<Set<String>, Set<Integer>> cloneValue = clone.deepClone(prototype, service);
 
-        assertEqualsDeep(prototype, cloneValue.get());
-        assertNotSame(prototype, cloneValue.get());
+        assertEqualsDeep(prototype, cloneValue);
+        assertNotSame(prototype, cloneValue);
 
         firstValue.add(7);
         secondValue.add(8);
-        assertNotEqualsDeep(prototype, cloneValue.get());
+        assertNotEqualsDeep(prototype, cloneValue);
     }
 }
