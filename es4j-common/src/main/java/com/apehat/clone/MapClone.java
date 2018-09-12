@@ -33,7 +33,6 @@ public class MapClone implements Clone {
     public <T> Value<T> deepClone(T prototype, CloningService service) {
         Objects.requireNonNull(service, "Must specify a CloningService");
         if (prototype == null) {
-            //noinspection unchecked
             return Value.empty();
         }
         if (!(prototype instanceof Map)) {

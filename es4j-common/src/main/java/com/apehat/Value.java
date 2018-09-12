@@ -22,9 +22,10 @@ package com.apehat;
  */
 public final class Value<T> {
 
-    private static final Value<?> EMPTY = new Value<>(null);
+    private static final Value EMPTY = new Value<>(null);
 
-    public static Value empty() {
+    @SuppressWarnings("unchecked")
+    public static <T> Value<T> empty() {
         return EMPTY;
     }
 

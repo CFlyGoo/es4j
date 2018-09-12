@@ -50,7 +50,6 @@ public class SerializationClone implements Clone {
     @Override
     public <T> Value<T> deepClone(T prototype, CloningService service) {
         if (prototype == null) {
-            //noinspection unchecked
             return Value.empty();
         }
 
