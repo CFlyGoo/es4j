@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.apehat.util.graph;
+package com.apehat.graph;
 
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertFalse;
