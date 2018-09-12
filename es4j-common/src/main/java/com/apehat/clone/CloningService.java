@@ -26,7 +26,7 @@ import java.util.Set;
  */
 public class CloningService {
 
-    private Set<Clone> clones = new LinkedHashSet<>();
+    private final Set<Clone> clones = new LinkedHashSet<>();
 
     public void registerClone(Clone clone) {
         this.clones.add(clone);
