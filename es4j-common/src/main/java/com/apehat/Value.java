@@ -22,13 +22,6 @@ package com.apehat;
  */
 public final class Value<T> {
 
-    private static final Value EMPTY = new Value<>(null);
-
-    @SuppressWarnings("unchecked")
-    public static <T> Value<T> empty() {
-        return EMPTY;
-    }
-
     private final T prototype;
 
     public Value(T prototype) {
