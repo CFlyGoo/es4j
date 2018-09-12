@@ -16,18 +16,13 @@
 
 package com.apehat.argument.binding.alias;
 
-import java.lang.reflect.Executable;
 import java.lang.reflect.Parameter;
 
 /**
  * @author hanpengfei
  * @since 1.0
  */
-public interface ParameterAliasDiscoverer extends AliasDiscoverer<Parameter> {
+public interface ParameterAliasDiscoverer {
 
     String getAlias(Parameter param);
-
-    default String getAlias(Executable exec, int index) {
-        return getAlias(exec.getParameters()[index]);
-    }
 }
