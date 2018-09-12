@@ -22,9 +22,9 @@ import static com.apehat.support.TestDataProvider.USER_REGISTERED_NAME;
 import static com.apehat.support.TestDataProvider.USER_REGISTERED_TIME;
 import static org.testng.Assert.assertEquals;
 
+import com.apehat.Value;
 import com.apehat.es4j.bus.event.Event;
 import com.apehat.es4j.bus.event.EventFixtureProvider;
-import com.apehat.Value;
 import com.apehat.support.TestDataProvider;
 import com.apehat.support.UserRegistered;
 import org.testng.annotations.Test;

@@ -16,9 +16,9 @@
 
 package com.apehat.argument.binding.support;
 
-import com.apehat.argument.binding.ArgumentAdapter;
 import com.apehat.NestedCheckException;
 import com.apehat.Value;
+import com.apehat.argument.binding.ArgumentAdapter;
 import java.lang.reflect.Field;
 
 /**

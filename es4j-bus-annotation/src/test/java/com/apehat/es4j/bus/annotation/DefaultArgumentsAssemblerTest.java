@@ -19,9 +19,9 @@ package com.apehat.es4j.bus.annotation;
 import static org.testng.Assert.assertEquals;
 
 import com.apehat.Value;
-import com.apehat.argument.binding.alias.DefaultParameterAliasDiscoverer;
 import com.apehat.argument.binding.ArgumentsAssembler;
 import com.apehat.argument.binding.DefaultArgumentsAssembler;
+import com.apehat.argument.binding.alias.DefaultParameterAliasDiscoverer;
 import com.apehat.argument.binding.support.DefaultArgumentAdapter;
 import com.apehat.argument.binding.support.PrioritizedArgumentAdapter;
 import com.apehat.clone.DefaultCloningService;
@@ -55,24 +55,6 @@ public class DefaultArgumentsAssemblerTest {
             new EventArgumentAdapter());
     }
 
-    private final class EventArgumentAdapter extends PrioritizedArgumentAdapter {
-
-        EventArgumentAdapter() {
-            registerAdapter(new AnnotatedMethodAdapter());
-            registerAdapter(new AnnotateFieldAdapter());
-            registerAdapter(new DefaultArgumentAdapter());
-        }
-
-        @Override
-        public Value<?> adapt(String alias, Object prototype) {
-            Value<?> value = super.adapt(alias, prototype);
-            if (value != null) {
-                return value;
-            }
-            return super.adapt(alias, ((Event) prototype).prototype());
-        }
-    }
-
     @Test
     public void testAssemble() throws Exception {
         Method method = DefaultArgumentsAssemblerTest.class
@@ -94,6 +76,24 @@ public class DefaultArgumentsAssemblerTest {
         assertEquals(prototype.getUserId(), userId);
         assertEquals(prototype.getUsername(), username);
         assertEquals(prototype.getRegisterOn(), registerOn);
+    }
+
+    private final class EventArgumentAdapter extends PrioritizedArgumentAdapter {
+
+        EventArgumentAdapter() {
+            registerAdapter(new AnnotatedMethodAdapter());
+            registerAdapter(new AnnotateFieldAdapter());
+            registerAdapter(new DefaultArgumentAdapter());
+        }
+
+        @Override
+        public Value<?> adapt(String alias, Object prototype) {
+            Value<?> value = super.adapt(alias, prototype);
+            if (value != null) {
+                return value;
+            }
+            return super.adapt(alias, ((Event) prototype).prototype());
+        }
     }
 
     public final class Event {

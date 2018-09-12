@@ -16,12 +16,12 @@
 
 package com.apehat.es4j.bus.port.adapter;
 
-import com.apehat.es4j.bus.event.Event;
 import com.apehat.Value;
 import com.apehat.argument.binding.support.DefaultArgumentAdapter;
 import com.apehat.argument.binding.support.PrioritizedArgumentAdapter;
 import com.apehat.es4j.bus.annotation.AnnotateFieldAdapter;
 import com.apehat.es4j.bus.annotation.AnnotatedMethodAdapter;
+import com.apehat.es4j.bus.event.Event;
 
 /**
  * @author hanpengfei

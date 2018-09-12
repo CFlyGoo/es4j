@@ -16,11 +16,11 @@
 
 package com.apehat.es4j.bus.port.adapter;
 
+import com.apehat.argument.binding.ArgumentsAssembler;
+import com.apehat.argument.binding.DefaultArgumentsAssembler;
 import com.apehat.argument.binding.alias.AsmParameterAliasDiscoverer;
 import com.apehat.argument.binding.alias.PrioritizedParameterAliasDiscoverer;
 import com.apehat.argument.binding.alias.ReflectionParameterAliasDiscoverer;
-import com.apehat.argument.binding.ArgumentsAssembler;
-import com.apehat.argument.binding.DefaultArgumentsAssembler;
 import com.apehat.es4j.bus.EventHandler;
 import com.apehat.es4j.bus.EventHandlingException;
 import com.apehat.es4j.bus.annotation.AnnotatedParameterAliasDiscoverer;

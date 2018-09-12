@@ -16,7 +16,6 @@
 
 package com.apehat;
 
-import com.apehat.Value;
 import java.util.Map;
 import java.util.WeakHashMap;
 import java.util.concurrent.ConcurrentHashMap;
