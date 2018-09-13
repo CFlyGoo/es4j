@@ -34,7 +34,7 @@ import java.util.Objects;
  * @author hanpengfei
  * @since 1.0
  */
-public abstract class AbstractMethodAdapter implements EventHandler {
+public abstract class AbstractEventHandlerMethodAdapter implements EventHandler {
 
     private static final ArgumentsAssembler<Event> ASSEMBLER;
 
@@ -48,7 +48,7 @@ public abstract class AbstractMethodAdapter implements EventHandler {
 
     private final Method handler;
 
-    protected AbstractMethodAdapter(Method handler) {
+    protected AbstractEventHandlerMethodAdapter(Method handler) {
         this.handler = Objects.requireNonNull(handler, "handle method must not be null");
     }
 

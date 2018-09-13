@@ -23,11 +23,11 @@ import java.util.Objects;
  * @author hanpengfei
  * @since 1.0
  */
-final class NormalMethodAdapter extends AbstractMethodAdapter {
+final class EventHandlerNormalMethodAdapter extends AbstractEventHandlerMethodAdapter {
 
     private final Object invoker;
 
-    NormalMethodAdapter(Object handler, Method method) {
+    EventHandlerNormalMethodAdapter(Object handler, Method method) {
         super(method);
         this.invoker = Objects.requireNonNull(handler, "Handler must not be null");
     }
@@ -45,7 +45,7 @@ final class NormalMethodAdapter extends AbstractMethodAdapter {
         if (o == null || o.getClass() != this.getClass()) {
             return false;
         }
-        NormalMethodAdapter that = (NormalMethodAdapter) o;
+        EventHandlerNormalMethodAdapter that = (EventHandlerNormalMethodAdapter) o;
         return getInvoker().equals(that.getInvoker())
             && getHandler().equals(that.getHandler());
     }

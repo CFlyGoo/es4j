@@ -24,9 +24,9 @@ import java.util.Objects;
  * @author hanpengfei
  * @since 1.0
  */
-final class StaticMethodAdapter extends AbstractMethodAdapter {
+final class EventHandlerStaticMethodAdapter extends AbstractEventHandlerMethodAdapter {
 
-    StaticMethodAdapter(Method method) {
+    EventHandlerStaticMethodAdapter(Method method) {
         super(Validation.requiredStatic(method));
     }
 
@@ -43,7 +43,7 @@ final class StaticMethodAdapter extends AbstractMethodAdapter {
         if (o == null || o.getClass() != this.getClass()) {
             return false;
         }
-        StaticMethodAdapter that = (StaticMethodAdapter) o;
+        EventHandlerStaticMethodAdapter that = (EventHandlerStaticMethodAdapter) o;
         return Objects.equals(getHandler(), that.getHandler());
     }
 

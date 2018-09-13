@@ -25,16 +25,16 @@ import java.util.Objects;
  * @author hanpengfei
  * @since 1.0
  */
-public final class MethodAdapterFactory implements EventHandlerAdapter {
+public final class EventHandlerMethodAdapterFactory implements EventHandlerAdapter {
 
     private final Object handler;
     private final Method handleMethod;
 
-    public MethodAdapterFactory(Method staticHandler) {
+    public EventHandlerMethodAdapterFactory(Method staticHandler) {
         this(null, staticHandler);
     }
 
-    public MethodAdapterFactory(Object handler, Method handleMethod) {
+    public EventHandlerMethodAdapterFactory(Object handler, Method handleMethod) {
         this.handleMethod = Objects.requireNonNull(handleMethod, "Handle handler must not be null");
         if (!isStatic(handleMethod) && handler == null) {
             throw new IllegalArgumentException("Handler must not be null");
@@ -49,7 +49,7 @@ public final class MethodAdapterFactory implements EventHandlerAdapter {
     @Override
     public EventHandler newEventHandler() {
         return isStatic(handleMethod) ?
-            new StaticMethodAdapter(handleMethod) :
-            new NormalMethodAdapter(handler, handleMethod);
+            new EventHandlerStaticMethodAdapter(handleMethod) :
+            new EventHandlerNormalMethodAdapter(handler, handleMethod);
     }
 }
