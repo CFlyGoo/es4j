@@ -14,18 +14,33 @@
  * limitations under the License.
  */
 
-package com.apehat.argument.binding.alias;
+package com.apehat.argument.binding.support;
 
+import com.apehat.argument.binding.ParameterAliasDiscoverer;
 import java.lang.reflect.Parameter;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * @author hanpengfei
  * @since 1.0
  */
-public class ReflectionParameterAliasDiscoverer implements ParameterAliasDiscoverer {
+public class PrioritizedParameterAliasDiscoverer implements ParameterAliasDiscoverer {
+
+    private final List<ParameterAliasDiscoverer> parameterAliasDiscoverers = new LinkedList<>();
+
+    public void registerDiscoverer(ParameterAliasDiscoverer discoverer) {
+        this.parameterAliasDiscoverers.add(discoverer);
+    }
 
     @Override
     public String getAlias(Parameter param) {
-        return param.isNamePresent() ? param.getName() : null;
+        for (ParameterAliasDiscoverer discoverer : parameterAliasDiscoverers) {
+            String alias = discoverer.getAlias(param);
+            if (alias != null) {
+                return alias;
+            }
+        }
+        return null;
     }
 }

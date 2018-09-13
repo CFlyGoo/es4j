@@ -17,7 +17,6 @@
 package com.apehat.argument.binding;
 
 import com.apehat.Value;
-import com.apehat.argument.binding.alias.ParameterAliasDiscoverer;
 import java.lang.reflect.Executable;
 import java.lang.reflect.Parameter;
 
@@ -51,6 +50,7 @@ public class DefaultArgumentsAssembler<T> implements ArgumentsAssembler<T> {
                     .isAssignableFrom(prototype.getClass())) {
                     result = prototype;
                 } else {
+                    // TODO convert prototype to expected value
                     throw new IllegalStateException("Cannot find " + alias + " from " + prototype);
                 }
             } else {

@@ -14,10 +14,11 @@
  * limitations under the License.
  */
 
-package com.apehat.argument.binding.alias;
+package com.apehat.argument.binding.support;
 
 import com.apehat.ConcurrentCache;
 import com.apehat.NestedIOException;
+import com.apehat.argument.binding.ParameterAliasDiscoverer;
 import com.apehat.util.ReflectionUtils;
 import java.io.IOException;
 import java.lang.reflect.Constructor;

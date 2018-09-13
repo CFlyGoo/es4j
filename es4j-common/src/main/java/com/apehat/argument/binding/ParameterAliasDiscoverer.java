@@ -14,16 +14,15 @@
  * limitations under the License.
  */
 
-package com.apehat.argument.binding.alias;
+package com.apehat.argument.binding;
+
+import java.lang.reflect.Parameter;
 
 /**
  * @author hanpengfei
  * @since 1.0
  */
-public class DefaultParameterAliasDiscoverer extends PrioritizedParameterAliasDiscoverer {
+public interface ParameterAliasDiscoverer {
 
-    public DefaultParameterAliasDiscoverer() {
-        registerDiscoverer(new ReflectionParameterAliasDiscoverer());
-        registerDiscoverer(new AsmParameterAliasDiscoverer());
-    }
+    String getAlias(Parameter param);
 }
