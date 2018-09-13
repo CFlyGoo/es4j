@@ -16,9 +16,6 @@
 
 package com.apehat.es4j.bus.port.adapter;
 
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertTrue;
-
 import com.apehat.es4j.bus.BusModuleTestDataProvider;
 import com.apehat.es4j.bus.event.Event;
 import com.apehat.es4j.bus.support.EventHandleMethodProvider;
@@ -28,16 +25,13 @@ import org.testng.annotations.Test;
  * @author hanpengfei
  * @since 1.0
  */
-public class NormalMethodAdapterFactoryTest {
+public class EventHandlerStaticMethodAdapterFactoryTest {
 
     @Test(dataProviderClass = BusModuleTestDataProvider.class, dataProvider = "eventFixtureProvider")
     public void testOnEvent(Event event) {
-        final EventHandleMethodProvider invoker = new EventHandleMethodProvider(event);
-        final NormalMethodAdapter adapter =
-            new NormalMethodAdapter(invoker, invoker.getHandleMethod());
-
-        assertFalse(invoker.isHandled());
+        // print log
+        final EventHandlerStaticMethodAdapter adapter =
+            new EventHandlerStaticMethodAdapter(EventHandleMethodProvider.getStaticEventHandler());
         adapter.onEvent(event);
-        assertTrue(invoker.isHandled());
     }
 }

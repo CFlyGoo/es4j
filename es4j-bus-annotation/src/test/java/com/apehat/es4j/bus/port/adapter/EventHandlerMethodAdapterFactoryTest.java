@@ -27,46 +27,48 @@ import org.testng.annotations.Test;
  * @author hanpengfei
  * @since 1.0
  */
-public class MethodAdapterFactoryTest {
+public class EventHandlerMethodAdapterFactoryTest {
 
     @Test
     public void testCreateNewEventHandlerWithSpecifiedInvokerAndOnlySpecifyStaticMethodIsEquals() {
         EventHandleMethodProvider invoker = new EventHandleMethodProvider();
         assertEquals(
-            new MethodAdapterFactory(invoker, EventHandleMethodProvider.getStaticEventHandler())
-                .newEventHandler(),
-            new MethodAdapterFactory(EventHandleMethodProvider.getStaticEventHandler())
-                .newEventHandler());
+            new EventHandlerMethodAdapterFactory(
+                invoker, EventHandleMethodProvider.getStaticEventHandler()).newEventHandler(),
+            new EventHandlerMethodAdapterFactory(
+                EventHandleMethodProvider.getStaticEventHandler()).newEventHandler());
     }
 
     @Test
     public void testCreateNewEventHandlerWithDifferenceInvokerAndSameNormalMethodNotEquals() {
         final Method handleMethod = new EventHandleMethodProvider().getHandleMethod();
         assertNotEquals(
-            new MethodAdapterFactory(new EventHandleMethodProvider(), handleMethod)
-                .newEventHandler(),
-            new MethodAdapterFactory(new EventHandleMethodProvider(), handleMethod)
-                .newEventHandler());
+            new EventHandlerMethodAdapterFactory(
+                new EventHandleMethodProvider(), handleMethod).newEventHandler(),
+            new EventHandlerMethodAdapterFactory(
+                new EventHandleMethodProvider(), handleMethod).newEventHandler());
     }
 
     @Test
     public void testCreateNewEventHandlerWithStaticMethodAndNullInvoker() {
-        new MethodAdapterFactory(null, EventHandleMethodProvider.getStaticEventHandler())
+        new EventHandlerMethodAdapterFactory(null,
+            EventHandleMethodProvider.getStaticEventHandler())
             .newEventHandler();
     }
 
     @Test(expectedExceptions = NullPointerException.class)
     public void testConstructAdapterFactoryWithNullMethod() {
-        new MethodAdapterFactory(null);
+        new EventHandlerMethodAdapterFactory(null);
     }
 
     @Test(expectedExceptions = NullPointerException.class)
     public void testConstructAdapterFactoryWithSpecifiedInvokerAndNullMethod() {
-        new MethodAdapterFactory(new EventHandleMethodProvider(), null);
+        new EventHandlerMethodAdapterFactory(new EventHandleMethodProvider(), null);
     }
 
     @Test(expectedExceptions = IllegalArgumentException.class)
     public void testConstructAdapterFactoryWithNormalMethodAndNullInvoker() {
-        new MethodAdapterFactory(null, new EventHandleMethodProvider().getHandleMethod());
+        new EventHandlerMethodAdapterFactory(
+            null, new EventHandleMethodProvider().getHandleMethod());
     }
 }
