@@ -34,6 +34,7 @@ public class DefaultArgumentAdapter extends PrioritizedArgumentAdapter {
     public DefaultArgumentAdapter() {
         registerAdapter(new MethodNameAdapter());
         registerAdapter(new GetterNameAdapter());
+        registerAdapter(new IsNameAdapter());
         registerAdapter(new FieldNameAdapter());
     }
 
