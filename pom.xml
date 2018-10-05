@@ -7,7 +7,7 @@
     <groupId>com.apehat</groupId>
     <artifactId>es4j-build</artifactId>
     <packaging>pom</packaging>
-    <version>0.0.12-SNAPSHOT</version>
+    <version>0.0.13-SNAPSHOT</version>
     <name>es4j-build</name>
     <description>Event Services For Java</description>
     <url>https://www.github.com/CFlyGoo/es4j</url>
