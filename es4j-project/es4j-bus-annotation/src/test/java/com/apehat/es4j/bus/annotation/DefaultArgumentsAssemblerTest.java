@@ -16,20 +16,21 @@
 
 package com.apehat.es4j.bus.annotation;
 
-import static org.testng.Assert.assertEquals;
-
 import com.apehat.argument.binding.ArgumentsAssembler;
 import com.apehat.argument.binding.DefaultArgumentsAssembler;
-import com.apehat.argument.binding.alias.DefaultParameterAliasDiscoverer;
+import com.apehat.argument.binding.support.DefaultParameterAliasDiscoverer;
 import com.apehat.es4j.bus.event.Event;
 import com.apehat.es4j.bus.event.EventFixtureProvider;
 import com.apehat.es4j.bus.port.adapter.EventArgumentAdapterProvider;
 import com.apehat.support.TestDataProvider;
 import com.apehat.support.UserId;
 import com.apehat.support.UserRegistered;
+import org.testng.annotations.Test;
+
 import java.lang.reflect.Method;
 import java.util.Date;
-import org.testng.annotations.Test;
+
+import static org.testng.Assert.assertEquals;
 
 /**
  * @author hanpengfei
